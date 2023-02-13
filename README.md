@@ -128,7 +128,7 @@ This section includes instructions on setting up the project locally.
 ## Prerequisites
 
 ### Conda
-For package management, it is advised to use have a conda package manager installed.
+For package management, it is advised to use a conda package manager.
 The author recommends [Miniforge](https://github.com/conda-forge/miniforge) or [Mambaforge](https://github.com/conda-forge/miniforge).
 
 ### vips
