@@ -191,6 +191,8 @@ Large images need to be trusted against decompression bomb DOS attack.
 Use the `--trust` flag.
 To skip images that were already converted to the target extension, use `--skip-existing`.
 
+NOTE: If converting to tiff, the input images are assumed to contain the reference to the scanning program, which must be in {200slow, 200fast, 300slow}.
+
 ```
 usage: dpat convert bulk [-h] --input-dir INPUT_DIR [--output-dir OUTPUT_DIR] --output-ext {tiff,tif} [--trust | --no-trust] [--skip-existing | --no-skip-existing]
 
