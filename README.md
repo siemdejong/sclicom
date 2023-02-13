@@ -194,7 +194,7 @@ To skip images that were already converted to the target extension, use `--skip-
 NOTE: If converting to tiff, the input images are assumed to contain the reference to the scanning program, which must be in {200slow, 300slow, 300fast}.
 
 ```
-usage: dpat convert bulk [-h] --input-dir INPUT_DIR [--output-dir OUTPUT_DIR] --output-ext {tiff,tif} [--trust | --no-trust] [--skip-existing | --no-skip-existing]
+usage: dpat convert bulk [-h] --input-dir INPUT_DIR [--output-dir OUTPUT_DIR] --output-ext {tiff,tif} [--num-workers NUM_WORKERS] [--chunks CHUNKS] [--trust | --no-trust] [--skip-existing | --no-skip-existing]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -204,6 +204,9 @@ optional arguments:
                         Output directory where place converted files.
   --output-ext {tiff,tif}, -e {tiff,tif}
                         Extension to convert to.
+  --num-workers NUM_WORKERS
+                        Number of workers that convert the images in parallel.
+  --chunks CHUNKS       Number of chunks distributed to every worker.
   --trust, --no-trust   Trust the source of the images.
   --skip-existing, --no-skip-existing
                         Skip existing output files.

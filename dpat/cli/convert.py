@@ -8,6 +8,8 @@ class BulkConvertArguments(argparse.Namespace):
     output_ext: AvailableImageFormats
     trust: bool
     skip_existing: bool
+    num_workers: int
+    chunks: int
 
 def bulk_convert(args: BulkConvertArguments):
 
@@ -16,6 +18,8 @@ def bulk_convert(args: BulkConvertArguments):
     OUTPUT_EXT = args.output_ext
     TRUST_SOURCE = args.trust
     SKIP_EXISTING = args.skip_existing
+    NUM_WORKERS = args.num_workers
+    CHUNKS = args.chunks
 
     paths = []
     kwargs_per_path = []
@@ -51,6 +55,8 @@ def bulk_convert(args: BulkConvertArguments):
         kwargs_per_path=kwargs_per_path,
         trust_source=TRUST_SOURCE,
         skip_existing=SKIP_EXISTING,
+        num_workers=NUM_WORKERS,
+        chunks=CHUNKS,
     )
 
 def register_parser(parser: argparse._SubParsersAction):
@@ -85,6 +91,18 @@ def register_parser(parser: argparse._SubParsersAction):
         choices=AvailableImageFormats.__members__,
         required=True,
         help="Extension to convert to."
+    )
+    bulk_convert_parser.add_argument(
+        "--num-workers",
+        type=int,
+        help="Number of workers that convert the images in parallel.",
+        default=4,
+    )
+    bulk_convert_parser.add_argument(
+        "--chunks",
+        type=int,
+        help="Number of chunks distributed to every worker.",
+        default=30,
     )
     bulk_convert_parser.add_argument(
         "--trust",
