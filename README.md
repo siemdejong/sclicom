@@ -126,6 +126,11 @@ The project aims to do deep learning classification on higher harmonic generatio
 This section includes instructions on setting up the project locally.
 
 ## Prerequisites
+
+### Conda
+For package management, it is advised to use have a conda package manager installed.
+The author recommends [Miniforge](https://github.com/conda-forge/miniforge) or [Mambaforge](https://github.com/conda-forge/miniforge).
+
 ### vips
 This project depends on [dlup](https://github.com/NKI-AI/dlup) (automatically installed), which depends on vips.
 On Windows, vips needs to be installed locally.
@@ -140,6 +145,7 @@ This project expects CUDA enabled GPUs.
 Run `nvidia-smi` to see if there are CUDA enabled GPUs available. -->
 
 ### Installation
+Run the following commands from a conda enabled shell (such as Miniforge Prompt, if Miniforge/Mambaforge is installed).
 
 1.  Make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
 1.  Clone this repository and change directories
