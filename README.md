@@ -36,9 +36,9 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/siemdejong/shg-strain-stress">
+  <!-- <a href="https://github.com/siemdejong/shg-strain-stress">
     <img src="images/skinstression-logo.png" alt="Logo" width="80" height="80">
-  </a>
+  </a> -->
 
 
 <h2 align="center">Deep Learning for Higher Harmonic Generation Microscopy</h2>
