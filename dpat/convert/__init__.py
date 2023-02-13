@@ -5,6 +5,7 @@ from tqdm import tqdm
 from functools import partial
 from enum import Enum
 from multiprocessing import Pool
+import signal
 
 
 class AvailableImageFormats(Enum):
@@ -15,6 +16,8 @@ class AvailableImageFormats(Enum):
 class ToTIFFParams(TypedDict):
     """Allowed parameters for `img_to_tiff`.
 
+    TIFF files [1] contain resolution information in the header.
+
     Attributes
     ----------
     resolution_unit : int
@@ -23,6 +26,10 @@ class ToTIFFParams(TypedDict):
         Number of pixels per resolution unit in X-direction.
     yresolution : float
         Number of pixels per resolution unit in Y-direction.
+
+    References
+    ----------
+    [1] https://www.fileformat.info/format/tiff/corion.htm
     """
 
     resolution_unit: Literal[1, 2, 3]
@@ -60,10 +67,8 @@ def img_to_tiff(
 
     # To ignore decompression bomb DOS attack error.
     if trust_source:
-        print("Source is trusted. PIL.Image.DecompressionBombError ignored.")
         Image.MAX_IMAGE_PIXELS = None
 
-    # Skip existing files.
     output_fn = pathlib.Path(output_dir / (input_path.stem + f".{extension}"))
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -78,19 +83,24 @@ def filter_existing(
     extension: AvailableImageFormats,
     kwargs_per_path: Optional[list[ToOtherParams]] = None,
 ):
-    skip_count = 0
-    for i, (input_path, output_dir) in enumerate(zip(input_paths, output_dirs)):
+    filtered_input_paths = []
+    filtered_output_dirs = []
+    filtered_kwargs_per_path = []
+
+    for input_path, output_dir, kwargs in zip(input_paths, output_dirs, kwargs_per_path):
         output_fn = pathlib.Path(output_dir / (input_path.stem + f".{extension}"))
-        if output_fn.exists():
-            input_paths.pop(i)
-            output_dirs.pop(i)
-            kwargs_per_path.pop(i)
-            skip_count += 1
+        if not output_fn.exists():
+            filtered_input_paths.append(input_path)
+            filtered_output_dirs.append(output_dir)
+            filtered_kwargs_per_path.append(kwargs)
 
-    print(f"Skipping {skip_count} images, as they already exist.")
-    print("Use '--skip-existing false' to not overwrite existing images.")
+    skip_count = len(input_paths) - len(filtered_input_paths)
+    print(
+        f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. " \
+        "Use '--skip-existing false' to overwrite existing images."
+    )
 
-    return input_paths, output_dirs, kwargs_per_path
+    return filtered_input_paths, filtered_output_dirs, filtered_kwargs_per_path
 
 
 def _wrapper(args, worker):
@@ -141,20 +151,27 @@ def batch_convert(
             output_ext,
             kwargs_per_path,
         )
+    
+    if not input_paths:
+        print("No images to convert.")
+        return
 
     wrapper = partial(_wrapper, worker=convert_func)
 
     nmax = len(input_paths)
     chunksize = max(nmax // chunks, 1)
-    with Pool(num_workers) as pool:
-        list(
-            tqdm(
-                pool.imap_unordered(
-                    wrapper,
-                    zip(input_paths, output_dirs, kwargs_per_path),
-                    chunksize,
-                ),
-                total=nmax,
-                desc="Converting images",
+    with Pool(num_workers, initializer=signal.signal, initargs=(signal.SIGINT, signal.SIG_IGN)) as pool:
+        try:
+            list(
+                tqdm(
+                    pool.imap_unordered(
+                        wrapper,
+                        zip(input_paths, output_dirs, kwargs_per_path),
+                        chunksize,
+                    ),
+                    total=nmax,
+                    desc="Converting images",
+                )
             )
-        )
+        except KeyboardInterrupt:
+            print("Interrupted.")

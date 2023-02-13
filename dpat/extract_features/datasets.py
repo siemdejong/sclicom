@@ -1,4 +1,4 @@
-from dlup.data.dataset import TiledSlideImageDataset, ConcatDataset
+from dlup.data.dataset import TiledROIsSlideImageDataset, ConcatDataset
 import pathlib
 
 class PMCHHGTileDataset(ConcatDataset):
@@ -21,7 +21,7 @@ class PMCHHGTileDataset(ConcatDataset):
         # path_labels = self.cfg[split][1]
 
         self.path = pathlib.Path(path)
-        super().__init__([TiledSlideImageDataset(fn) for fn in self.path.glob("*")])
+        super().__init__([TiledROIsSlideImageDataset(fn) for fn in self.path.glob("*")])
 
     def num_samples(self):
         """

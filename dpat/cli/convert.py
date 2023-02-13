@@ -5,7 +5,7 @@ import pathlib
 class BulkConvertArguments(argparse.Namespace):
     input_dir: str
     output_dir: str
-    output_ext: str
+    output_ext: AvailableImageFormats
     trust: bool
     skip_existing: bool
 
@@ -88,16 +88,12 @@ def register_parser(parser: argparse._SubParsersAction):
     )
     bulk_convert_parser.add_argument(
         "--trust",
-        "-t",
-        type=bool,
-        default=False,
+        action=argparse.BooleanOptionalAction,
         help="Trust the source of the images."
     )
     bulk_convert_parser.add_argument(
         "--skip-existing",
-        "-s",
-        type=bool,
-        default=True,
+        action=argparse.BooleanOptionalAction,
         help="Skip existing output files."
     )
     bulk_convert_parser.set_defaults(subcommand=bulk_convert)

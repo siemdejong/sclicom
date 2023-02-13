@@ -12,7 +12,10 @@ config.read('project.ini')
 if platform.system() == "Windows":
     PYVIPS_PATH = config["PATHS"]["vips"]
     os.environ["PATH"] = PYVIPS_PATH + ";" + os.environ["PATH"]
-    import pyvips
-    import openslide
+    try:
+        import pyvips
+        import openslide
+    except OSError:
+        raise ImportError("Make sure to install vips and set PATHS.vips in project.ini.")
 
 import dlup
