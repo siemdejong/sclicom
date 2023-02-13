@@ -127,7 +127,7 @@ This section includes instructions on setting up the project locally.
 
 ## Prerequisites
 ### vips
-This project depends on [DLUP](https://github.com/NKI-AI/dlup), which depends on vips.
+This project depends on [dlup](https://github.com/NKI-AI/dlup) (automatically installed), which depends on vips.
 On Windows, vips needs to be installed locally.
 Download the latest [libvips](https://github.com/libvips/libvips/releases) Windows binary, unzip, and add the path to the `vips\bin` to `project.ini`.
 
