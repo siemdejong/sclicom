@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2023-02-14)
+### Fix
+* **dpat:** Import pyvips before openslide ([`2d25ae0`](https://github.com/siemdejong/dpat/commit/2d25ae00725775c880f7d3c568985f2a76b0c894))
+
 ## v0.4.0 (2023-02-14)
 ### Feature
 * Add pre-commit ([`620dccb`](https://github.com/siemdejong/dpat/commit/620dccba985db8ab86ae6a6ea3fec3775b9aa057))

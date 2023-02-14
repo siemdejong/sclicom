@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup  # type: ignore
 
-__version__ = "0.4.0"
+__version__ = "0.4.1"
 
 # Get the long description from the README file
 with open("README.md") as f:
