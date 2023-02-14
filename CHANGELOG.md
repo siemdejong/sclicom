@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v1.1.0 (2023-02-14)
+### Feature
+* **splits:** Change split logic ([`5f38156`](https://github.com/siemdejong/dpat/commit/5f38156574a27694cd8d85f00f356bd335b50764))
+* **splits:** Add inclusion and exclusion pattern ([`caa5d2a`](https://github.com/siemdejong/dpat/commit/caa5d2a3d17f01c738dcb6829f0f233cd0cc68cd))
+* **splits:** Add overwrite argument ([`f2a664f`](https://github.com/siemdejong/dpat/commit/f2a664fdeb3c36495570aa452ca74a378861e9f1))
+
+### Documentation
+* **readme:** Change installation heading ([`dd1416d`](https://github.com/siemdejong/dpat/commit/dd1416df319638a642d1d28884c1fd34c81c9bb1))
+
 ## v1.0.0 (2023-02-14)
 ### Feature
 * **dpat:** Change project.ini to config.yml ([`f13ed4b`](https://github.com/siemdejong/dpat/commit/f13ed4bcd9e44d7cbbfe74443effc8ff4347d38a))
