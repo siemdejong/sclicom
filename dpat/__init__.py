@@ -13,8 +13,8 @@ if platform.system() == "Windows":
     PYVIPS_PATH = config["PATHS"]["vips"]
     os.environ["PATH"] = PYVIPS_PATH + ";" + os.environ["PATH"]
     try:
+        import pyvips  # isort:skip
         import openslide
-        import pyvips
     except OSError:
         raise ImportError(
             "Make sure to install vips and set PATHS.vips in project.ini."
