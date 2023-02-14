@@ -161,6 +161,7 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
+1.  If not done already, change `PATHS.vips` in `project.ini` to point to `vips\bin`.
 1.  Install dpat in editable mode with
     ```
     pip install -e .
