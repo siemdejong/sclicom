@@ -223,9 +223,14 @@ dpat splits create -i IMAGE_DIR -o OUTPUT_DIR -l PATH_TO_LABELS_FILE -n NAME
 ```
 
 To filter diagnoses that exactly match diseases, use e.g. `-f medulloblastoma -f "pilocytic astrocytoma"`.
+To filter filenames that match certain values, use a glob pattern.
+E.g. `-y *slow.tiff` to only include images ending with `slow.tiff`.
+To exclude filenames that match certaine values, use a glob pattern with `-x`.
+Exclusion is performed on the set specified by inclusion.
 
 ```
-usage: dpat splits create [-h] --input-dir INPUT_DIR --output-dir OUTPUT_DIR --labels PATH_TO_LABELS_FILE --name DATASET_NAME [--filter FILTER_DIAGNOSIS] [--overwrite | --no-overwrite]
+usage: dpat splits create [-h] --input-dir INPUT_DIR --output-dir OUTPUT_DIR --labels PATH_TO_LABELS_FILE --name DATASET_NAME [--filter FILTER_DIAGNOSIS] [--overwrite | --no-overwrite] [--include INCLUDE]
+                          [--exclude EXCLUDE]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -241,6 +246,10 @@ optional arguments:
                         Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.
   --overwrite, --no-overwrite
                         Overwrite folds in output dir, if available.
+  --include INCLUDE, -y INCLUDE
+                        Glob pattern to include files from `input-dir`
+  --exclude EXCLUDE, -x EXCLUDE
+                        Glob pattern to exclude files from `input-dir`
 ```
 
 

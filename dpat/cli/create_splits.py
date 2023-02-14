@@ -15,14 +15,23 @@ class CreateSplitsArguments(argparse.Namespace):
 
 
 def cli_create_splits(args: CreateSplitsArguments) -> None:
+    if args.include is None:
+        include = ["*.*"]
+    else:
+        include = args.include
+    if args.exclude is None:
+        exclude = [""]
+    else:
+        exclude = args.exclude
+
     create_splits(
         image_dir=args.input_dir,
         path_to_labels_file=args.path_to_labels_file,
         dataset_name=args.dataset_name,
         save_to_dir=args.output_dir,
         overwrite=args.overwrite,
-        include_pattern=args.include,
-        exclude_pattern=args.exclude,
+        include_pattern=include,
+        exclude_pattern=exclude,
         filter_diagnosis=args.filter_diagnosis,
     )
 
@@ -92,7 +101,6 @@ def register_parser(parser: argparse._SubParsersAction):
         "-y",
         type=str,
         help="Glob pattern to include files from `input-dir`",
-        default=["*.*"],
         dest="include",
         action="append",
     )
@@ -100,8 +108,6 @@ def register_parser(parser: argparse._SubParsersAction):
         "--exclude",
         "-x",
         type=str,
-        help="Glob pattern to exclude files from `input-dir`",
-        default=[""],
         dest="exclude",
         action="append",
     )

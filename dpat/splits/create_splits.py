@@ -199,6 +199,7 @@ def create_splits(
             *[glob.glob(f"{image_dir}/{pattern}") for pattern in include_pattern]
         )
     )
+
     exclude = list(
         itertools.chain(
             *[glob.glob(f"{image_dir}/{pattern}") for pattern in exclude_pattern]
@@ -244,7 +245,7 @@ def create_splits(
         n_splits=5, shuffle=True, random_state=42
     )  # split into test and (train)
 
-    # Use random shuffle split for the train-val split
+    # Use random stratified shuffle split for the train-val split
     sss = StratifiedShuffleSplit(
         n_splits=5, test_size=0.2, random_state=42
     )  # split into val and train
