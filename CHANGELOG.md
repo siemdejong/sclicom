@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2023-02-14)
+### Feature
+* Add pre-commit ([`620dccb`](https://github.com/siemdejong/dpat/commit/620dccba985db8ab86ae6a6ea3fec3775b9aa057))
+* **splits:** Create splits and run isort/black ([`fe8cf25`](https://github.com/siemdejong/dpat/commit/fe8cf25ac3940ea1810b66edea92bdf080eba792))
+
 ## v0.3.0 (2023-02-13)
 ### Feature
 * Add num-workers and #chunks to cli ([`0f322c4`](https://github.com/siemdejong/dpat/commit/0f322c49bb3cbdaa7ecf961d85bb5c0c44f756f0))
