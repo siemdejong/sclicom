@@ -1,6 +1,6 @@
 import glob
+import itertools
 import pathlib
-from itertools import chain
 from typing import Iterable, Optional
 
 import pandas as pd
@@ -27,37 +27,43 @@ def test_overlap(save_to_dir: str, dataset_name) -> None:
     """
     save_to_dir = pathlib.Path(save_to_dir)
     for fold in range(5):
-        train_slides = file_of_paths_to_list(
-            save_to_dir / f"paths_{dataset_name}-train-fold-{fold}.csv"
-        )
-        val_slides = file_of_paths_to_list(
-            save_to_dir / f"paths_{dataset_name}-val-fold-{fold}.csv"
-        )
-        test_slides = file_of_paths_to_list(
-            save_to_dir / f"paths_{dataset_name}-test-fold-{fold}.csv"
-        )
+        for subfold in range(5):
+            train_slides = file_of_paths_to_list(
+                save_to_dir
+                / f"paths_{dataset_name}_train-subfold-{subfold}-fold-{fold}.csv"
+            )
+            val_slides = file_of_paths_to_list(
+                save_to_dir
+                / f"paths_{dataset_name}_val-subfold-{subfold}-fold-{fold}.csv"
+            )
+            test_slides = file_of_paths_to_list(
+                save_to_dir
+                / f"paths_{dataset_name}_test-subfold-{subfold}-fold-{fold}.csv"
+            )
 
-        # No duplicates within itself
-        assert len(set(train_slides)) == len(train_slides)
-        assert len(set(val_slides)) == len(val_slides)
-        assert len(set(test_slides)) == len(test_slides)
+            # No duplicates within itself
+            assert len(set(train_slides)) == len(train_slides)
+            assert len(set(val_slides)) == len(val_slides)
+            assert len(set(test_slides)) == len(test_slides)
 
-        # No duplicates with any other set
-        assert len(set(train_slides).intersection(set(val_slides))) == 0
-        assert len(set(train_slides).intersection(set(test_slides))) == 0
-        assert len(set(test_slides).intersection(set(val_slides))) == 0
+            # No duplicates with any other set
+            assert len(set(train_slides).intersection(set(val_slides))) == 0
+            assert len(set(train_slides).intersection(set(test_slides))) == 0
+            assert len(set(test_slides).intersection(set(val_slides))) == 0
 
 
 def test_lengths(save_to_dir: str, dataset_name: str) -> None:
     """Test if the length of the train+val+test is the same length for each fold."""
     lengths = []
-    for fold in range(5):
+    for product in itertools.product(range(5), range(5)):
+        fold = product[0]
+        subfold = product[1]
         fold_length = 0
         for subset in ["train", "val", "test"]:
             fold_length += len(
                 file_of_paths_to_list(
                     pathlib.Path(
-                        f"{save_to_dir}/paths_{dataset_name}-{subset}-fold-{fold}.csv"
+                        f"{save_to_dir}/paths_{dataset_name}_{subset}-subfold-{subfold}-fold-{fold}.csv"
                     )
                 )
             )
@@ -78,11 +84,13 @@ def test_distributions(
     labels_df = pd.read_csv(
         f"{save_to_dir}/{dataset_name}-DeepSMILE_{pathlib.Path(path_to_labels_file).stem}.csv"
     )
-    for fold in range(5):
+    for product in itertools.product(range(5), range(5)):
+        fold = product[0]
+        subfold = product[1]
         for subset in ["train", "val", "test"]:
             paths = file_of_paths_to_list(
                 pathlib.Path(
-                    f"{save_to_dir}/paths_{dataset_name}-{subset}-fold-{fold}.csv"
+                    f"{save_to_dir}/paths_{dataset_name}_{subset}-subfold-{subfold}-fold-{fold}.csv"
                 )
             )
             patient_ids = path_to_patient_df[path_to_patient_df["paths"].isin(paths)][
@@ -98,7 +106,7 @@ def test_distributions(
             counts = subset_labels_df["diagnosis"].value_counts(normalize=True)
             for diagnosis, count in zip(counts.index, counts.tolist()):
                 print(
-                    f"Percentage of {diagnosis} in \t{subset} \tfold {fold}: {count*100:.2f}%"
+                    f"Percentage of {diagnosis} in \t{subset} \tsubfold {subfold} fold {fold}: {count*100:.2f}%"
                 )
                 # assert lower_bound <= count <= upper_bound
                 assert 0 <= count <= 1
@@ -116,7 +124,7 @@ def test(
     # Assert that the length of test_i + val_i + train_i are the same for all i
     test_lengths(save_to_dir, dataset_name)
 
-    # Check if the fraction of labels is around 1/N_classes for each fold
+    # # Check if the fraction of labels is around 1/N_classes for each fold
     test_distributions(path_to_labels_file, save_to_dir, dataset_name, filter_diagnosis)
 
 
@@ -187,10 +195,14 @@ def create_splits(
     # Subtract the exclude set from the include set.
     all = list(glob.glob(f"{image_dir}/*"))
     include = list(
-        chain(*[glob.glob(f"{image_dir}/{pattern}") for pattern in include_pattern])
+        itertools.chain(
+            *[glob.glob(f"{image_dir}/{pattern}") for pattern in include_pattern]
+        )
     )
     exclude = list(
-        chain(*[glob.glob(f"{image_dir}/{pattern}") for pattern in exclude_pattern])
+        itertools.chain(
+            *[glob.glob(f"{image_dir}/{pattern}") for pattern in exclude_pattern]
+        )
     )
     paths_list: list = list(set(include) - set(exclude))
     print(f"{len(include)}/{len(all)} files are listed for inclusion.")
@@ -206,16 +218,6 @@ def create_splits(
     )
 
     paths.to_csv(save_to_dir / "paths_to_patient_id.csv")
-
-    # Use stratified KFold split for the initial 5 folds
-    skf = StratifiedKFold(
-        n_splits=5, shuffle=True, random_state=42
-    )  # split into test and (train)
-
-    # Use random shuffle split for the train-val split
-    sss = StratifiedShuffleSplit(
-        n_splits=1, test_size=0.25, random_state=42
-    )  # split into val and train
 
     # Drop images without diagnosis.
     DROP = ["diagnosis"]
@@ -237,45 +239,56 @@ def create_splits(
 
     df["diagnosis_num"] = df["diagnosis"].astype("category").cat.codes
 
+    # Use stratified KFold split for the initial 5 folds
+    skf = StratifiedKFold(
+        n_splits=5, shuffle=True, random_state=42
+    )  # split into test and (train)
+
+    # Use random shuffle split for the train-val split
+    sss = StratifiedShuffleSplit(
+        n_splits=5, test_size=0.2, random_state=42
+    )  # split into val and train
+
     stratify_on = ["diagnosis"]
     X = df[ID_NAME]
     y = df[stratify_on]
 
     for fold, (train_index, test_index) in enumerate(skf.split(X=X, y=y)):
-        X_trainval = df.iloc[train_index][ID_NAME]  # Get the train-val indices
-        y_trainval = df.iloc[train_index][stratify_on]  # Get the train-val indices
-        sss.get_n_splits(X=X_trainval, y=y_trainval)  # Split train-val into train & val
-        train_index, val_index = next(
-            iter(sss.split(X=X_trainval, y=y_trainval))
-        )  # Get the indices
+        X_trainval: pd.DataFrame = df.iloc[train_index][
+            ID_NAME
+        ]  # Get the train-val indices
+        y_trainval: pd.DataFrame = df.iloc[train_index][
+            stratify_on
+        ]  # Get the train-val indices
 
-        for subfold, subfold_index in zip(
-            ["train", "val", "test"], [train_index, val_index, test_index]
+        for subfold, (train_index, val_index) in enumerate(
+            sss.split(X=X_trainval, y=y_trainval)
         ):
-            subfoldname = f"{subfold}-fold-{fold}"  # Set as column name and filename
-            df[subfoldname] = 0  # Set all patients to not belong to the new fold
+            for setname, indices in zip(
+                ["train", "val", "test"], [train_index, val_index, test_index]
+            ):
+                # Give every subfold a unique identifier.
+                subfoldname = f"{setname}-subfold-{subfold}-fold-{fold}"
+                df[subfoldname] = 0
 
-            # The subfold index are the row numbers, so we get the original index
-            if subfold in ["train", "val"]:
-                indices = X_trainval.index[subfold_index]
-            else:
-                indices = subfold_index
+                # Train and val set indices come from X_trainval.
+                if setname in ["train", "val"]:
+                    indices = X_trainval.index[indices]
 
-            # Set those indices as given by the shufflesplit to be 1 in the newly created column
-            df.loc[indices, subfoldname] = 1
+                df.loc[indices, subfoldname] = 1
 
-            # Get the patient IDs that belong to this split
-            patients = df[df[subfoldname] == 1][ID_NAME]
+                # Get the patient IDs that belong to this split
+                patients = df[df[subfoldname] == 1][ID_NAME]
 
-            # Get the image paths that belong to these patients
-            subfold_slides = paths[paths["case_id"].isin(patients)]["paths"]
+                # Get the image paths that belong to these patients
+                subfold_slides = paths[paths["case_id"].isin(patients)]["paths"]
 
-            # Save those image paths to a .csv file
-            subfold_slides.to_csv(
-                save_to_dir / f"paths_{dataset_name}-{subfoldname}.csv",
-                header=None,
-                index=False,
-            )
+                # Save those image paths to a .csv file
+                subfold_slides.to_csv(
+                    save_to_dir / f"paths_{dataset_name}_{subfoldname}.csv",
+                    header=None,
+                    index=False,
+                )
 
     # Save the file with labels and splits
     df.to_csv(
