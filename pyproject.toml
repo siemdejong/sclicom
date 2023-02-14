@@ -2,3 +2,6 @@
 version_variable = "setup.py:__version__"
 branch = "main"                             # branch to make releases of
 changelog_file = "CHANGELOG.md"             # changelog file
+
+[tool.isort]
+profile = "black"

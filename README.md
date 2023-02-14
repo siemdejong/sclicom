@@ -1,4 +1,4 @@
-<!-- This file incorporates work covered by the following copyright and permission notice:  
+<!-- This file incorporates work covered by the following copyright and permission notice:
 
     Copyright (c) 2021 Othneil Drew
 
@@ -141,7 +141,7 @@ Vips comes with OpenSlide.
 It is not needed to install OpenSlide separately.
 
 <!-- #### CUDA
-This project expects CUDA enabled GPUs. 
+This project expects CUDA enabled GPUs.
 Run `nvidia-smi` to see if there are CUDA enabled GPUs available. -->
 
 ### Installation
