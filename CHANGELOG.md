@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-02-14)
+### Feature
+* **dpat:** Change project.ini to config.yml ([`f13ed4b`](https://github.com/siemdejong/dpat/commit/f13ed4bcd9e44d7cbbfe74443effc8ff4347d38a))
+
+### Breaking
+* project.ini will not be read anymore. PATHS.vips has to be set in config.yml, somewhere near the root of the repository. ([`f13ed4b`](https://github.com/siemdejong/dpat/commit/f13ed4bcd9e44d7cbbfe74443effc8ff4347d38a))
+
+### Documentation
+* **installation:** Clarify where to specify vipsbin ([`643009a`](https://github.com/siemdejong/dpat/commit/643009ad8f01e10da84167df8792dc4baabcc160))
+* **splits:** Add help of splits cli to README ([`e3ef258`](https://github.com/siemdejong/dpat/commit/e3ef25843576de0b9313bb58462d073a0b258a43))
+
 ## v0.4.1 (2023-02-14)
 ### Fix
 * **dpat:** Import pyvips before openslide ([`2d25ae0`](https://github.com/siemdejong/dpat/commit/2d25ae00725775c880f7d3c568985f2a76b0c894))
