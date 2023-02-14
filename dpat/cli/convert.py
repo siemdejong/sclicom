@@ -1,6 +1,8 @@
 import argparse
-from dpat.convert import AvailableImageFormats, batch_convert
 import pathlib
+
+from dpat.convert import AvailableImageFormats, batch_convert
+
 
 class BulkConvertArguments(argparse.Namespace):
     input_dir: str
@@ -11,8 +13,8 @@ class BulkConvertArguments(argparse.Namespace):
     num_workers: int
     chunks: int
 
-def bulk_convert(args: BulkConvertArguments):
 
+def bulk_convert(args: BulkConvertArguments):
     ROOT_DIR = args.input_dir
     OUTPUT_DIR = args.output_dir
     OUTPUT_EXT = args.output_ext
@@ -45,7 +47,10 @@ def bulk_convert(args: BulkConvertArguments):
         )
         add_paths = list(pathlib.Path(ROOT_DIR).glob(f"**/*{scan_program}*.bmp"))
         paths += add_paths
-        output_dirs += [pathlib.Path(OUTPUT_DIR) / path.relative_to(ROOT_DIR).parent for path in add_paths]
+        output_dirs += [
+            pathlib.Path(OUTPUT_DIR) / path.relative_to(ROOT_DIR).parent
+            for path in add_paths
+        ]
         kwargs_per_path += [kwargs] * len(add_paths)
 
     batch_convert(
@@ -59,23 +64,28 @@ def bulk_convert(args: BulkConvertArguments):
         chunks=CHUNKS,
     )
 
+
 def register_parser(parser: argparse._SubParsersAction):
-    """Register hhg commands to a root parser."""
+    """Register convert commands to a root parser."""
 
     # Convert HHG images from any image to another format.
-    convert_parser: argparse.ArgumentParser = parser.add_parser("convert", help="Convert HHG images from any image to another format.")
+    convert_parser: argparse.ArgumentParser = parser.add_parser(
+        "convert", help="Convert HHG images from any image to another format."
+    )
     convert_subparsers = convert_parser.add_subparsers(help="Convert subparser.")
     convert_subparsers.required = True
     convert_subparsers.dest = "subcommand"
 
-    bulk_convert_parser = convert_subparsers.add_parser("bulk", help="Convert images in bulk.")
+    bulk_convert_parser = convert_subparsers.add_parser(
+        "bulk", help="Convert images in bulk."
+    )
     bulk_convert_parser.add_argument(
         "--input-dir",
         "-i",
         type=str,
         required=True,
         help="Input directory where to find the images to be converted.",
-        default='.',
+        default=".",
     )
     bulk_convert_parser.add_argument(
         "--output-dir",
@@ -90,7 +100,7 @@ def register_parser(parser: argparse._SubParsersAction):
         type=str,
         choices=AvailableImageFormats.__members__,
         required=True,
-        help="Extension to convert to."
+        help="Extension to convert to.",
     )
     bulk_convert_parser.add_argument(
         "--num-workers",
@@ -107,11 +117,11 @@ def register_parser(parser: argparse._SubParsersAction):
     bulk_convert_parser.add_argument(
         "--trust",
         action=argparse.BooleanOptionalAction,
-        help="Trust the source of the images."
+        help="Trust the source of the images.",
     )
     bulk_convert_parser.add_argument(
         "--skip-existing",
         action=argparse.BooleanOptionalAction,
-        help="Skip existing output files."
+        help="Skip existing output files.",
     )
     bulk_convert_parser.set_defaults(subcommand=bulk_convert)

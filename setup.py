@@ -26,7 +26,14 @@ setup(
     },
     install_requires=[
         "dlup>=0.3",
+        "scikit-learn>=0.24",
     ],
+    extras_require={
+        "dev": [
+            "black",
+            "isort",
+        ],
+    },
     license="GNU General Public License v3",
     keywords="dpat",
     name="dpat",

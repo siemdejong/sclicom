@@ -1,11 +1,12 @@
-from PIL import Image
-from typing import Literal, TypedDict, Optional
 import pathlib
-from tqdm import tqdm
-from functools import partial
-from enum import Enum
-from multiprocessing import Pool
 import signal
+from enum import Enum
+from functools import partial
+from multiprocessing import Pool
+from typing import Literal, Optional, TypedDict
+
+from PIL import Image
+from tqdm import tqdm
 
 
 class AvailableImageFormats(Enum):
@@ -87,7 +88,9 @@ def filter_existing(
     filtered_output_dirs = []
     filtered_kwargs_per_path = []
 
-    for input_path, output_dir, kwargs in zip(input_paths, output_dirs, kwargs_per_path):
+    for input_path, output_dir, kwargs in zip(
+        input_paths, output_dirs, kwargs_per_path
+    ):
         output_fn = pathlib.Path(output_dir / (input_path.stem + f".{extension}"))
         if not output_fn.exists():
             filtered_input_paths.append(input_path)
@@ -96,7 +99,7 @@ def filter_existing(
 
     skip_count = len(input_paths) - len(filtered_input_paths)
     print(
-        f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. " \
+        f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. "
         "Use '--skip-existing false' to overwrite existing images."
     )
 
@@ -151,7 +154,7 @@ def batch_convert(
             output_ext,
             kwargs_per_path,
         )
-    
+
     if not input_paths:
         print("No images to convert.")
         return
@@ -160,7 +163,9 @@ def batch_convert(
 
     nmax = len(input_paths)
     chunksize = max(nmax // chunks, 1)
-    with Pool(num_workers, initializer=signal.signal, initargs=(signal.SIGINT, signal.SIG_IGN)) as pool:
+    with Pool(
+        num_workers, initializer=signal.signal, initargs=(signal.SIGINT, signal.SIG_IGN)
+    ) as pool:
         try:
             list(
                 tqdm(
