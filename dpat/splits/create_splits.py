@@ -5,6 +5,8 @@ from typing import Iterable, Optional
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 
+from dpat.exceptions import DpatOutputDirectoryExistsError
+
 
 def file_of_paths_to_list(path: str) -> list[str]:
     """Reads a file with a path per row and returns a list of paths."""
@@ -95,7 +97,7 @@ def test_distributions(
             counts = subset_labels_df["diagnosis"].value_counts(normalize=True)
             for diagnosis, count in zip(counts.index, counts.tolist()):
                 print(
-                    f"Percentage of {diagnosis} in \t{subset} \tfold {fold}: {count:.2f}%"
+                    f"Percentage of {diagnosis} in \t{subset} \tfold {fold}: {count*100:.2f}%"
                 )
                 # assert lower_bound <= count <= upper_bound
                 assert 0 <= count <= 1
@@ -105,7 +107,7 @@ def test(
     path_to_labels_file: str,
     save_to_dir: str,
     dataset_name: str,
-    filter_diagnosis: Iterable[str],
+    filter_diagnosis: Optional[Iterable[str]] = None,
 ) -> None:
     # Assert that there's no overlap between train/val, train/test, val/test.
     test_overlap(save_to_dir, dataset_name)
@@ -122,6 +124,7 @@ def create_splits(
     path_to_labels_file: str,
     dataset_name: str,
     save_to_dir: str = "splits",
+    overwrite: bool = False,
     filter_diagnosis: Optional[Iterable[str]] = None,
 ) -> None:
     """
@@ -146,8 +149,15 @@ def create_splits(
         Name to give the splits.
     save_to_dir : str, default="splits"
         Path to save the split files to.
+    overwrite : bool, default=False
+        Overwrite items in the directory specified by `save_to_dir`.
     filter_diagnosis : iterable of str, optional
         Iterable of strings choosing the diagnoses to create the splits for.
+
+    Raises
+    ------
+    DpatOutputDirectoryExistsError
+        If the output directory already exists.
 
     References
     ----------
@@ -155,7 +165,13 @@ def create_splits(
     """
     # The directory should not exist, to avoid overwriting previously calculated splits.
     save_to_dir: pathlib.Path = pathlib.Path(save_to_dir)
-    save_to_dir.mkdir(exist_ok=True)
+    try:
+        save_to_dir.mkdir()
+    except FileExistsError:
+        if not overwrite:
+            raise DpatOutputDirectoryExistsError(save_to_dir)
+        else:
+            save_to_dir.mkdir(exist_ok=True)
 
     ID_NAME = "case_id"
     df = pd.read_csv(path_to_labels_file)

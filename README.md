@@ -225,7 +225,7 @@ dpat splits create -i IMAGE_DIR -o OUTPUT_DIR -l PATH_TO_LABELS_FILE -n NAME
 To filter diagnoses that exactly match diseases, use e.g. `-f medulloblastoma -f "pilocytic astrocytoma"`.
 
 ```
-usage: dpat splits create [-h] --input-dir INPUT_DIR --output-dir OUTPUT_DIR --labels PATH_TO_LABELS_FILE --name DATASET_NAME [--filter FILTER_DIAGNOSIS]
+usage: dpat splits create [-h] --input-dir INPUT_DIR --output-dir OUTPUT_DIR --labels PATH_TO_LABELS_FILE --name DATASET_NAME [--filter FILTER_DIAGNOSIS] [--overwrite | --no-overwrite]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -239,6 +239,8 @@ optional arguments:
                         Name of dataset.
   --filter FILTER_DIAGNOSIS, -f FILTER_DIAGNOSIS
                         Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.
+  --overwrite, --no-overwrite
+                        Overwrite folds in output dir, if available.
 ```
 
 

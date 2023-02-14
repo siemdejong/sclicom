@@ -9,16 +9,17 @@ class CreateSplitsArguments(argparse.Namespace):
     path_to_labels_file: str
     dataset_name: str
     filter_diagnosis: list[str]
+    overwrite: bool
 
 
 def cli_create_splits(args: CreateSplitsArguments) -> None:
-    input_dir = args.input_dir
-    output_dir = args.output_dir
-    path_to_labels_file = args.path_to_labels_file
-    dataset_name = args.dataset_name
-    filter_diagnosis = args.filter_diagnosis
     create_splits(
-        input_dir, path_to_labels_file, dataset_name, output_dir, filter_diagnosis
+        image_dir=args.input_dir,
+        path_to_labels_file=args.path_to_labels_file,
+        dataset_name=args.dataset_name,
+        save_to_dir=args.output_dir,
+        overwrite=args.overwrite,
+        filter_diagnosis=args.filter_diagnosis,
     )
 
 
@@ -76,5 +77,10 @@ def register_parser(parser: argparse._SubParsersAction):
         help="Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.",
         dest="filter_diagnosis",
         action="append",
+    )
+    create_splits_parser.add_argument(
+        "--overwrite",
+        action=argparse.BooleanOptionalAction,
+        help="Overwrite folds in output dir, if available.",
     )
     create_splits_parser.set_defaults(subcommand=cli_create_splits)
