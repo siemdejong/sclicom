@@ -10,6 +10,8 @@ class CreateSplitsArguments(argparse.Namespace):
     dataset_name: str
     filter_diagnosis: list[str]
     overwrite: bool
+    include: list[str]
+    exclude: list[str]
 
 
 def cli_create_splits(args: CreateSplitsArguments) -> None:
@@ -19,6 +21,8 @@ def cli_create_splits(args: CreateSplitsArguments) -> None:
         dataset_name=args.dataset_name,
         save_to_dir=args.output_dir,
         overwrite=args.overwrite,
+        include_pattern=args.include,
+        exclude_pattern=args.exclude,
         filter_diagnosis=args.filter_diagnosis,
     )
 
@@ -82,5 +86,23 @@ def register_parser(parser: argparse._SubParsersAction):
         "--overwrite",
         action=argparse.BooleanOptionalAction,
         help="Overwrite folds in output dir, if available.",
+    )
+    create_splits_parser.add_argument(
+        "--include",
+        "-y",
+        type=str,
+        help="Glob pattern to include files from `input-dir`",
+        default=["*.*"],
+        dest="include",
+        action="append",
+    )
+    create_splits_parser.add_argument(
+        "--exclude",
+        "-x",
+        type=str,
+        help="Glob pattern to exclude files from `input-dir`",
+        default=[""],
+        dest="exclude",
+        action="append",
     )
     create_splits_parser.set_defaults(subcommand=cli_create_splits)

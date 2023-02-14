@@ -1,5 +1,6 @@
 import glob
 import pathlib
+from itertools import chain
 from typing import Iterable, Optional
 
 import pandas as pd
@@ -125,6 +126,8 @@ def create_splits(
     dataset_name: str,
     save_to_dir: str = "splits",
     overwrite: bool = False,
+    include_pattern: list[str] = ["*.*"],
+    exclude_pattern: list[str] = [""],
     filter_diagnosis: Optional[Iterable[str]] = None,
 ) -> None:
     """
@@ -151,6 +154,11 @@ def create_splits(
         Path to save the split files to.
     overwrite : bool, default=False
         Overwrite items in the directory specified by `save_to_dir`.
+    include_pattern : str, default=""
+        Glob pattern to include files in `image_dir`.
+    exclude_pattern : str, default=""
+        Glob pattern to exclude files in `image_dir`.
+        Set to be excluded will be subtracted from the set to be included by `include_pattern`.
     filter_diagnosis : iterable of str, optional
         Iterable of strings choosing the diagnoses to create the splits for.
 
@@ -176,7 +184,20 @@ def create_splits(
     ID_NAME = "case_id"
     df = pd.read_csv(path_to_labels_file)
 
-    paths = pd.DataFrame({"paths": list(glob.glob(f"{image_dir}/*"))})
+    # Subtract the exclude set from the include set.
+    all = list(glob.glob(f"{image_dir}/*"))
+    include = list(
+        chain(*[glob.glob(f"{image_dir}/{pattern}") for pattern in include_pattern])
+    )
+    exclude = list(
+        chain(*[glob.glob(f"{image_dir}/{pattern}") for pattern in exclude_pattern])
+    )
+    paths_list: list = list(set(include) - set(exclude))
+    print(f"{len(include)}/{len(all)} files are listed for inclusion.")
+    print(f"{len(exclude)}/{len(include)} files are listed for exclusion.")
+    print(f"This gives a total of {len(paths_list)}.")
+
+    paths = pd.DataFrame({"paths": paths_list})
     paths["case_id"] = paths["paths"].apply(
         lambda path: "_".join(pathlib.Path(path).stem.split("_")[1:4])
     )
