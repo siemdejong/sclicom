@@ -144,7 +144,10 @@ It is not needed to install OpenSlide separately.
 This project expects CUDA enabled GPUs.
 Run `nvidia-smi` to see if there are CUDA enabled GPUs available. -->
 
-### Installation
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Installation
 Run the following commands from a conda enabled shell (such as Miniforge Prompt, if Miniforge/Mambaforge is installed).
 
 1.  Clone this repository and change directories
