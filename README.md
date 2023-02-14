@@ -134,7 +134,7 @@ The author recommends [Miniforge](https://github.com/conda-forge/miniforge) or [
 ### vips
 This project depends on [dlup](https://github.com/NKI-AI/dlup) (automatically installed), which depends on vips.
 On Windows, vips needs to be installed locally.
-Download the latest [libvips](https://github.com/libvips/libvips/releases) Windows binary, unzip, and add the path to the `vips\bin` to `project.ini`.
+Download the latest [libvips](https://github.com/libvips/libvips/releases) Windows binary and unzip somewhere.
 
 ### OpenSlide
 Vips comes with OpenSlide.
@@ -147,7 +147,6 @@ Run `nvidia-smi` to see if there are CUDA enabled GPUs available. -->
 ### Installation
 Run the following commands from a conda enabled shell (such as Miniforge Prompt, if Miniforge/Mambaforge is installed).
 
-1.  Make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
 1.  Clone this repository and change directories
     ```
     git clone https://github.com/siemdejong/dpat.git dpat && cd dpat
@@ -161,7 +160,8 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
-1.  If not done already, change `PATHS.vips` in `project.ini` to point to `vips\bin`.
+1.  Make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
+1.  Change `PATHS.vips` in `config.yml` to point to `vips\bin`.
 1.  Install dpat in editable mode with
     ```
     pip install -e .

@@ -1,9 +1,10 @@
-import configparser
 import os
 import platform
 
-config = configparser.ConfigParser()
-config.read("project.ini")
+import yaml
+
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
 
 # vips must be installed separately for Windows.
 # vips already includes OpenSlide.
