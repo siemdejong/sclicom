@@ -136,7 +136,3 @@ def splits():
 )
 def create(*args, **kwargs):
     create_splits(*args, **kwargs)
-
-
-if __name__ == "__main__":
-    cli()
