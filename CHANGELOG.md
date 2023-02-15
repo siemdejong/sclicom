@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v1.4.0 (2023-02-15)
+### Feature
+* **logging:** Add logging and log config ([`6c90359`](https://github.com/siemdejong/dpat/commit/6c90359a5d9153555a1c12a9277d6869ce113525))
+
+### Fix
+* **cli:** Remove unnecessary __name__=__main__ chk ([`c5f5223`](https://github.com/siemdejong/dpat/commit/c5f5223c4b1a6a5f8432f0406665a5fca35104d6))
+
+### Documentation
+* **convert:** Change bulk to batch ([`2272355`](https://github.com/siemdejong/dpat/commit/2272355593294d6b8963616dc02f295b44589be3))
+
 ## v1.3.0 (2023-02-15)
 ### Feature
 * **dataset:** Add PMCHHGImageDataset ([`1c65f85`](https://github.com/siemdejong/dpat/commit/1c65f85f4e170171e27c6a104d2a82c9f0771149))
