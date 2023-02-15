@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup  # type: ignore
 
-__version__ = "1.2.1"
+__version__ = "1.2.2"
 
 # Get the long description from the README file
 with open("README.md") as f:
