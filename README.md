@@ -164,7 +164,12 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     conda env update -f environment.yml
     ```
 1.  Make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
-1.  Change `PATHS.vips` in `config.yml` to point to `vips\bin`.
+1.  Change `PATHS.vips` in `config.yml` to point to `vips/bin`:
+    ```yaml
+    # config.yml
+    PATHS:
+      vips: path/to/vips/bin
+    ```
 1.  Install dpat in editable mode with
     ```
     pip install -e .
@@ -245,6 +250,18 @@ Options:
   --help                 Show this message and exit.
 ```
 
+### Logging
+Logging can be turned on by configuring the logging with `config.yml`: e.g.
+```yaml
+# config.yml
+LOGGING:
+  handler: StreamHandler
+  level: INFO
+```
+Or, when using the package as a library, turn logging off with
+```python
+logging.getLogger('dpat').propagate = False
+```
 
 <!-- _For more examples, please refer to the [documentation](https://siemdejong.github.io/shg-strain-stress)._ -->
 
