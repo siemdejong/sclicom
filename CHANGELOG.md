@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.1 (2023-02-15)
+### Fix
+* **convert:** Decompressionbomberror help ([`9ff923d`](https://github.com/siemdejong/dpat/commit/9ff923db4ec297c78daac5e3c8fb294e42072983))
+
+### Documentation
+* **cli:** Update docs of cli ([`b917e52`](https://github.com/siemdejong/dpat/commit/b917e52856c06a0dbbb094a53d591a971215e150))
+
 ## v1.2.0 (2023-02-15)
 ### Feature
 * **cli:** Change from argeparse to click ([`470ae65`](https://github.com/siemdejong/dpat/commit/470ae65c54d90bc69cf93f764b3445c94433254d))
