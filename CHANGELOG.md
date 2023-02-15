@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.2.0 (2023-02-15)
+### Feature
+* **cli:** Change from argeparse to click ([`470ae65`](https://github.com/siemdejong/dpat/commit/470ae65c54d90bc69cf93f764b3445c94433254d))
+
 ## v1.1.1 (2023-02-14)
 ### Fix
 * **splits:** A bug with default include/exclude ([`3f46207`](https://github.com/siemdejong/dpat/commit/3f462075fa6a07adef252454a9069a478e7414d3))
