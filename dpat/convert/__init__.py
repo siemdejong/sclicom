@@ -1,3 +1,4 @@
+import logging
 import pathlib
 import signal
 from enum import Enum
@@ -9,6 +10,8 @@ from PIL import Image
 from tqdm import tqdm
 
 from dpat.exceptions import DpatDecompressionBombError
+
+logger = logging.getLogger(__name__)
 
 
 class AvailableImageFormats(Enum):
@@ -103,7 +106,7 @@ def filter_existing(
             filtered_kwargs_per_path.append(kwargs)
 
     skip_count = len(input_paths) - len(filtered_input_paths)
-    print(
+    logger.info(
         f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. "
         "Remove --skip-existing to overwrite existing images."
     )
@@ -161,7 +164,7 @@ def batch_convert(
         )
 
     if not input_paths:
-        print("No images to convert.")
+        logger.info("No images to convert.")
         return
 
     wrapper = partial(_wrapper, worker=convert_func)
@@ -184,6 +187,6 @@ def batch_convert(
                 )
             )
         except KeyboardInterrupt:
-            print("Interrupted.")
+            logger.info("Interrupted.")
         except Image.DecompressionBombError:
             raise DpatDecompressionBombError

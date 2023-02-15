@@ -12,4 +12,4 @@ class DpatDecompressionBombError(Exception):
         super().__init__()
 
     def __str__(self) -> str:
-        return f"At least one of the images to be converted is too large. Use --trust if you trust this file."
+        return "At least one of the images to be converted is too large. Use --trust if you trust this file."

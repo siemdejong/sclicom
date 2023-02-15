@@ -1,13 +1,14 @@
-import glob
 import itertools
+import logging
 import pathlib
-from typing import Iterable, Optional
+from typing import Optional
 
-import click
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 
 from dpat.exceptions import DpatOutputDirectoryExistsError
+
+logger = logging.getLogger(__name__)
 
 
 def file_of_paths_to_list(path: str) -> list[str]:
@@ -107,12 +108,12 @@ def test_distributions(
             upper_bound = mean + 0.05
             counts = subset_labels_df["diagnosis"].value_counts(normalize=True)
             for diagnosis, count in zip(counts.index, counts.tolist()):
-                print(
+                logger.info(
                     f"Percentage of {diagnosis} in \t{subset} \tsubfold {subfold} fold {fold}: {count*100:.2f}%"
                 )
                 # assert lower_bound <= count <= upper_bound
                 assert 0 <= count <= 1
-    print("`test_distributions` always passes, check above percentages.")
+    logger.info("`test_distributions` always passes, check above percentages.")
 
 
 def test(
@@ -213,10 +214,10 @@ def create_splits(
         )
     ]
     paths_list: list = list(set(include) - set(exclude))
-    print(
+    logger.info(
         f"{len(include)}/{len(all)} files are listed for inclusion. {include_pattern}"
     )
-    print(
+    logger.info(
         f"{len(exclude)}/{len(include)} files are listed for exclusion. {exclude_pattern}"
     )
 
@@ -234,7 +235,7 @@ def create_splits(
     DROP = ["diagnosis"]
     len_before_nan_drop = len(df)
     df = df.dropna(subset=DROP).reset_index()
-    print(
+    logger.info(
         f"{len_before_nan_drop - len(df)}/{len_before_nan_drop} NaNs of {DROP} are dropped."
     )
 
@@ -242,13 +243,13 @@ def create_splits(
     if filter_diagnosis:
         len_before_filter_drop = len(df)
         df = df[df["diagnosis"].isin(filter_diagnosis)].reset_index()
-        print(
+        logger.info(
             f"{len_before_filter_drop - len(df)}/{len_before_filter_drop} of {DROP} not in {filter_diagnosis} are dropped."
         )
     else:
         filter_diagnosis = df["diagnosis"].unique()
 
-    print(f"This gives a total of {len(df)} images.")
+    logger.info(f"This gives a total of {len(df)} images.")
 
     df["diagnosis_num"] = df["diagnosis"].astype("category").cat.codes
 

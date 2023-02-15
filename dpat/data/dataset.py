@@ -1,3 +1,4 @@
+import logging
 import pathlib
 
 import pandas as pd
@@ -8,6 +9,8 @@ from dlup.tiling import TilingMode
 from torch.utils.data import Dataset
 
 from dpat.data.transformations import Dlup2DpatTransform
+
+logger = logging.getLogger(__name__)
 
 
 class PMCHHGImageDataset(Dataset):
@@ -75,13 +78,13 @@ class PMCHHGImageDataset(Dataset):
 
         # Build dataset
         single_img_datasets: list = []
-        print(f"Building dataset...")
+        logger.info(f"Building dataset...")
         for idx, img_path in enumerate(self.relative_img_paths):
             absolute_img_path = self.root_dir / img_path
             try:
                 img = SlideImage.from_file_path(absolute_img_path)
             except UnsupportedSlideError:
-                print(f"{absolute_img_path} is unsupported. Skipping image.")
+                logger.info(f"{absolute_img_path} is unsupported. Skipping image.")
                 continue
 
             # TODO: get mask
@@ -101,7 +104,7 @@ class PMCHHGImageDataset(Dataset):
             )
 
         self.dlup_dataset = ConcatDataset(single_img_datasets)
-        print(f"Built dataset successfully.")
+        logger.info(f"Built dataset successfully.")
 
     def num_samples(self) -> int:
         """Size of the dataset."""
