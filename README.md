@@ -198,22 +198,21 @@ To skip images that were already converted to the target extension, use `--skip-
 NOTE: If converting to tiff, the input images are assumed to contain the reference to the scanning program, which must be in {200slow, 300slow, 300fast}.
 
 ```
-usage: dpat convert bulk [-h] --input-dir INPUT_DIR [--output-dir OUTPUT_DIR] --output-ext {tiff,tif} [--num-workers NUM_WORKERS] [--chunks CHUNKS] [--trust | --no-trust] [--skip-existing | --no-skip-existing]
+Usage: dpat convert batch [OPTIONS]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --input-dir INPUT_DIR, -i INPUT_DIR
-                        Input directory where to find the images to be converted.
-  --output-dir OUTPUT_DIR, -o OUTPUT_DIR
-                        Output directory where place converted files.
-  --output-ext {tiff,tif}, -e {tiff,tif}
-                        Extension to convert to.
-  --num-workers NUM_WORKERS
-                        Number of workers that convert the images in parallel.
-  --chunks CHUNKS       Number of chunks distributed to every worker.
-  --trust, --no-trust   Trust the source of the images.
-  --skip-existing, --no-skip-existing
-                        Skip existing output files.
+Options:
+  -i, --input-dir TEXT         Input directory where to find the images to be
+                               converted.  [default: .]
+  -o, --output-dir TEXT        Output directory where place converted files.
+                               [default: ./converted]
+  -e, --output-ext [tiff|tif]  Extension to convert to.  [required]
+  -w, --num-workers INTEGER    Number of workers that convert the images in
+                               parallel.  [default: 4]
+  -c, --chunks INTEGER         Number of chunks distributed to every worker.
+                               [default: 30]
+  --trust                      Trust the source of the images.
+  --skip-existing              Skip existing output files.
+  --help                       Show this message and exit.
 ```
 
 ### Creating splits
@@ -229,27 +228,21 @@ To exclude filenames that match certaine values, use a glob pattern with `-x`.
 Exclusion is performed on the set specified by inclusion.
 
 ```
-usage: dpat splits create [-h] --input-dir INPUT_DIR --output-dir OUTPUT_DIR --labels PATH_TO_LABELS_FILE --name DATASET_NAME [--filter FILTER_DIAGNOSIS] [--overwrite | --no-overwrite] [--include INCLUDE]
-                          [--exclude EXCLUDE]
+Usage: dpat splits create [OPTIONS]
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --input-dir INPUT_DIR, -i INPUT_DIR
-                        Input directory where to find the images.
-  --output-dir OUTPUT_DIR, -o OUTPUT_DIR
-                        Name of dataset.
-  --labels PATH_TO_LABELS_FILE, -l PATH_TO_LABELS_FILE
-                        Path to labels file.
-  --name DATASET_NAME, -n DATASET_NAME
-                        Name of dataset.
-  --filter FILTER_DIAGNOSIS, -f FILTER_DIAGNOSIS
-                        Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.
-  --overwrite, --no-overwrite
-                        Overwrite folds in output dir, if available.
-  --include INCLUDE, -y INCLUDE
-                        Glob pattern to include files from `input-dir`
-  --exclude EXCLUDE, -x EXCLUDE
-                        Glob pattern to exclude files from `input-dir`
+Options:
+  -i, --input-dir TEXT   Input directory where to find the images.  [required]
+  -l, --labels TEXT      Path to labels file.  [required]
+  -n, --name TEXT        Name of dataset.  [required]
+  -o, --output-dir TEXT  Directory where to put the splits.  [default: splits]
+  --overwrite            Overwrite folds in output dir, if available.
+  -y, --include TEXT     Glob pattern to include files from `input-dir`
+                         [default: *.*]
+  -x, --exclude TEXT     Glob pattern to exclue files from `input-dir`,
+                         included with `--include`
+  -f, --filter TEXT      Filter a diagnosis. For multiple diagnoses, use `-f 1
+                         -f 2`.
+  --help                 Show this message and exit.
 ```
 
 
