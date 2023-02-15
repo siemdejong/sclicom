@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v1.3.0 (2023-02-15)
+### Feature
+* **dataset:** Add PMCHHGImageDataset ([`1c65f85`](https://github.com/siemdejong/dpat/commit/1c65f85f4e170171e27c6a104d2a82c9f0771149))
+
 ## v1.2.2 (2023-02-15)
 ### Fix
 * **splits:** Change saved filename to relative ([`5ba6ed9`](https://github.com/siemdejong/dpat/commit/5ba6ed95ce33f92d4a9677af37c1645944b75edb))
