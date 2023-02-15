@@ -21,7 +21,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "dpat=dpat.cli:main",
+            "dpat=dpat.cli:cli",
         ],
     },
     install_requires=[

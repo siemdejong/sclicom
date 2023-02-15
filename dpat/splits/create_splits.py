@@ -3,6 +3,7 @@ import itertools
 import pathlib
 from typing import Iterable, Optional
 
+import click
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 
@@ -136,7 +137,7 @@ def create_splits(
     overwrite: bool = False,
     include_pattern: list[str] = ["*.*"],
     exclude_pattern: list[str] = [""],
-    filter_diagnosis: Optional[Iterable[str]] = None,
+    filter_diagnosis: Optional[list[str]] = None,
 ) -> None:
     """
     Create data splits. The csv label file is loaded.
@@ -206,9 +207,13 @@ def create_splits(
         )
     )
     paths_list: list = list(set(include) - set(exclude))
-    print(f"{len(include)}/{len(all)} files are listed for inclusion.")
-    print(f"{len(exclude)}/{len(include)} files are listed for exclusion.")
-    print(f"This gives a total of {len(paths_list)}.")
+    print(
+        f"{len(include)}/{len(all)} files are listed for inclusion. {include_pattern}"
+    )
+    print(
+        f"{len(exclude)}/{len(include)} files are listed for exclusion. {exclude_pattern}"
+    )
+    print(f"This gives a total of {len(paths_list)} images.")
 
     paths = pd.DataFrame({"paths": paths_list})
     paths["case_id"] = paths["paths"].apply(
@@ -301,10 +306,11 @@ def create_splits(
 
 
 if __name__ == "__main__":
-    create_splits(
-        r"D:\Pediatric brain tumours\images-tif",
-        r"D:\Pediatric brain tumours\labels.csv",
-        "pmc-hhg",
-        r"D:\Pediatric brain tumours\splits",
-        ["pilocytic astrocytoma", "medulloblastoma"],
-    )
+    # create_splits(
+    #     r"D:\Pediatric brain tumours\images-tif",
+    #     r"D:\Pediatric brain tumours\labels.csv",
+    #     "pmc-hhg",
+    #     r"D:\Pediatric brain tumours\splits",
+    #     ["pilocytic astrocytoma", "medulloblastoma"],
+    # )
+    create_splits()
