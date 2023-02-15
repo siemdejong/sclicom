@@ -8,6 +8,8 @@ from typing import Literal, Optional, TypedDict
 from PIL import Image
 from tqdm import tqdm
 
+from dpat.exceptions import DpatDecompressionBombError
+
 
 class AvailableImageFormats(Enum):
     tiff = "tiff"
@@ -70,10 +72,9 @@ def img_to_tiff(
     if trust_source:
         Image.MAX_IMAGE_PIXELS = None
 
+    bmp_image = Image.open(input_path)
     output_fn = pathlib.Path(output_dir / (input_path.stem + f".{extension}"))
     output_dir.mkdir(parents=True, exist_ok=True)
-
-    bmp_image = Image.open(input_path)
     bmp_image.save(output_fn, **kwargs)
     bmp_image.close()
 
@@ -91,7 +92,11 @@ def filter_existing(
     for input_path, output_dir, kwargs in zip(
         input_paths, output_dirs, kwargs_per_path
     ):
-        output_fn = pathlib.Path(output_dir / (input_path.stem + f".{extension}"))
+        input_path: pathlib.Path
+        output_dir: pathlib.Path
+        output_fn: pathlib.Path = pathlib.Path(
+            output_dir / (input_path.stem + f".{extension}")
+        )
         if not output_fn.exists():
             filtered_input_paths.append(input_path)
             filtered_output_dirs.append(output_dir)
@@ -100,7 +105,7 @@ def filter_existing(
     skip_count = len(input_paths) - len(filtered_input_paths)
     print(
         f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. "
-        "Use '--skip-existing false' to overwrite existing images."
+        "Remove --skip-existing to overwrite existing images."
     )
 
     return filtered_input_paths, filtered_output_dirs, filtered_kwargs_per_path
@@ -180,3 +185,5 @@ def batch_convert(
             )
         except KeyboardInterrupt:
             print("Interrupted.")
+        except Image.DecompressionBombError:
+            raise DpatDecompressionBombError
