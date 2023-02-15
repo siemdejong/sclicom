@@ -189,7 +189,7 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
 ### Converting images
 To convert all images from directory INPUT_DIR, and output the images as TIFF in OUTPUT_DIR, run
 ```
-dpat convert bulk -i INPUT_DIR -o OUTPUT_DIR -e tiff
+dpat convert batch -i INPUT_DIR -o OUTPUT_DIR -e tiff
 ```
 Large images need to be trusted against decompression bomb DOS attack.
 Use the `--trust` flag.
