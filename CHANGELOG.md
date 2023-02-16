@@ -2,6 +2,23 @@
 
 <!--next-version-placeholder-->
 
+## v2.0.0 (2023-02-16)
+### Feature
+* **installation:** Remove the need for config.yml ([`bdbed64`](https://github.com/siemdejong/dpat/commit/bdbed641081d0717d97876aa3a76bb0a9f0c216f))
+
+### Fix
+* **dpat:** Only read config.yml if windows ([`f823ccc`](https://github.com/siemdejong/dpat/commit/f823ccca59c966622464f821da158a70e3449469))
+* **logging:** Let the cli configure logging ([`85875fd`](https://github.com/siemdejong/dpat/commit/85875fd6684933dfc01431be8f007c45b266e0ca))
+
+### Breaking
+* installation via the config.yml is no longer possible. It is also no longer needed for splits/convert cli operations. For coming deep learning cli applications, it will be needed to fetch the path to vipsbin from a config with deep learning options. ([`bdbed64`](https://github.com/siemdejong/dpat/commit/bdbed641081d0717d97876aa3a76bb0a9f0c216f))
+* logging with the config file is now unsupported. Configure logging in the application using the library. ([`85875fd`](https://github.com/siemdejong/dpat/commit/85875fd6684933dfc01431be8f007c45b266e0ca))
+
+### Documentation
+* **cuda:** Add docs about cuda ([`58ca68f`](https://github.com/siemdejong/dpat/commit/58ca68f97c7c6a956654a3f5cb2a6b694a5c2fdc))
+* **logging:** Remove config.yml logging ([`60e6d90`](https://github.com/siemdejong/dpat/commit/60e6d906e27db69203db389d268ca6e846973db1))
+* **readme:** Clarify log/vips config ([`0e06f66`](https://github.com/siemdejong/dpat/commit/0e06f66875dd5aa3344106d062aeb935f1ab1f02))
+
 ## v1.4.0 (2023-02-15)
 ### Feature
 * **logging:** Add logging and log config ([`6c90359`](https://github.com/siemdejong/dpat/commit/6c90359a5d9153555a1c12a9277d6869ce113525))
