@@ -251,14 +251,7 @@ Options:
 ```
 
 ### Logging
-Logging can be turned on by configuring the logging with `config.yml`: e.g.
-```yaml
-# config.yml
-LOGGING:
-  handler: StreamHandler
-  level: INFO
-```
-Or, when using the package as a library, turn logging off with
+When using the package as a library, if needed, logging can be turned off with
 ```python
 logging.getLogger('dpat').propagate = False
 ```
