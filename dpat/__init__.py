@@ -4,25 +4,14 @@ import platform
 
 import yaml
 
+logging.getLogger("dpat").addHandler(logging.NullHandler())
+
 try:
     with open("config.yml", "r") as f:
         config = yaml.safe_load(f)
 except FileNotFoundError:
     raise Exception(f"Provide a config.yml file to {os.getcwd()}.")
 
-try:
-    logging.getLogger("dpat").addHandler(
-        getattr(logging, config["LOGGING"]["handler"])()
-    )
-    logging.getLogger("dpat").setLevel(getattr(logging, config["LOGGING"]["level"]))
-except KeyError as e:
-    print(f"Config {e} not found.")
-    print("Continuing without logging.")
-except AttributeError as e:
-    print(e)
-    print("Continuing without logging.")
-else:
-    logging.getLogger("dpat").addHandler(logging.NullHandler())
 
 # vips must be installed separately for Windows.
 # vips already includes OpenSlide.

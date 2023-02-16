@@ -1,9 +1,12 @@
 """DPAT Command-line interface. This is the file which builds the main parser."""
 import click
 
+from dpat.cli.logging import config_logging
 from dpat.convert import AvailableImageFormats
 from dpat.convert.hhg import hhg_batch_convert
 from dpat.splits.create_splits import create_splits
+
+config_logging()
 
 
 @click.group()

@@ -113,7 +113,7 @@ def test_distributions(
                 )
                 # assert lower_bound <= count <= upper_bound
                 assert 0 <= count <= 1
-    logger.info("`test_distributions` always passes, check above percentages.")
+    logger.warning("`test_distributions` always passes, check above percentages.")
 
 
 def test(
