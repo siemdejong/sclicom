@@ -141,9 +141,9 @@ On Linux/macOS, vips is included with the installation steps below.
 Vips comes with OpenSlide.
 It is not needed to install OpenSlide separately.
 
-<!-- #### CUDA
-This project expects CUDA enabled GPUs.
-Run `nvidia-smi` to see if there are CUDA enabled GPUs available. -->
+### CUDA
+To do deep learning on CUDA enabled accelerators, follow installation instructions on [pytorch.org](https://pytorch.org/get-started).
+Run `nvidia-smi` to see if CUDA is available.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -164,13 +164,16 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
-1.  Only Windows: make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
+1.  Only Windows: make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
     Change `PATHS.vips` in `config.yml` to point to `vips/bin`:
     ```yaml
     # config.yml
     PATHS:
       vips: path/to/vips/bin
     ```
+1.  If you use this library for deep learning and want to use CUDA-enabled Pytorch,
+    follow instructions on [pytorch.org](https://pytorch.org/get-started).
+    Make sure CUDA is available, see <a href="#cuda">Prerequisites#CUDA</a>.
 1.  Install dpat in editable mode with
     ```
     pip install -e .
