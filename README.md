@@ -135,6 +135,7 @@ The author recommends [Miniforge](https://github.com/conda-forge/miniforge) or [
 This project depends on [dlup](https://github.com/NKI-AI/dlup) (automatically installed), which depends on vips.
 On Windows, vips needs to be installed locally.
 Download the latest [libvips](https://github.com/libvips/libvips/releases) Windows binary and unzip somewhere.
+On Linux/macOS, vips is included with the installation steps below.
 
 ### OpenSlide
 Vips comes with OpenSlide.
@@ -163,8 +164,8 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
-1.  Make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
-1.  Change `PATHS.vips` in `config.yml` to point to `vips/bin`:
+1.  Only Windows: make sure libvips is available, see <a href="#prerequisites">Prerequisites</a>.
+    Change `PATHS.vips` in `config.yml` to point to `vips/bin`:
     ```yaml
     # config.yml
     PATHS:
