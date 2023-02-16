@@ -4,14 +4,16 @@ import platform
 
 logging.getLogger("dpat").addHandler(logging.NullHandler())
 
+__version__ = "2.0.0"
+
 
 def install_windows(vipsbin: str):
     """Install dpat for windows.
 
-    Requests vips, such that it can import pyvips [1], openslide [2] and dlup [3] in the right order.
+    Requests vips, such that it can import pyvips [1], openslide [2]
+    and dlup [3] in the right order.
 
-    Vips must be installed separately for Windows.
-    Vips already includes OpenSlide.
+    Vips must be installed separately for Windows. Vips already includes OpenSlide.
     Provide the path to vips/bin.
 
     Parameters
@@ -35,9 +37,9 @@ def install_windows(vipsbin: str):
     os.environ["PATH"] = vipsbin + ";" + os.environ["PATH"]
 
     try:
-        import pyvips  # isort:skip
-        import openslide
+        import pyvips  # noqa:F401 isort:skip
+        import openslide  # noqa:F401
     except OSError:
         raise ImportError(f"Please check if vips is installed at {vipsbin}")
 
-    import dlup
+    import dlup  # noqa:F401

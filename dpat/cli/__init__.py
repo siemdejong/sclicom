@@ -88,11 +88,7 @@ def splits():
     help="Input directory where to find the images.",
 )
 @click.option(
-    "-l",
-    "--labels",
-    "path_to_labels_file",
-    required=True,
-    help="Path to labels file.",
+    "-l", "--labels", "path_to_labels_file", required=True, help="Path to labels file."
 )
 @click.option("-n", "--name", "dataset_name", required=True, help="Name of dataset.")
 @click.option(

@@ -1,7 +1,59 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpat"
+version = "2.0.0"
+authors = [
+  {name="Siem de Jong", email="siem.dejong@hotmail.nl"},
+]
+description = "Deep Learning for Pathology on Higher Harmonic Generation Microscopy Images"
+keywords = ["AI", "pathology", "HHG"]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.9,<3.10"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Natural Language :: English",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: Unix",
+    # "Topic :: Documentation :: Sphinx",
+    "Topic :: Multimedia :: Graphics :: Graphics Conversion",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Physics",
+    # "Typing :: Typed",
+]
+dependencies = [
+    "dlup == 0.3.20",
+    "scikit-learn >= 0.24",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/siemdejong/dpat"
+"Bug Tracker" = "https://github.com/siemdejong/dpat/issues"
+Changelog = "https://github.com/siemdejong/dpat/blob/main/CHANGELOG.md"
+
+[project.scripts]
+dpat = "dpat.cli:cli"
+
+
 [tool.semantic_release]
-version_variable = "setup.py:__version__"
+version_variable = "dpat/__init__.py:__version__"
+version_toml = "pyproject.toml:project.version"
 branch = "main"                             # branch to make releases of
 changelog_file = "CHANGELOG.md"             # changelog file
+upload_to_repository = false
 
 [tool.isort]
 profile = "black"
+
+[tool.black]
+skip-magic-trailing-comma = true

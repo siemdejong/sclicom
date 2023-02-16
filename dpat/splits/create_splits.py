@@ -22,7 +22,8 @@ def file_of_paths_to_list(path: str) -> list[str]:
 
 def test_overlap(save_to_dir: str, dataset_name, diagnoses_fn: str) -> None:
     """
-    Loads the paths to images of the train-val-test splits as previously produced, and tests
+    Loads the paths to images of the train-val-test splits as previously produced,
+    and tests
     1. If there are duplicate images within a split;
     2. If there are duplicates between splits;
     If this fails, these splits should not be used.
@@ -66,7 +67,8 @@ def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None
             fold_length += len(
                 file_of_paths_to_list(
                     pathlib.Path(
-                        f"{save_to_dir}/{filetype}_{dataset_name}_{subset}-subfold-{subfold}-fold-{fold}.csv"
+                        f"{save_to_dir}/{filetype}_{dataset_name}_"
+                        f"{subset}-subfold-{subfold}-fold-{fold}.csv"
                     )
                 )
             )
@@ -75,17 +77,15 @@ def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None
 
 
 def test_distributions(
-    path_to_labels_file: str,
-    save_to_dir: str,
-    dataset_name: str,
-    diagnoses_fn: str,
+    path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
 ) -> None:
     """
     Tests if the fraction of classes are 1 / (included diagnoses).
     """
     path_to_patient_df = pd.read_csv(f"{save_to_dir}/paths_to_patient_id.csv")
     labels_df = pd.read_csv(
-        f"{save_to_dir}/{dataset_name}-DeepSMILE_{pathlib.Path(path_to_labels_file).stem}.csv"
+        f"{save_to_dir}/{dataset_name}-DeepSMILE_"
+        f"{pathlib.Path(path_to_labels_file).stem}.csv"
     )
     for product in itertools.product(range(5), range(5)):
         fold, subfold = product
@@ -93,7 +93,8 @@ def test_distributions(
         for subset in ["train", "val", "test"]:
             paths = file_of_paths_to_list(
                 pathlib.Path(
-                    f"{save_to_dir}/paths_{dataset_name}_{subset}-subfold-{subfold}-fold-{fold}.csv"
+                    f"{save_to_dir}/paths_{dataset_name}_"
+                    f"{subset}-subfold-{subfold}-fold-{fold}.csv"
                 )
             )
             patient_ids = path_to_patient_df[path_to_patient_df["paths"].isin(paths)][
@@ -103,13 +104,14 @@ def test_distributions(
 
             # TODO: change the upper and lower bound.
             # Small datasets will not be stratified well to the same percentages.
-            mean = 1 / diagnoses_fn.count("+")
-            lower_bound = mean - 0.05
-            upper_bound = mean + 0.05
+            # mean = 1 / diagnoses_fn.count("+")
+            # lower_bound = mean - 0.05
+            # upper_bound = mean + 0.05
             counts = subset_labels_df["diagnosis"].value_counts(normalize=True)
             for diagnosis, count in zip(counts.index, counts.tolist()):
                 logger.info(
-                    f"Percentage of {diagnosis} in \t{subset} \tsubfold {subfold} fold {fold}: {count*100:.2f}%"
+                    f"Percentage of {diagnosis} in \t{subset} \tsubfold {subfold} fold"
+                    f" {fold}: {count*100:.2f}%"
                 )
                 # assert lower_bound <= count <= upper_bound
                 assert 0 <= count <= 1
@@ -117,10 +119,7 @@ def test_distributions(
 
 
 def test(
-    path_to_labels_file: str,
-    save_to_dir: str,
-    dataset_name: str,
-    diagnoses_fn: str,
+    path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
 ) -> None:
     # Assert that there's no overlap between train/val, train/test, val/test.
     test_overlap(save_to_dir, dataset_name, diagnoses_fn)
@@ -170,7 +169,8 @@ def create_splits(
         Glob pattern to include files in `image_dir`.
     exclude_pattern : str, default=""
         Glob pattern to exclude files in `image_dir`.
-        Set to be excluded will be subtracted from the set to be included by `include_pattern`.
+        Set to be excluded will be subtracted from the set
+        to be included by `include_pattern`.
     filter_diagnosis : iterable of str, optional
         Iterable of strings choosing the diagnoses to create the splits for.
 
@@ -181,7 +181,7 @@ def create_splits(
 
     References
     ----------
-    [1] https://github.com/NKI-AI/hissl/blob/126d181e31aa66e404a0707532ad9e546097162a/tools/reproduce_deepsmile/4_create_splits_for_tcga_bc/create_splits_tcga_bc.py
+    [1] https://github.com/NKI-AI/hissl
     """
     # The directory should not exist, to avoid overwriting previously calculated splits.
     image_dir: pathlib.Path = pathlib.Path(image_dir)
@@ -218,7 +218,8 @@ def create_splits(
         f"{len(include)}/{len(all)} files are listed for inclusion. {include_pattern}"
     )
     logger.info(
-        f"{len(exclude)}/{len(include)} files are listed for exclusion. {exclude_pattern}"
+        f"{len(exclude)}/{len(include)} files are listed for exclusion."
+        f" {exclude_pattern}"
     )
 
     paths = pd.DataFrame({"paths": paths_list})
@@ -236,7 +237,8 @@ def create_splits(
     len_before_nan_drop = len(df)
     df = df.dropna(subset=DROP).reset_index()
     logger.info(
-        f"{len_before_nan_drop - len(df)}/{len_before_nan_drop} NaNs of {DROP} are dropped."
+        f"{len_before_nan_drop - len(df)}/{len_before_nan_drop} NaNs of {DROP} are"
+        " dropped."
     )
 
     # Filter dataframe by diagnosis
@@ -244,7 +246,8 @@ def create_splits(
         len_before_filter_drop = len(df)
         df = df[df["diagnosis"].isin(filter_diagnosis)].reset_index()
         logger.info(
-            f"{len_before_filter_drop - len(df)}/{len_before_filter_drop} of {DROP} not in {filter_diagnosis} are dropped."
+            f"{len_before_filter_drop - len(df)}/{len_before_filter_drop} of {DROP} not"
+            f" in {filter_diagnosis} are dropped."
         )
     else:
         filter_diagnosis = df["diagnosis"].unique()
@@ -318,14 +321,16 @@ def create_splits(
             paths[paths[f"{subset}-subfold-{subfold}-fold-{fold}"] == 1][
                 ["paths", "case_id", "image_id", "diagnosis_num"]
             ].to_csv(
-                f"{save_to_dir}/{diagnoses_fn}_{dataset_name}_{subset}-subfold-{subfold}-fold-{fold}.csv",
+                f"{save_to_dir}/{diagnoses_fn}_{dataset_name}_"
+                f"{subset}-subfold-{subfold}-fold-{fold}.csv",
                 header=None,
                 index=None,
             )
 
     # Save the file with labels and splits
     df.to_csv(
-        f"{save_to_dir}/{dataset_name}-DeepSMILE_{pathlib.Path(path_to_labels_file).stem}.csv"
+        f"{save_to_dir}/{dataset_name}-DeepSMILE_"
+        f"{pathlib.Path(path_to_labels_file).stem}.csv"
     )
 
     # Run some tests with the recently saved files

@@ -4,7 +4,10 @@ class DpatOutputDirectoryExistsError(Exception):
         self.path = path
 
     def __str__(self):
-        return f"Output directory '{self.path}' already exists. Choose another or use --overwrite."
+        return (
+            f"Output directory '{self.path}' already exists. Choose another or use"
+            " --overwrite."
+        )
 
 
 class DpatDecompressionBombError(Exception):
@@ -12,4 +15,7 @@ class DpatDecompressionBombError(Exception):
         super().__init__()
 
     def __str__(self) -> str:
-        return "At least one of the images to be converted is too large. Use --trust if you trust this file."
+        return (
+            "At least one of the images to be converted is too large. Use --trust if"
+            " you trust this file."
+        )

@@ -67,9 +67,9 @@ def img_to_tiff(
     trust_source : bool
         Trust source. If True, PIL.Image.DecompressionBombError is ignored.
     kwargs : `ToTIFFParams`
-        Extra arguments to `PIL.Image.save`: refer to the `ToTIFFParams` documentation for a list of all possible arguments.
+        Extra arguments to `PIL.Image.save`: refer to the `ToTIFFParams` documentation
+        for a list of all possible arguments.
     """
-    # assert not input_path.endswith([".tiff", ".tif"]), "Input image is already in TIFF format."
 
     # To ignore decompression bomb DOS attack error.
     if trust_source:
@@ -107,8 +107,9 @@ def filter_existing(
 
     skip_count = len(input_paths) - len(filtered_input_paths)
     logger.info(
-        f"Skipping {skip_count}/{len(input_paths)} images, as they were already converted to {extension}. "
-        "Remove --skip-existing to overwrite existing images."
+        f"Skipping {skip_count}/{len(input_paths)} images, as they were already"
+        f" converted to {extension}. Remove --skip-existing to overwrite existing"
+        " images."
     )
 
     return filtered_input_paths, filtered_output_dirs, filtered_kwargs_per_path
@@ -157,10 +158,7 @@ def batch_convert(
 
     if skip_existing:
         input_paths, output_dirs, kwargs_per_path = filter_existing(
-            input_paths,
-            output_dirs,
-            output_ext,
-            kwargs_per_path,
+            input_paths, output_dirs, output_ext, kwargs_per_path
         )
 
     if not input_paths:

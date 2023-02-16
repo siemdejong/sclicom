@@ -4,15 +4,33 @@ repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
--   repo: https://github.com/psf/black
-    rev: 23.1.0
-    hooks:
-    -   id: black
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-docstring-first
+      - id: check-toml
+      - id: check-case-conflict
+      - id: check-added-large-files
+        args: ['--maxkb=350', '--enforce-all']
+      - id: detect-private-key
+      - id: check-vcs-permalinks
+- repo: https://github.com/asottile/yesqa
+  rev: v1.4.0
+  hooks:
+    - id: yesqa
+      name: Unused noqa
+- repo: https://github.com/psf/black
+  rev: 23.1.0
+  hooks:
+    - id: black
+      language_version: python3.9
 - repo: https://github.com/pycqa/isort
   rev: 5.12.0
   hooks:
     - id: isort
-      name: isort (python)
+- repo: https://github.com/pycqa/flake8
+  rev: 6.0.0
+  hooks:
+    - id: flake8
+      exclude: dpat/extract_features
+      additional_dependencies: [flake8-docstrings]
