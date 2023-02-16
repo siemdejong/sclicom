@@ -145,7 +145,6 @@ It is not needed to install OpenSlide separately.
 To do deep learning on CUDA enabled accelerators, follow installation instructions on [pytorch.org](https://pytorch.org/get-started).
 Run `nvidia-smi` to see if CUDA is available.
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## Installation
@@ -164,12 +163,11 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
-1.  Only Windows: make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
-    Change `PATHS.vips` in `config.yml` to point to `vips/bin`:
-    ```yaml
-    # config.yml
-    PATHS:
-      vips: path/to/vips/bin
+1.  Windows only: if you use this library for use in scripts, make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
+    If using this library in a script, make sure to properly install the package with
+    ```python
+    import dpat
+    dpat.install_windows("path/to/vips/bin")
     ```
 1.  If you use this library for deep learning and want to use CUDA-enabled Pytorch,
     follow instructions on [pytorch.org](https://pytorch.org/get-started).

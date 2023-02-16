@@ -2,33 +2,42 @@ import logging
 import os
 import platform
 
-import yaml
-
 logging.getLogger("dpat").addHandler(logging.NullHandler())
 
-# vips must be installed separately for Windows.
-# vips already includes OpenSlide.
-# Provide the path to vips\bin in project.ini.
-# https://github.com/libvips/pyvips
-if platform.system() == "Windows":
-    try:
-        with open("config.yml", "r") as f:
-            config = yaml.safe_load(f)
-    except FileNotFoundError:
-        raise Exception(f"Provide a config.yml file to {os.getcwd()}.")
 
-    try:
-        PYVIPS_PATH = config["PATHS"]["vips"]
-        os.environ["PATH"] = PYVIPS_PATH + ";" + os.environ["PATH"]
-    except KeyError:
-        raise Exception(f"Please check and set PATHS.vips to in config.yml.")
+def install_windows(vipsbin: str):
+    """Install dpat for windows.
+
+    Requests vips, such that it can import pyvips [1], openslide [2] and dlup [3] in the right order.
+
+    Vips must be installed separately for Windows.
+    Vips already includes OpenSlide.
+    Provide the path to vips/bin.
+
+    Parameters
+    ----------
+    vipsbin : str
+        `path/to/vips/bin`.
+
+    Examples
+    --------
+    >>> import dpat
+    >>> dpat.install_windows("D:/apps/vips-dev-8.14/bin")
+
+    References
+    ----------
+    [1] https://github.com/libvips/pyvips
+    [2] https://openslide.org/
+    [3] https://github.com/NKI-AI/dlup
+    """
+    assert platform.system() == "Windows", "install_windows() is for Windows only."
+
+    os.environ["PATH"] = vipsbin + ";" + os.environ["PATH"]
 
     try:
         import pyvips  # isort:skip
         import openslide
     except OSError:
-        raise ImportError(
-            "Make sure to download and extract vips point PATHS.vips in config.yml to vips/bin."
-        )
+        raise ImportError(f"Please check if vips is installed at {vipsbin}")
 
-import dlup
+    import dlup
