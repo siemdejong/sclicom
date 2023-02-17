@@ -1,7 +1,9 @@
+"""Create splits."""
+
 import itertools
 import logging
 import pathlib
-from typing import Optional
+from typing import Union
 
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
@@ -12,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def file_of_paths_to_list(path: str) -> list[str]:
-    """Reads a file with a path per row and returns a list of paths."""
+    """Read a file with a path per row and returns a list of paths."""
     content: list = []
     with open(path, "r") as f:
         while line := f.readline().rstrip():
@@ -21,8 +23,9 @@ def file_of_paths_to_list(path: str) -> list[str]:
 
 
 def test_overlap(save_to_dir: str, dataset_name, diagnoses_fn: str) -> None:
-    """
-    Loads the paths to images of the train-val-test splits as previously produced,
+    """Test overlap of splits.
+
+    Load the paths to images of the train-val-test splits as previously produced,
     and tests
     1. If there are duplicate images within a split;
     2. If there are duplicates between splits;
@@ -57,7 +60,11 @@ def test_overlap(save_to_dir: str, dataset_name, diagnoses_fn: str) -> None:
 
 
 def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None:
-    """Test if the length of the train+val+test is the same length for each fold."""
+    """Test lengths across all splits.
+
+    Ensure the length of the train+val+test is the same length for each
+    fold.
+    """
     lengths = []
     for product in itertools.product(range(5), range(5), ["paths", diagnoses_fn]):
         fold, subfold, filetype = product
@@ -79,9 +86,7 @@ def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None
 def test_distributions(
     path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
 ) -> None:
-    """
-    Tests if the fraction of classes are 1 / (included diagnoses).
-    """
+    """Tests if the fraction of classes are 1 / (included diagnoses)."""
     path_to_patient_df = pd.read_csv(f"{save_to_dir}/paths_to_patient_id.csv")
     labels_df = pd.read_csv(
         f"{save_to_dir}/{dataset_name}-DeepSMILE_"
@@ -121,6 +126,10 @@ def test_distributions(
 def test(
     path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
 ) -> None:
+    """Test the splits.
+
+    Test for overlap, length, and distributions.
+    """
     # Assert that there's no overlap between train/val, train/test, val/test.
     test_overlap(save_to_dir, dataset_name, diagnoses_fn)
 
@@ -139,15 +148,14 @@ def create_splits(
     overwrite: bool = False,
     include_pattern: list[str] = ["*.*"],
     exclude_pattern: list[str] = [""],
-    filter_diagnosis: Optional[list[str]] = None,
+    filter_diagnosis: Union[list[str], None] = None,
 ) -> None:
-    """
-    Create data splits. The csv label file is loaded.
-    5-fold train-test stratified k-fold split are created.
-    In every train split, it creates a random train-val split.
-    Patients without diagnosis are dropped.
-    Patients with diagnosis given in `filter_diagnosis` are used.
-    Stratify on diagnosis.
+    """Create data splits.
+
+    The csv label file is loaded. 5-fold train-test
+    stratified k-fold split are created. In every train split, it creates a
+    random train-val split. Patients without diagnosis are dropped. Patients
+    with diagnosis given in `filter_diagnosis` are used. Stratify on diagnosis.
 
     Also performs tests on the splits.
 

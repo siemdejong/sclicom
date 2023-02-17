@@ -1,10 +1,11 @@
+"""Convert image to other formats."""
 import logging
 import pathlib
 import signal
 from enum import Enum
 from functools import partial
 from multiprocessing import Pool
-from typing import Literal, Optional, TypedDict
+from typing import Literal, TypedDict, Union
 
 from PIL import Image
 from tqdm import tqdm
@@ -15,6 +16,8 @@ logger = logging.getLogger(__name__)
 
 
 class AvailableImageFormats(Enum):
+    """Available image formats to convert to."""
+
     tiff = "tiff"
     tif = "tif"
 
@@ -44,6 +47,8 @@ class ToTIFFParams(TypedDict):
 
 
 class ToOtherParams(ToTIFFParams):
+    """Class encapsulating target format classes for typing."""
+
     pass
 
 
@@ -70,7 +75,6 @@ def img_to_tiff(
         Extra arguments to `PIL.Image.save`: refer to the `ToTIFFParams` documentation
         for a list of all possible arguments.
     """
-
     # To ignore decompression bomb DOS attack error.
     if trust_source:
         Image.MAX_IMAGE_PIXELS = None
@@ -86,8 +90,23 @@ def filter_existing(
     input_paths: list[pathlib.Path],
     output_dirs: list[pathlib.Path],
     extension: AvailableImageFormats,
-    kwargs_per_path: Optional[list[ToOtherParams]] = None,
+    kwargs_per_path: Union[list[ToOtherParams], None] = None,
 ):
+    """Filter existing output paths.
+
+    Pops out items of all input lists that correspond to an existing output file.
+
+    Parameters
+    ----------
+    input_paths : list of pathlib.Path
+        Paths to images.
+    output_dirs : list of pathlib.Path
+        Output directories.
+    extension : AvailableImageFormats
+        Extension to format the file to.
+    kwargs_per_path : list of ToOtherParams or None, optional
+        Any other list of kwargs to be filtered with the other lists.
+    """
     filtered_input_paths = []
     filtered_output_dirs = []
     filtered_kwargs_per_path = []
@@ -116,6 +135,7 @@ def filter_existing(
 
 
 def _wrapper(args, worker):
+    """Pass kwargs to Pool.imap_unordered."""
     input_path, output_dir, kwargs = args
     worker(input_path, output_dir, **kwargs)
 
@@ -126,7 +146,7 @@ def batch_convert(
     output_ext: AvailableImageFormats,
     num_workers: int = 4,
     chunks: int = 30,
-    kwargs_per_path: Optional[list[ToOtherParams]] = None,
+    kwargs_per_path: Union[list[ToOtherParams], None] = None,
     trust_source=False,
     skip_existing=True,
 ) -> None:
@@ -147,7 +167,6 @@ def batch_convert(
     kwargs : `ToOtherParams`
         Extra arguments to `convert_func`.
     """
-
     if output_ext in ["tiff", "tif"]:
         convert_func = partial(
             img_to_tiff,

@@ -19,18 +19,34 @@ repos:
   hooks:
     - id: yesqa
       name: Unused noqa
-- repo: https://github.com/psf/black
-  rev: 23.1.0
+- repo: https://github.com/PyCQA/docformatter
+  rev: v1.5.1
   hooks:
-    - id: black
-      language_version: python3.9
+    - id: docformatter
+- repo: https://github.com/Kludex/no-optional
+  rev: 0.4.0
+  hooks:
+    - id: no_optional
+- repo: https://github.com/dhruvmanila/remove-print-statements
+  rev: v0.5.0
+  hooks:
+  - id: remove-print-statements
+- repo: https://github.com/bwhmather/ssort
+  rev: v0.11.6
+  hooks:
+  - id: ssort
 - repo: https://github.com/pycqa/isort
   rev: 5.12.0
   hooks:
     - id: isort
+- repo: https://github.com/psf/black
+  rev: 23.1.0
+  hooks:
+    - id: black
 - repo: https://github.com/pycqa/flake8
   rev: 6.0.0
   hooks:
     - id: flake8
-      exclude: dpat/extract_features
-      additional_dependencies: [flake8-docstrings]
+      exclude: ^(dpat/extract_features|build)
+      additional_dependencies: ["flake8-docstrings"]
+      args: [--config, .flake8]

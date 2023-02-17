@@ -1,3 +1,4 @@
+"""Provide Pytorch datasets and Pytorch Lightning datamodules."""
 import logging
 import pathlib
 from functools import partial
@@ -20,6 +21,11 @@ logger = logging.getLogger(__name__)
 
 
 class PMCHHGImageDataset(Dataset):
+    """Dataset for the PMC-HHG project.
+
+    Make tiles of all selected images.
+    """
+
     def __init__(
         self,
         root_dir: str,
@@ -36,7 +42,8 @@ class PMCHHGImageDataset(Dataset):
         # mask_root_dir: str,
         transform: torchvision.transforms.Compose,
     ):
-        """
+        """Create dataset.
+
         Parameters
         ----------
         root_dir : str
@@ -120,11 +127,8 @@ class PMCHHGImageDataset(Dataset):
         """Size of the dataset."""
         return len(self.dlup_dataset)
 
-    def __len__(self) -> int:
-        """Size of the dataset."""
-        return self.num_samples()
-
     def __getitem__(self, index):
+        """Get one tile and its target, along with metadata."""
         sample = self.dlup_dataset[index]
         relative_path = str(pathlib.Path(sample["path"]).relative_to(self.root_dir))
         (case_id, img_id, target) = self.df.loc[relative_path, [1, 2, 3]]
@@ -146,8 +150,14 @@ class PMCHHGImageDataset(Dataset):
         }
         return return_object
 
+    def __len__(self) -> int:
+        """Size of the dataset."""
+        return self.num_samples()
+
 
 class PMCHHGImageDataModule(pl.LightningDataModule):
+    """Datamodule for structuring building of Pytorch DataLoader."""
+
     def __init__(
         self,
         root_dir: str,
@@ -168,6 +178,13 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         batch_size: int,
         transform: list[AvailableTransforms],
     ) -> None:
+        """Create datamodule.
+
+        Raises
+        ------
+        ValueError
+            If `transform` is unavailable.
+        """
         super().__init__()
         self.save_hyperparameters()
         # self.prepare_data_per_node = True
@@ -200,12 +217,17 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             )
 
     def prepare_data(self):
+        """Prepare data."""
         # TODO: if storing the data somewhere in the cloud
         # and it is downloaded in prepare_data,
         # use setup() to make the splits with dpat.splits.create_splits.
         pass
 
     def setup(self, stage):
+        """Split dataset and apply stage transform.
+
+        Is done on every device.
+        """
         self.dataset = partial(
             PMCHHGImageDataset(
                 root_dir=self.root_dir,
@@ -232,6 +254,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             self.test_dataset = self.dataset(images_paths_and_targets=self.train_path)
 
     def on_before_batch_transfer(self, batch, dataloader_idx):
+        """Before transfer to device, do ..."""
         # Using self.trainer.train/validation/test,
         # different transformations can be applied here.
 
@@ -240,11 +263,13 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         pass
 
     def on_after_batch_transfer(self, batch, dataloader_idx):
+        """After transfer to device, do ..."""
         # batch['x'] = gpu_transforms(batch['x'])
         # return batch
         pass
 
     def train_dataloader(self):
+        """Build train dataloader."""
         return DataLoader(
             self.train_dataset,
             num_workers=self.num_workers,
@@ -253,16 +278,19 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         )
 
     def val_dataloader(self):
+        """Build validation dataloader."""
         return DataLoader(
             self.val_dataset, num_workers=self.num_workers, batch_size=self.batch_size
         )
 
     def test_dataloader(self):
+        """Build test dataloader."""
         return DataLoader(
             self.test_dataset, num_workers=self.num_workers, batch_size=self.batch_size
         )
 
     def teardown(self, stage):
+        """Cleanup."""
         pass
         # clean up after fit or test
         # called on every process in DDP

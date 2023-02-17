@@ -1,4 +1,7 @@
-"""DPAT Command-line interface. This is the file which builds the main parser."""
+"""DPAT Command-line interface.
+
+This is the file which builds the main parser.
+"""
 import click
 
 from dpat.cli.logging import config_logging
@@ -11,11 +14,13 @@ config_logging()
 
 @click.group()
 def cli():
+    """Click group to attach all cli subcommands to."""
     pass
 
 
 @cli.group()
 def convert():
+    """Click group to attach all convert commands to."""
     pass
 
 
@@ -70,11 +75,13 @@ def convert():
     help="Skip existing output files.",
 )
 def batch(*args, **kwargs):
+    """Click command passing args to the batch converter."""
     hhg_batch_convert(*args, **kwargs)
 
 
 @cli.group()
 def splits():
+    """Click group to attach all splits commands to."""
     pass
 
 
@@ -134,4 +141,5 @@ def splits():
     help="Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.",
 )
 def create(*args, **kwargs):
+    """Click command passing args to the split creator."""
     create_splits(*args, **kwargs)

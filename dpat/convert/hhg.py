@@ -1,3 +1,5 @@
+"""Convert functions related to the PMC-HHG project."""
+
 import pathlib
 
 from dpat.convert import AvailableImageFormats, batch_convert
@@ -12,6 +14,16 @@ def hhg_batch_convert(
     num_workers: int,
     chunks: int,
 ):
+    """Extract metadata from filenames used in the PMC-HHG project.
+
+    Images with
+    - 200slow are 0.2 mpp
+    - 300slow are 0.25 mpp
+    - 300fast are 1 mpp
+
+    As tiff requires a resolution unit of cm, x- and y-resolutions are calculated as
+    1e4 um / x mmp, where x are the values above.
+    """
     ROOT_DIR = input_dir
     OUTPUT_DIR = output_dir
     OUTPUT_EXT = output_ext

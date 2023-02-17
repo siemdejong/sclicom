@@ -52,8 +52,13 @@ branch = "main"                             # branch to make releases of
 changelog_file = "CHANGELOG.md"             # changelog file
 upload_to_repository = false
 
+[tool.docformatter]
+syntax = "numpy"
+black = true
+
 [tool.isort]
 profile = "black"
 
 [tool.black]
 skip-magic-trailing-comma = true
+language_version = "python3.9"

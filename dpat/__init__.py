@@ -1,3 +1,9 @@
+"""DLP-HHG.
+
+Deep Learning for Pathology on Higher Harmonic Generation Microscopy
+Images.
+"""
+
 import logging
 import os
 import platform

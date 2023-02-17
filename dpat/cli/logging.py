@@ -1,3 +1,4 @@
+"""Provides logging configurations for the CLI."""
 import logging
 from typing import Union
 
@@ -8,6 +9,7 @@ def config_logging(
     handler: logging.Handler = logging.StreamHandler(),
     format: str = "[%(asctime)s][%(name)s][%(levelname)s] %(message)s",
 ):
+    """Configure simple logging."""
     logger = logging.getLogger(name)
     logger.setLevel(level)
 
