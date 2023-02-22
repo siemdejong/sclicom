@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.0 (2023-02-22)
+### Feature
+* **data:** Add mean and std calculator ([`e6549f6`](https://github.com/siemdejong/dpat/commit/e6549f681bd0f4500077dd2365afd5a9a231c972))
+* **stage1:** Implement swav with pl and lightly ([`3dcbdca`](https://github.com/siemdejong/dpat/commit/3dcbdcab5c4de8ebd08addb8c0f2ce02fdfa4803))
+
+### Fix
+* **package:** Add dependencies ([`b3d340c`](https://github.com/siemdejong/dpat/commit/b3d340c046929d3b06f417dc2ae40e61ac173e13))
+* **package:** Package dpat subfolder ([`2fb78ed`](https://github.com/siemdejong/dpat/commit/2fb78ed751908f28a0ca1719018c8a74d114b956))
+
 ## v2.0.0 (2023-02-16)
 ### Feature
 * **installation:** Remove the need for config.yml ([`bdbed64`](https://github.com/siemdejong/dpat/commit/bdbed641081d0717d97876aa3a76bb0a9f0c216f))
