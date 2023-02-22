@@ -5,12 +5,14 @@ from typing import Callable, Literal, Union
 
 import lightning.pytorch as pl
 import pandas as pd
+import torch
 import torchvision
 from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
 from lightly.data import LightlyDataset, SwaVCollateFunction
 from torch.utils.data import DataLoader, Dataset
+from tqdm import tqdm
 
 from dpat.data.transforms import AvailableTransforms, Dlup2DpatTransform
 
@@ -56,8 +58,12 @@ class MaskGetter:
 class PMCHHGImageDataset(Dataset):
     """Dataset for the PMC-HHG project.
 
-    Make tiles of all selected images.
+    Make tiles of all selected images. The tiles are at the requested
+    mpp resolution.
     """
+
+    # Precalculated. Assumed as "domain knowledge".
+    NORMALIZE = {"mean": [0.0014, 0.0039, 0.0003], "std": [0.0423, 0.0423, 0.0423]}
 
     def __init__(
         self,
@@ -214,6 +220,57 @@ class PMCHHGImageDataset(Dataset):
     def __len__(self) -> int:
         """Size of the dataset."""
         return self.num_samples()
+
+
+def online_mean_and_std(dataset: Dataset, batch_size: int = 64) -> tuple[float, float]:
+    """Calculate mean and std in an online fashion.
+
+    Calculates the mean and std by looping through the dataset two times.
+
+    Parameters
+    ----------
+    dataset : `Dataset`
+        Dataset to calculate the mean and std for. __getitem__ must return
+        an rgb image as the first return value.
+    batch_size : int, default=32
+        Batch size of the dataloader.
+
+    References
+    ----------
+    https://discuss.pytorch.org/t/about-normalization-using-pre-trained-vgg16-networks/23560/9
+    """
+    dataloader: DataLoader = DataLoader(
+        dataset=dataset, batch_size=batch_size, shuffle=False
+    )
+
+    _mean_temp: torch.Tensor = torch.zeros(3)
+    _var_temp: torch.Tensor = torch.zeros(3)
+
+    for batch in tqdm(dataloader, desc="Calculating mean", unit="batch"):
+        data = batch[0]
+        b, _, h, w = data.shape
+        nb_pixels = b * h * w
+        _sum = torch.sum(data, dim=[0, 2, 3])
+        batch_mean = _sum / nb_pixels
+
+        _mean_temp += batch_mean
+
+    mean = _mean_temp / len(dataset)
+
+    for batch in tqdm(dataloader, desc="Calculating std", unit="batch"):
+        data = batch[0]
+        b, c, h, w = data.shape
+        nb_pixels = b * h * w
+
+        _sum = torch.sum((data - mean.view((1, c, 1, 1))) ** 2)
+        batch_var = _sum / nb_pixels
+
+        _var_temp += batch_var
+
+    var = _var_temp / len(dataset)
+    std = torch.sqrt(var)
+
+    return mean, std
 
 
 class PMCHHGImageDataModule(pl.LightningDataModule):
@@ -418,6 +475,6 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         This depends on the attached model.
         """
         if self.model == "swav":
-            return SwaVCollateFunction()
+            return SwaVCollateFunction(normalize=PMCHHGImageDataset.NORMALIZE)
         else:
             return None
