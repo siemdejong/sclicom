@@ -46,6 +46,7 @@ dpat = "dpat.cli:cli"
 
 [tool.setuptools]
 py-modules = []
+packages = ["dpat"]
 
 [tool.semantic_release]
 version_variable = "dpat/__init__.py:__version__"
