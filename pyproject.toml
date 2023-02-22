@@ -44,6 +44,8 @@ Changelog = "https://github.com/siemdejong/dpat/blob/main/CHANGELOG.md"
 [project.scripts]
 dpat = "dpat.cli:cli"
 
+[tool.setuptools]
+py-modules = []
 
 [tool.semantic_release]
 version_variable = "dpat/__init__.py:__version__"

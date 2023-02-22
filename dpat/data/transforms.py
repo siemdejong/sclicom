@@ -1,6 +1,5 @@
 """Provide transforms."""
 from enum import Enum
-from typing import Any
 
 
 class Dlup2DpatTransform:
@@ -26,33 +25,13 @@ class Dlup2DpatTransform:
         # and want a string instead
         sample["path"] = str(sample["path"])
         # Openslide returns RGBA, but most neural networks want RGB
-        sample["image"] = self.transform(sample["image"].convert("RGB"))
+        sample["image"] = sample["image"].convert("RGB")
+        if self.transform is not None:
+            sample["image"] = self.transform(sample["image"])
         return sample
-
-
-class ContrastiveTransform:
-    """Contrastive transform for use with SimCLR."""
-
-    def __init__(self, base_transforms, n_views=2) -> None:
-        """Create transform."""
-        self.base_transforms = base_transforms
-        self.n_views = n_views
-
-    def __call__(self, x: Any) -> list[Any]:
-        """Do transform.
-
-        Apply the base transforms n times and put the transformed objects in a list.
-
-        Parameters
-        ----------
-        x : Any
-            parameter to apply the base transforms to.
-        """
-        return [self.base_transforms(x) for _ in range(self.n_views)]
 
 
 class AvailableTransforms(Enum):
     """Available transforms."""
 
     dlup2dpat = "dlup2dpat"
-    contrastive = "contrastive"

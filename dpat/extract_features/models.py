@@ -1,41 +1,44 @@
-import torchvision
-from torch import nn
-from torch import optim
-import torch
-from torch.functional import F
 import lightning.pytorch as pl
+import torch
+import torchvision
+from lightly.loss import SwaVLoss
+from lightly.models.modules import SwaVProjectionHead, SwaVPrototypes
+from torch import nn
 
-class SimCLR(pl.LightningModule):
-    def __init__(self, hidden_dim, lr, temperature, weight_decay, max_epochs=500):
+
+class SwaV(pl.LightningModule):
+    def __init__(self, lr, input_dim, hidden_dim, output_dim, n_prototypes):
         super().__init__()
         self.save_hyperparameters()
-        assert self.hparams["temperature"] > 0.0, "The temperature must be a positive float!"
-        # Base model f(.) 
-        # TODO: SWAP OUT RESNET FOR SHUFFLENETV2
-        self.convnet = torchvision.models.resnet18(
-            pretrained=False, num_classes=4 * hidden_dim
-        )  # num_classes is the output size of the last linear layer
-        # The MLP for g(.) consists of Linear->ReLU->Linear
-        self.convnet.fc = nn.Sequential(
-            self.convnet.fc,  # Linear(ResNet output, 4*hidden_dim)
-            nn.ReLU(inplace=True),
-            nn.Linear(4 * hidden_dim, hidden_dim),
-        )
 
-        self.loss_fn = nn.CrossEntropyLoss()
+        self.lr = lr
 
-    def configure_optimizers(self):
-        optimizer = optim.AdamW(self.parameters(), lr=self.hparams["lr"], weight_decay=self.hparams["weight_decay"])
-        lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(
-            optimizer, T_max=self.hparams["max_epochs"], eta_min=self.hparams["lr"] / 50
-        )
-        return [optimizer], [lr_scheduler]
+        resnet = torchvision.models.resnet18()
+        self.backbone = nn.Sequential(*list(resnet.children())[:-1])
+        self.projection_head = SwaVProjectionHead(input_dim, hidden_dim, output_dim)
+        self.prototypes = SwaVPrototypes(output_dim, n_prototypes=n_prototypes)
+
+        # enable sinkhorn_gather_distributed to gather features from all gpus
+        # while running the sinkhorn algorithm in the loss calculation
+        self.criterion = SwaVLoss(sinkhorn_gather_distributed=True)
+
+    def forward(self, x):
+        x = self.backbone(x).flatten(start_dim=1)
+        x = self.projection_head(x)
+        x = nn.functional.normalize(x, dim=1, p=2)
+        p = self.prototypes(x)
+        return p
 
     def training_step(self, batch, batch_idx):
-        loss = self.loss_fn(batch)
-        self.log("train_loss", loss)
+        self.prototypes.normalize()
+        crops, _, _ = batch
+        multi_crop_features = [self.forward(x.to(self.device)) for x in crops]
+        high_resolution = multi_crop_features[:2]
+        low_resolution = multi_crop_features[2:]
+        loss = self.criterion(high_resolution, low_resolution)
+        loss = 10
         return loss
 
-    def validation_step(self, batch, batch_idx):
-        loss = self.loss_fn(batch)
-        self.log("train_loss", loss)
+    def configure_optimizers(self):
+        optim = torch.optim.Adam(self.parameters(), lr=self.lr)
+        return optim

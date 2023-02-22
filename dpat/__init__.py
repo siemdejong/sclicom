@@ -43,8 +43,7 @@ def install_windows(vipsbin: str):
     os.environ["PATH"] = vipsbin + ";" + os.environ["PATH"]
 
     try:
-        import pyvips  # noqa:F401 isort:skip
-        import openslide  # noqa:F401
+        import pyvips  # noqa:F401
     except OSError:
         raise ImportError(f"Please check if vips is installed at {vipsbin}")
 
