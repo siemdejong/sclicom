@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.1 (2023-02-23)
+### Fix
+* **swav:** Make swav return a number ([`d21dcce`](https://github.com/siemdejong/dpat/commit/d21dcce5c0590d94c87478b7c7eb8324476328f4))
+* **deps:** Add tensorboard to dependencies ([`5ee3528`](https://github.com/siemdejong/dpat/commit/5ee35280bf5d7e990bcf3c26ae13975e5990b782))
+* **convert:** Only log skip if skip_count>0 ([`0a58791`](https://github.com/siemdejong/dpat/commit/0a587910b9f2fa7b32d05c21aa8b0c3facb671b7))
+
 ## v2.1.0 (2023-02-22)
 ### Feature
 * **data:** Add mean and std calculator ([`e6549f6`](https://github.com/siemdejong/dpat/commit/e6549f681bd0f4500077dd2365afd5a9a231c972))
