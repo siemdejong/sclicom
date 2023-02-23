@@ -125,11 +125,12 @@ def filter_existing(
             filtered_kwargs_per_path.append(kwargs)
 
     skip_count = len(input_paths) - len(filtered_input_paths)
-    logger.info(
-        f"Skipping {skip_count}/{len(input_paths)} images, as they were already"
-        f" converted to {extension}. Remove --skip-existing to overwrite existing"
-        " images."
-    )
+    if skip_count:
+        logger.info(
+            f"Skipping {skip_count}/{len(input_paths)} images, as they were already"
+            f" converted to {extension}. Remove --skip-existing to overwrite existing"
+            " images."
+        )
 
     return filtered_input_paths, filtered_output_dirs, filtered_kwargs_per_path
 
