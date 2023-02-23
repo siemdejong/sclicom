@@ -6,7 +6,7 @@ from lightly.models.modules import SwaVProjectionHead, SwaVPrototypes
 from torch import nn
 
 
-class SwaV(pl.LightningModule):
+class SwAV(pl.LightningModule):
     def __init__(self, lr, input_dim, hidden_dim, output_dim, n_prototypes):
         super().__init__()
         self.save_hyperparameters()
@@ -36,7 +36,7 @@ class SwaV(pl.LightningModule):
         high_resolution = multi_crop_features[:2]
         low_resolution = multi_crop_features[2:]
         loss = self.criterion(high_resolution, low_resolution)
-        loss = 10
+        self.log("loss/train", loss)
         return loss
 
     def configure_optimizers(self):

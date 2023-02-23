@@ -1,7 +1,7 @@
 """Provide Pytorch datasets and Pytorch Lightning datamodules."""
 import logging
 import pathlib
-from typing import Callable, Literal, Union
+from typing import Literal, Union
 
 import lightning.pytorch as pl
 import pandas as pd
@@ -380,6 +380,13 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         else:
             self.transform = transform
 
+        if self.model == "swav":
+            self.collate_fn = SwaVCollateFunction(
+                normalize=PMCHHGImageDataset.NORMALIZE
+            )
+        else:
+            self.collate_fn = None
+
     def prepare_data(self):
         """Prepare data."""
         # TODO: if storing the data somewhere in the cloud
@@ -467,14 +474,3 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         pass
         # clean up after fit or test
         # called on every process in DDP
-
-    @property
-    def collate_fn(self) -> Callable:
-        """Collate the samples for the batch.
-
-        This depends on the attached model.
-        """
-        if self.model == "swav":
-            return SwaVCollateFunction(normalize=PMCHHGImageDataset.NORMALIZE)
-        else:
-            return None
