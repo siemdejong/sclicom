@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.3 (2023-02-25)
+### Fix
+* **semantic-release:** Add build command ([`c35a40f`](https://github.com/siemdejong/dpat/commit/c35a40f214390c36a4f377523fc03560f3eb8cfd))
+
 ## v2.1.2 (2023-02-25)
 ### Fix
 * **typing:** Add typing ([`0842497`](https://github.com/siemdejong/dpat/commit/0842497f3498bf8f66af5ea917b5ecf012406b51))
