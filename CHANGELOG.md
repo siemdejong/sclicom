@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.2 (2023-02-25)
+### Fix
+* **typing:** Add typing ([`0842497`](https://github.com/siemdejong/dpat/commit/0842497f3498bf8f66af5ea917b5ecf012406b51))
+
 ## v2.1.1 (2023-02-23)
 ### Fix
 * **swav:** Make swav return a number ([`d21dcce`](https://github.com/siemdejong/dpat/commit/d21dcce5c0590d94c87478b7c7eb8324476328f4))

@@ -10,7 +10,7 @@ import platform
 
 logging.getLogger("dpat").addHandler(logging.NullHandler())
 
-__version__ = "2.1.1"
+__version__ = "2.1.2"
 
 
 def install_windows(vipsbin: str):
