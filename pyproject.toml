@@ -59,6 +59,7 @@ version_toml = "pyproject.toml:project.version"
 branch = "main"                             # branch to make releases of
 changelog_file = "CHANGELOG.md"             # changelog file
 upload_to_repository = false
+build_command = "pip install build && python -m build"
 
 [tool.docformatter]
 syntax = "numpy"
