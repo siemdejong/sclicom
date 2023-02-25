@@ -1,8 +1,14 @@
 """Convert functions related to the PMC-HHG project."""
 
 import pathlib
+from typing import Literal
 
-from dpat.convert import AvailableImageFormats, batch_convert
+from dpat.convert import (
+    AvailableImageFormats,
+    ToOtherParams,
+    ToTIFFParams,
+    batch_convert,
+)
 
 
 def hhg_batch_convert(
@@ -32,35 +38,41 @@ def hhg_batch_convert(
     NUM_WORKERS = num_workers
     CHUNKS = chunks
 
+    resolution_unit: Literal[1, 2, 3]
+    x_resolution: float
+    y_resolution: float
+
     paths = []
-    kwargs_per_path = []
+    kwargs_per_path: list[ToOtherParams] = []
     output_dirs = []
     for scan_program in ["200slow", "300slow", "300fast"]:
         if scan_program == "200slow":
-            resolution_unit: int = 3
-            x_resolution: float = 5e4
-            y_resolution: float = 5e4
+            resolution_unit = 3
+            x_resolution = 5e4
+            y_resolution = 5e4
         elif scan_program == "300slow":
-            resolution_unit: int = 3
-            x_resolution: float = 4e4
-            y_resolution: float = 4e4
+            resolution_unit = 3
+            x_resolution = 4e4
+            y_resolution = 4e4
         elif scan_program == "300fast":
-            resolution_unit: int = 3
-            x_resolution: float = 1e4
-            y_resolution: float = 1e4
+            resolution_unit = 3
+            x_resolution = 1e4
+            y_resolution = 1e4
 
-        kwargs = dict(
-            resolution_unit=resolution_unit,
-            x_resolution=x_resolution,
-            y_resolution=y_resolution,
-        )
         add_paths = list(pathlib.Path(ROOT_DIR).glob(f"**/*{scan_program}*.bmp"))
         paths += add_paths
         output_dirs += [
             pathlib.Path(OUTPUT_DIR) / path.relative_to(ROOT_DIR).parent
             for path in add_paths
         ]
-        kwargs_per_path += [kwargs] * len(add_paths)
+
+        if output_ext in ["tiff", "tif"]:
+            kwargs: ToTIFFParams = dict(
+                resolution_unit=resolution_unit,
+                x_resolution=x_resolution,
+                y_resolution=y_resolution,
+            )
+            kwargs_per_path += [kwargs] * len(add_paths)
 
     batch_convert(
         input_paths=paths,

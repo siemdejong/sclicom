@@ -13,7 +13,7 @@ from dpat.exceptions import DpatOutputDirectoryExistsError
 logger = logging.getLogger(__name__)
 
 
-def file_of_paths_to_list(path: str) -> list[str]:
+def file_of_paths_to_list(path: pathlib.Path) -> list[str]:
     """Read a file with a path per row and returns a list of paths."""
     content: list = []
     with open(path, "r") as f:
@@ -22,7 +22,7 @@ def file_of_paths_to_list(path: str) -> list[str]:
     return content
 
 
-def test_overlap(save_to_dir: str, dataset_name, diagnoses_fn: str) -> None:
+def test_overlap(save_to_dir: pathlib.Path, dataset_name, diagnoses_fn: str) -> None:
     """Test overlap of splits.
 
     Load the paths to images of the train-val-test splits as previously produced,
@@ -59,7 +59,9 @@ def test_overlap(save_to_dir: str, dataset_name, diagnoses_fn: str) -> None:
         assert len(set(test_slides).intersection(set(val_slides))) == 0
 
 
-def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None:
+def test_lengths(
+    save_to_dir: pathlib.Path, dataset_name: str, diagnoses_fn: str
+) -> None:
     """Test lengths across all splits.
 
     Ensure the length of the train+val+test is the same length for each
@@ -74,7 +76,7 @@ def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None
             fold_length += len(
                 file_of_paths_to_list(
                     pathlib.Path(
-                        f"{save_to_dir}/{filetype}_{dataset_name}_"
+                        save_to_dir / f"{filetype}_{dataset_name}_"
                         f"{subset}-subfold-{subfold}-fold-{fold}.csv"
                     )
                 )
@@ -84,7 +86,10 @@ def test_lengths(save_to_dir: str, dataset_name: str, diagnoses_fn: str) -> None
 
 
 def test_distributions(
-    path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
+    path_to_labels_file: pathlib.Path,
+    save_to_dir: pathlib.Path,
+    dataset_name: str,
+    diagnoses_fn: str,
 ) -> None:
     """Tests if the fraction of classes are 1 / (included diagnoses)."""
     path_to_patient_df = pd.read_csv(f"{save_to_dir}/paths_to_patient_id.csv")
@@ -124,7 +129,10 @@ def test_distributions(
 
 
 def test(
-    path_to_labels_file: str, save_to_dir: str, dataset_name: str, diagnoses_fn: str
+    path_to_labels_file: pathlib.Path,
+    save_to_dir: pathlib.Path,
+    dataset_name: str,
+    diagnoses_fn: str,
 ) -> None:
     """Test the splits.
 
@@ -141,10 +149,10 @@ def test(
 
 
 def create_splits(
-    image_dir: str,
-    path_to_labels_file: str,
+    image_dir: pathlib.Path,
+    path_to_labels_file: pathlib.Path,
     dataset_name: str,
-    save_to_dir: str = "splits",
+    save_to_dir: pathlib.Path = pathlib.Path("splits"),
     overwrite: bool = False,
     include_pattern: list[str] = ["*.*"],
     exclude_pattern: list[str] = [""],
@@ -192,10 +200,8 @@ def create_splits(
     [1] https://github.com/NKI-AI/hissl
     """
     # The directory should not exist, to avoid overwriting previously calculated splits.
-    image_dir: pathlib.Path = pathlib.Path(image_dir)
-    save_to_dir: pathlib.Path = pathlib.Path(save_to_dir)
     assert not save_to_dir.is_absolute(), "Please provide a relative path to `-o`."
-    save_to_dir: pathlib.Path = image_dir / save_to_dir
+    save_to_dir = image_dir / save_to_dir
     try:
         save_to_dir.mkdir()
     except FileExistsError:
@@ -250,7 +256,7 @@ def create_splits(
     )
 
     # Filter dataframe by diagnosis
-    if filter_diagnosis:
+    if filter_diagnosis is not None:
         len_before_filter_drop = len(df)
         df = df[df["diagnosis"].isin(filter_diagnosis)].reset_index()
         logger.info(
@@ -347,10 +353,10 @@ def create_splits(
 
 if __name__ == "__main__":
     create_splits(
-        r"D:\Pediatric brain tumours\images-tif",
-        r"D:\Pediatric brain tumours\labels.csv",
+        pathlib.Path(r"D:\Pediatric brain tumours\images-tif"),
+        pathlib.Path(r"D:\Pediatric brain tumours\labels.csv"),
         "pmc-hhg",
-        r"D:\Pediatric brain tumours\splits",
-        include_pattern="*slow.tiff",
+        pathlib.Path(r"D:\Pediatric brain tumours\splits"),
+        include_pattern=["*slow.tif"],
         filter_diagnosis=["pilocytic astrocytoma", "medulloblastoma"],
     )

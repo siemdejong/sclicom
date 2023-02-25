@@ -11,12 +11,21 @@ from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
 from lightly.data import LightlyDataset, SwaVCollateFunction
+from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from dpat.data.transforms import AvailableTransforms, Dlup2DpatTransform
 
 logger = logging.getLogger(__name__)
+
+
+class SizedDataset(Dataset):
+    """Type stub for a dataset where __len__ is implemented."""
+
+    def __len__(self):
+        """Calculate length of `Dataset`."""
+        ...
 
 
 class MaskGetter:
@@ -76,7 +85,7 @@ class PMCHHGImageDataset(Dataset):
         tile_overlap_y: int,
         tile_mode: str,
         crop: bool,
-        mask_factory: str,
+        mask_factory: Literal["no_mask"],
         mask_foreground_threshold: Union[float, None],
         mask_root_dir: str,
         transform: Union[torchvision.transforms.Compose, None] = None,
@@ -130,6 +139,7 @@ class PMCHHGImageDataset(Dataset):
 
         self.transform = Dlup2DpatTransform(transform)
 
+        self.foreground_threshold: float
         if mask_factory != "no_mask":
             self.foreground_threshold = mask_foreground_threshold
         else:
@@ -222,7 +232,9 @@ class PMCHHGImageDataset(Dataset):
         return self.num_samples()
 
 
-def online_mean_and_std(dataset: Dataset, batch_size: int = 64) -> tuple[float, float]:
+def online_mean_and_std(
+    dataset: SizedDataset, batch_size: int = 64
+) -> tuple[Tensor, Tensor]:
     """Calculate mean and std in an online fashion.
 
     Calculates the mean and std by looping through the dataset two times.

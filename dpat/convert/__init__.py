@@ -22,7 +22,13 @@ class AvailableImageFormats(Enum):
     tif = "tif"
 
 
-class ToTIFFParams(TypedDict):
+class ToOtherParams(TypedDict):
+    """Class encapsulating target format classes for typing."""
+
+    pass
+
+
+class ToTIFFParams(ToOtherParams):
     """Allowed parameters for `img_to_tiff`.
 
     TIFF files [1] contain resolution information in the header.
@@ -44,12 +50,6 @@ class ToTIFFParams(TypedDict):
     resolution_unit: Literal[1, 2, 3]
     x_resolution: float
     y_resolution: float
-
-
-class ToOtherParams(ToTIFFParams):
-    """Class encapsulating target format classes for typing."""
-
-    pass
 
 
 def img_to_tiff(
@@ -91,7 +91,7 @@ def filter_existing(
     output_dirs: list[pathlib.Path],
     extension: AvailableImageFormats,
     kwargs_per_path: Union[list[ToOtherParams], None] = None,
-):
+) -> tuple[list[pathlib.Path], list[pathlib.Path], Union[list[ToOtherParams], None]]:
     """Filter existing output paths.
 
     Pops out items of all input lists that correspond to an existing output file.
@@ -107,22 +107,25 @@ def filter_existing(
     kwargs_per_path : list of ToOtherParams or None, optional
         Any other list of kwargs to be filtered with the other lists.
     """
-    filtered_input_paths = []
-    filtered_output_dirs = []
-    filtered_kwargs_per_path = []
+    filter_ids: list[int] = []
+    for i, (input_path, output_dir) in enumerate(zip(input_paths, output_dirs)):
+        output_fn = output_dir / (input_path.stem + f".{extension}")
+        if output_fn.exists():
+            filter_ids.append(i)
 
-    for input_path, output_dir, kwargs in zip(
-        input_paths, output_dirs, kwargs_per_path
-    ):
-        input_path: pathlib.Path
-        output_dir: pathlib.Path
-        output_fn: pathlib.Path = pathlib.Path(
-            output_dir / (input_path.stem + f".{extension}")
-        )
-        if not output_fn.exists():
-            filtered_input_paths.append(input_path)
-            filtered_output_dirs.append(output_dir)
-            filtered_kwargs_per_path.append(kwargs)
+    filtered_input_paths = [
+        input_path for i, input_path in enumerate(input_paths) if i not in filter_ids
+    ]
+    filtered_output_dirs = [
+        output_dir for i, output_dir in enumerate(output_dirs) if i not in filter_ids
+    ]
+
+    if kwargs_per_path is not None:
+        filtered_kwargs_per_path = [
+            kwargs for i, kwargs in enumerate(kwargs_per_path) if i not in filter_ids
+        ]
+    else:
+        filtered_kwargs_per_path = None
 
     skip_count = len(input_paths) - len(filtered_input_paths)
     if skip_count:
@@ -137,8 +140,11 @@ def filter_existing(
 
 def _wrapper(args, worker):
     """Pass kwargs to Pool.imap_unordered."""
-    input_path, output_dir, kwargs = args
-    worker(input_path, output_dir, **kwargs)
+    try:
+        input_path, output_dir, kwargs = args
+        worker(input_path, output_dir, **kwargs)
+    except ValueError:
+        worker(*args)
 
 
 def batch_convert(
@@ -197,7 +203,9 @@ def batch_convert(
                 tqdm(
                     pool.imap_unordered(
                         wrapper,
-                        zip(input_paths, output_dirs, kwargs_per_path),
+                        zip(input_paths, output_dirs, kwargs_per_path)
+                        if kwargs_per_path
+                        else zip(input_paths, output_dirs),
                         chunksize,
                     ),
                     total=nmax,

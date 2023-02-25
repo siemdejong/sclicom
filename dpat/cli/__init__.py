@@ -43,7 +43,7 @@ def convert():
 @click.option(
     "-e",
     "--output-ext",
-    type=click.Choice(AvailableImageFormats.__members__, case_sensitive=False),
+    type=click.Choice([f.value for f in AvailableImageFormats], case_sensitive=False),
     required=True,
     help="Extension to convert to.",
 )
