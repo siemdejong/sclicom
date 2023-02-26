@@ -4,3 +4,4 @@ extend-ignore = E203
 exclude =
     dpat/extract_features,
     build
+    tests/*

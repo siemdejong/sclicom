@@ -47,7 +47,7 @@ repos:
   rev: 6.0.0
   hooks:
     - id: flake8
-      exclude: ^(dpat/extract_features|build)
+      exclude: ^(dpat/extract_features|build|tests)
       additional_dependencies: ["flake8-docstrings"]
       args: [--config, .flake8]
 -   repo: https://github.com/pre-commit/mirrors-mypy

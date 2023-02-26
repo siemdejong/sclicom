@@ -174,7 +174,9 @@ def create_splits(
     image_dir : str
         Input directory to fetch filenames from.
     path_to_labels_file : str
-        Path to the csv file containing "case" and "diagnosis" columns.
+        Path to the csv file containing "case_id" and "diagnosis" columns.
+        The case_id column can currently only be interpreted with the PMC_HHG_
+        prefix.
     dataset_name : str
         Name to give the splits.
     save_to_dir : str, default="splits"

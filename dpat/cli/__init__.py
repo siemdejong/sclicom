@@ -2,6 +2,8 @@
 
 This is the file which builds the main parser.
 """
+import pathlib
+
 import click
 
 from dpat.cli.logging import config_logging
@@ -31,6 +33,7 @@ def convert():
     "--input-dir",
     default=".",
     show_default=True,
+    type=pathlib.Path,
     help="Input directory where to find the images to be converted.",
 )
 @click.option(
@@ -38,6 +41,7 @@ def convert():
     "--output-dir",
     default="./converted",
     show_default=True,
+    type=pathlib.Path,
     help="Output directory where place converted files.",
 )
 @click.option(
@@ -93,6 +97,7 @@ def splits():
     "image_dir",
     required=True,
     show_default=True,
+    type=pathlib.Path,
     help="Input directory where to find the images.",
 )
 @click.option(
@@ -105,6 +110,7 @@ def splits():
     "save_to_dir",
     default="splits",
     show_default=True,
+    type=pathlib.Path,
     help="Directory where to put the splits.",
 )
 @click.option(
