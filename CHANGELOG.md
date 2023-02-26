@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.4 (2023-02-26)
+### Fix
+* **tests:** Add convert tests ([`819e23d`](https://github.com/siemdejong/dpat/commit/819e23dbdb36824ffbcf5a520e8d43ac42acb0d8))
+
 ## v2.1.3 (2023-02-25)
 ### Fix
 * **semantic-release:** Add build command ([`c35a40f`](https://github.com/siemdejong/dpat/commit/c35a40f214390c36a4f377523fc03560f3eb8cfd))
