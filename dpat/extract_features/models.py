@@ -42,3 +42,6 @@ class SwAV(pl.LightningModule):
     def configure_optimizers(self):
         optim = torch.optim.Adam(self.parameters(), lr=self.lr)
         return optim
+
+    def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
+        optimizer.zero_grad(set_to_none=True)
