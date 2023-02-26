@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.5 (2023-02-26)
+### Fix
+* **tests:** Add tests for create_splits ([`780ed07`](https://github.com/siemdejong/dpat/commit/780ed077000f55c0f7b86888c1f9646ec0085864))
+
 ## v2.1.4 (2023-02-26)
 ### Fix
 * **tests:** Add convert tests ([`819e23d`](https://github.com/siemdejong/dpat/commit/819e23dbdb36824ffbcf5a520e8d43ac42acb0d8))
