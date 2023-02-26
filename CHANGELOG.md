@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.1.6 (2023-02-26)
+### Performance
+* Pin memory of dataloaders ([`4afcdf2`](https://github.com/siemdejong/dpat/commit/4afcdf2e59d0dd04aafbe90dfe070a831522d9ad))
+* Zero_grad to non ([`d6d62c7`](https://github.com/siemdejong/dpat/commit/d6d62c759296b478c1038d94c7e103461a86ec5b))
+
 ## v2.1.5 (2023-02-26)
 ### Fix
 * **tests:** Add tests for create_splits ([`780ed07`](https://github.com/siemdejong/dpat/commit/780ed077000f55c0f7b86888c1f9646ec0085864))
