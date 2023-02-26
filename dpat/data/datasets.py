@@ -461,6 +461,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             batch_size=self.batch_size,
             shuffle=True,
             collate_fn=self.collate_fn,
+            pin_memory=True,
         )
 
     def val_dataloader(self):
@@ -470,6 +471,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             num_workers=self.num_workers,
             batch_size=self.batch_size,
             collate_fn=self.collate_fn,
+            pin_memory=True,
         )
 
     def test_dataloader(self):
@@ -479,6 +481,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             num_workers=self.num_workers,
             batch_size=self.batch_size,
             collate_fn=self.collate_fn,
+            pin_memory=True,
         )
 
     def teardown(self, stage):
