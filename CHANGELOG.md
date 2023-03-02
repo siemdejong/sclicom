@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.2.0 (2023-03-02)
+### Feature
+* Add feature extraction ([`e71d5be`](https://github.com/siemdejong/dpat/commit/e71d5becd0b1e194c5205d9993813dd74f4bb32d))
+
 ## v2.1.6 (2023-02-26)
 ### Performance
 * Pin memory of dataloaders ([`4afcdf2`](https://github.com/siemdejong/dpat/commit/4afcdf2e59d0dd04aafbe90dfe070a831522d9ad))
