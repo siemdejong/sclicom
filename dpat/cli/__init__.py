@@ -6,16 +6,20 @@ import pathlib
 
 import click
 
+from dpat.cli.dpat_trainer_cli import DpatTrainerCLI  # noqa:F401
 from dpat.cli.logging import config_logging
+from dpat.cli.pretrain_cli import PreTrainCLI  # noqa:F401
+from dpat.configs import register_conf_resolvers
 from dpat.convert import AvailableImageFormats
 from dpat.convert.hhg import hhg_batch_convert
-from dpat.extract_features.train import train as train_ef
 from dpat.splits.create_splits import create_splits
+
+register_conf_resolvers()
 
 config_logging()
 
 
-@click.group()
+@click.group(context_settings=dict(ignore_unknown_options=True))
 def cli():
     """Click group to attach all cli subcommands to."""
     pass
@@ -156,9 +160,3 @@ def create(*args, **kwargs):
 def extract_features():
     """Click group to attach all extract features commands to."""
     pass
-
-
-@extract_features.command()
-def train(*args, **kwargs):
-    """Click command passing args to the feature extractor."""
-    train_ef(*args, **kwargs)

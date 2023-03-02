@@ -78,16 +78,16 @@ class PMCHHGImageDataset(Dataset):
         self,
         root_dir: str,
         image_paths_and_targets: str,
-        mpp: float,
-        tile_size_x: int,
-        tile_size_y: int,
-        tile_overlap_x: int,
-        tile_overlap_y: int,
-        tile_mode: str,
-        crop: bool,
-        mask_factory: Literal["no_mask"],
-        mask_foreground_threshold: Union[float, None],
-        mask_root_dir: str,
+        mpp: float = 0.2,
+        tile_size_x: int = 224,
+        tile_size_y: int = 224,
+        tile_overlap_x: int = 0,
+        tile_overlap_y: int = 0,
+        tile_mode: str = "overflow",
+        crop: bool = False,
+        mask_factory: Literal["no_mask"] = "no_mask",
+        mask_foreground_threshold: Union[float, None] = None,
+        mask_root_dir: Union[str, None] = None,
         transform: Union[torchvision.transforms.Compose, None] = None,
     ):
         """Create dataset.
@@ -99,30 +99,30 @@ class PMCHHGImageDataset(Dataset):
         image_paths_and_targets_file : str
             Path to file containing image paths and targets,
             created by `dpat splits create`.
-        mpp : float
+        mpp : float, default=0.2
             float stating the microns per pixel that you wish the tiles to be.
-        tile_size_x : int
+        tile_size_x : int, default=224
             Tuple of integers that represent the size in pixels of output tiles in
             x-direction.
-        tile_size_y : int
+        tile_size_y : int, default=224
             Tuple of integers that represent the size in pixels of output tiles in
             y-direction.
-        tile_overlap_x : int
+        tile_overlap_x : int, default=0
             Tuple of integers that represents the overlap of tiles in the x-direction.
-        tile_overlap_y : int
+        tile_overlap_y : int, default=0
             Tuple of integers that represents the overlap of tiles in the x-direction.
-        tile_mode : skip|overflow
+        tile_mode : skip|overflow, default=overflow
             See `dlup.tiling.TilingMode` for more information
-        crop : bool
+        crop : bool, default=False
              If overflowing tiles should be cropped.
-        mask_factory : str
+        mask_factory : str, default="no_mask"
             How to load masks. Must be `load_from_disk` or `no_mask`.
-        mask_foreground_threshold : float
+        mask_foreground_threshold : float|None, default=None
             Threshold to check against. The foreground percentage should be strictly
             larger than threshold. If None anything is foreground. If 1, the region must
             be completely foreground. Other values are in between, for instance if 0.5,
             the region must be at least 50% foreground.
-        transform : `torchvision.transforms.Compose
+        transform : `torchvision.transforms.Compose, default=None
             Transform to be applied to the sample.
         """
         super().__init__()
@@ -202,30 +202,42 @@ class PMCHHGImageDataset(Dataset):
         sample = dataset[index]
         return sample["path"]
 
-    def __getitem__(self, index):
-        """Get one tile and its target, along with metadata."""
+    def get_metadata(self, index: int):
+        """Get metadata of a sample.
+
+        Parameters
+        ----------
+        index : int
+            Index of tile dataset to fetch metadata from.
+        """
         sample = self.dlup_dataset[index]
 
         relative_path = str(pathlib.Path(sample["path"]).relative_to(self.root_dir))
         (case_id, img_id, target) = self.df.loc[relative_path, [1, 2, 3]]
-        # return_object = {
-        #     "x": sample["image"],
-        #     "y": int(target),
-        #     "slide_id": img_id,
-        #     "patient_id": case_id,
-        #     "paths": str(relative_path),
-        #     "root_dir": str(self.root_dir),
-        #     "meta": {
-        #         "tile_x": sample["coordinates"][0],
-        #         "tile_y": sample["coordinates"][1],
-        #         "tile_mpp": sample["mpp"],
-        #         # "tile_w": sample["region_size"][0],
-        #         # "tile_h": sample["region_size"][1],
-        #         # "tile_region_index": sample["region_index"],
-        #     },
-        # }
-        # return return_object
-        return sample["image"], target  # , sample["path"]
+
+        metadata = {
+            "img_id": img_id,
+            "case_id": case_id,
+            "tile_region_index": sample["region_index"],
+            "meta": {
+                "target": int(target),
+                "tile_mpp": sample["mpp"],
+                "tile_x": sample["coordinates"][0],
+                "tile_y": sample["coordinates"][1],
+                # 'tile_w': sample["region_size"][0],
+                # 'tile_h': sample["region_size"][1],
+            },
+        }
+
+        return metadata
+
+    def __getitem__(self, index):
+        """Get one tile and its target."""
+        sample = self.dlup_dataset[index]
+
+        relative_path = str(pathlib.Path(sample["path"]).relative_to(self.root_dir))
+        target = self.df.loc[relative_path, 3]
+        return sample["image"], target
 
     def __len__(self) -> int:
         """Size of the dataset."""
@@ -290,23 +302,23 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
 
     def __init__(
         self,
-        model: Literal["SwaV"],
+        model: Literal["swav"],
         root_dir: str,
         train_img_paths_and_targets: str,
         val_img_paths_and_targets: str,
         test_img_paths_and_targets: str,
-        mpp: float,
-        tile_size_x: int,
-        tile_size_y: int,
-        tile_overlap_x: int,
-        tile_overlap_y: int,
-        tile_mode: str,
-        crop: bool,
-        mask_factory: str,
-        mask_foreground_threshold: float,
-        mask_root_dir: str,
-        num_workers: int,
-        batch_size: int,
+        mpp: float = 0.2,
+        tile_size_x: int = 224,
+        tile_size_y: int = 224,
+        tile_overlap_x: int = 0,
+        tile_overlap_y: int = 0,
+        tile_mode: str = "overflow",
+        crop: bool = False,
+        mask_factory: str = "no_mask",
+        mask_foreground_threshold: Union[float, None] = None,
+        mask_root_dir: Union[str, None] = None,
+        num_workers: int = 4,
+        batch_size: int = 512,
         transform: Union[list[AvailableTransforms], None] = None,
         **kwargs,
     ) -> None:
@@ -357,7 +369,6 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             If `transform` is unavailable.
         """
         super().__init__()
-        self.save_hyperparameters()
         # self.prepare_data_per_node = True
 
         self.model = model.lower()
@@ -438,21 +449,6 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
                 images_paths_and_targets=self.train_path, **dataset_kwargs
             )
 
-    def on_before_batch_transfer(self, batch, dataloader_idx):
-        """Before transfer to device, do ..."""
-        # Using self.trainer.train/validation/test,
-        # different transformations can be applied here.
-
-        # batch['x'] = transforms(batch['x'])
-        # return batch
-        pass
-
-    def on_after_batch_transfer(self, batch, dataloader_idx):
-        """After transfer to device, do ..."""
-        # batch['x'] = gpu_transforms(batch['x'])
-        # return batch
-        pass
-
     def train_dataloader(self):
         """Build train dataloader."""
         return DataLoader(
@@ -463,29 +459,3 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             collate_fn=self.collate_fn,
             pin_memory=True,
         )
-
-    def val_dataloader(self):
-        """Build validation dataloader."""
-        return DataLoader(
-            self.val_dataset,
-            num_workers=self.num_workers,
-            batch_size=self.batch_size,
-            collate_fn=self.collate_fn,
-            pin_memory=True,
-        )
-
-    def test_dataloader(self):
-        """Build test dataloader."""
-        return DataLoader(
-            self.test_dataset,
-            num_workers=self.num_workers,
-            batch_size=self.batch_size,
-            collate_fn=self.collate_fn,
-            pin_memory=True,
-        )
-
-    def teardown(self, stage):
-        """Cleanup."""
-        pass
-        # clean up after fit or test
-        # called on every process in DDP

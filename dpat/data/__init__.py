@@ -1,6 +1,9 @@
 """Provide datasets and transforms."""
 import platform
 
+from .pmc_tile_dataset import PMCHHGImageDataModule, PMCHHGImageDataset  # noqa:F401
+from .transforms import Dlup2DpatTransform  # noqa:F401
+
 if platform.system() == "Windows":
     import dpat
 
