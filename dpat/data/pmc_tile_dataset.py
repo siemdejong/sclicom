@@ -16,16 +16,9 @@ from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from dpat.data.transforms import AvailableTransforms, Dlup2DpatTransform
+from dpat.types import SizedDataset
 
 logger = logging.getLogger(__name__)
-
-
-class SizedDataset(Dataset):
-    """Type stub for a dataset where __len__ is implemented."""
-
-    def __len__(self):
-        """Calculate length of `Dataset`."""
-        ...
 
 
 class MaskGetter:
@@ -202,7 +195,9 @@ class PMCHHGImageDataset(Dataset):
         sample = dataset[index]
         return sample["path"]
 
-    def get_metadata(self, index: int):
+    def get_metadata(
+        self, index: int
+    ) -> dict[str, Union[int, str, dict[str, Union[float, int]]]]:
         """Get metadata of a sample.
 
         Parameters

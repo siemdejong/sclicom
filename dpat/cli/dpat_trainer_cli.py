@@ -16,8 +16,8 @@ class DpatTrainerCLI(LightningCLI):
         ```
         """
         super().add_arguments_to_parser(parser)
-        parser.add_argument("enable_cudnn_auto_tuner")
-        parser.add_argument("set_float32_matmul_precision", type=str)
+        parser.add_argument("--enable_cudnn_auto_tuner", type=bool)
+        parser.add_argument("--set_float32_matmul_precision", type=str)
 
     def before_instantiate_classes(self) -> None:
         """Routines to apply before trainer classes are instantiated."""
