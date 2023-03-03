@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.0 (2023-03-02)
+### Feature
+* Add h5 dataset ([`0f6cfe2`](https://github.com/siemdejong/dpat/commit/0f6cfe24673dd27c43bd230636d4ad4698813865))
+
 ## v2.2.0 (2023-03-02)
 ### Feature
 * Add feature extraction ([`e71d5be`](https://github.com/siemdejong/dpat/commit/e71d5becd0b1e194c5205d9993813dd74f4bb32d))
