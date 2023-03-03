@@ -1,12 +1,12 @@
 """Compile features extracted by pretrained feature extractor."""
 import pathlib
 
-from torchvision.transforms import Compose, ToTensor  # isort: ignore
-
 # The pyvips import from dlup (dpat dependency) conflicts with torchvision.
 # Import dpat first.
-from dpat.data import H5Dataset, PMCHHGImageDataset  # isort: ignore
-from dpat.extract_features.models import SwAV  # isort: ignore
+from dpat.data import H5Dataset, PMCHHGImageDataset  # isort: skip
+from dpat.extract_features.models import SwAV  # isort: skip
+
+from torchvision.transforms import Compose, ToTensor  # isort: skip
 
 
 def main():
@@ -35,16 +35,16 @@ def main():
     )
 
     H5Dataset.from_pmchhg_data_and_model(
-        filename=pathlib.Path("test.hdf5"),
+        filename="test.hdf5",
         dir_name=pathlib.Path("/scistor/guest/sjg203/projects/pmc-hhg/features/"),
         dataset=dataset,
-        model=model,
+        model=model.backbone,
         num_classes=2,
         dsetname_format=["case_id", "img_id", "tile_region_index"],
         transform=None,
         cache=False,
-        overwrite=True,
-        skip_if_exists=False,
+        mode="a",
+        skip_if_exists=True,
     )
 
 

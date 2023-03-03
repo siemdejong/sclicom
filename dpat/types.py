@@ -11,9 +11,15 @@ class SizedDataset(Dataset):
         ...
 
 
-class SizedMetaDataDataset(SizedDataset):
+class MetaDataDataset(Dataset):
     """Type stub for a dataset where `get_metadata` is implemented."""
 
     def get_metadata(self, index: int):
         """Get metadata at index of `Dataset`."""
         ...
+
+
+class SizedMetaDataDataset(SizedDataset, MetaDataDataset):
+    """Type stub for a dataset with size and metadata."""
+
+    pass

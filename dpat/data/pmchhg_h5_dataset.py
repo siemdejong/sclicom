@@ -1,10 +1,12 @@
 """Provide H5 dataset to read and compile features."""
 import logging
 import pathlib
+from contextlib import contextmanager
 from pprint import pformat
-from typing import Type, TypeVar, Union
+from typing import Generator, Type, TypeVar, Union
 
 import h5py
+import numpy as np
 import torch
 import torchvision
 from torch import nn
@@ -27,7 +29,7 @@ class _H5ls:
         logger.info(f"Indexing H5 datasets of {file_path}...")
 
         self.file_path = file_path
-        self.names: list = []
+        self.names: list[str] = []
 
         with h5py.File(self.file_path, "r") as file:
             file.visititems(self.get_datasets)
@@ -38,6 +40,12 @@ class _H5ls:
         if isinstance(node, h5py.Dataset) and name not in self.names:
             self.names.append(name)
 
+    def __getitem__(self, index: int) -> str:
+        return self.names[index]
+
+    def __iter__(self) -> Generator[str, None, None]:
+        yield from self.names
+
     def __repr__(self) -> str:
         """Represent H5ls, showing its origin."""
         return f"H5ls(file_path={self.file_path})"
@@ -47,13 +55,143 @@ class _H5ls:
         return pformat(self.names)
 
 
+@contextmanager
+def careful_hdf5(*args, **kwargs) -> h5py.File:
+    """Open an HDF5 file carefully.
+
+    If file already exists, note to give the overwrite keyword.
+    If interrupted while open, flush buffers and close the file.
+
+    Raises
+    ------
+    FileExistsError : if file exists and mode does not allow writing to it.
+    """
+    try:
+        f = h5py.File(*args, **kwargs)
+        yield f
+    except FileExistsError:
+        raise FileExistsError(
+            "Preventing overwrite. Use the overwrite keyword to overwrite features."
+        )
+    except KeyboardInterrupt:
+        logger.info("Interrupted...")
+    finally:
+        f.flush()
+        f.close()
+
+
+def feature_batch_extract(
+    f: h5py.File,
+    model: nn.Module,
+    dataset: SizedMetaDataDataset,
+    dsetname_format: list[str],
+    skip_if_exists: bool = True,
+) -> None:
+    """Extract features and store them in a H5 dataset.
+
+    Parameters
+    ----------
+    f : h5py.File
+        File to store the datasets in.
+    model : nn.Module
+        Model to calculate the features with.
+    dataset : SizedMetaDataDataset
+        Dataset with metadata and length, with tiles to extract features from.
+    dsetname_format : list[str]
+        List of strings which determine where the individual items of the dataset
+        will be stored in the hierarchical h5 structure.
+        The *i*th H5 datasets in the hdf5 file is created at the location which is
+        computed like `dataset.get_metadata(i)[dsetname_format...]` where
+        `dsetname_format` is a list of strings choosing the metadata to be used to
+        name the hierarchical groups and datasets.
+    skip_if_exists : bool, default=True
+        Skip if dataset objects in hdf5 file already exist.
+    """
+    # TODO: extract features in batches. It currently takes a long time.
+    model.eval()
+    dataloader_tiles = DataLoader(dataset=dataset)
+
+    for i, (tile, _) in tqdm(
+        enumerate(dataloader_tiles),
+        total=len(dataset),
+        desc="Extracting HDF5 features",
+        unit="tiles",
+    ):
+        metadata = dataset.get_metadata(i)
+        dsetname = "".join([f"/{metadata[dsetname]}" for dsetname in dsetname_format])
+
+        if f[dsetname] and skip_if_exists:
+            continue
+
+        with torch.no_grad():
+            output: torch.Tensor = model(tile)
+            features = output.view(-1)
+
+        # E.g. interpolated /case_id/img_id/tile_id.
+        dset = f.create_dataset(
+            name=dsetname, shape=features.shape, dtype="f", data=features
+        )
+
+        dset.attrs.update(metadata["meta"])
+
+
+def stack_features(
+    tempfile: h5py.File, file: h5py.File, skip_if_exists: bool = True
+) -> None:
+    """Stack features."""
+    h5ls_tempfile = _H5ls(tempfile.filename)
+    img_groups = np.unique([str(pathlib.Path(item).parent) for item in h5ls_tempfile])
+
+    logger.info("Stacking features.")
+
+    for img_group in tqdm(img_groups, desc="Stacking features, image", unit="images"):
+        # Filter which tiles are in the current image group.
+        # Make sure every tile is unique.
+        tiles_in_img_group = np.unique(
+            [tile for tile in h5ls_tempfile if img_group in tile]
+        )
+
+        # Assuming the content of the vectors has remained the same,
+        # skip concatenating img groups already concatenated.
+        # Else, make room for the newly concatenated dataset.
+        if img_group in file:
+            if len(file[img_group]["data"][()]) == len(tiles_in_img_group):
+                if skip_if_exists:
+                    continue
+            del file[img_group]
+
+        all_features = []
+        all_mpp = []
+        all_x = []
+        all_y = []
+        all_target = []
+
+        for tile in tqdm(
+            tiles_in_img_group, desc="Concatenating tile", unit="tile", leave=False
+        ):
+            all_features.append(tempfile[tile][()])
+            all_mpp.append(tempfile[tile].attrs["tile_mpp"])
+            all_x.append(tempfile[tile].attrs["tile_x"])
+            all_y.append(tempfile[tile].attrs["tile_y"])
+            all_target.append(tempfile[tile].attrs["target"])
+
+        assert len(set(all_target)) == 1  # All targets must be equal within one img.
+
+        img_group_h5 = file.create_group(img_group)
+        img_group_h5.create_dataset("data", data=all_features)
+        img_group_h5.create_dataset("all_mpp", data=all_mpp)
+        img_group_h5.create_dataset("all_x", data=all_x)
+        img_group_h5.create_dataset("all_y", data=all_y)
+        img_group_h5.create_dataset("all_target", data=all_target)
+
+
 def compile_features(
     model: nn.Module,
     dataset: SizedMetaDataDataset,
     dir_name: pathlib.Path,
-    filename: pathlib.Path,
+    filename: str,
     dsetname_format: list[str],
-    overwrite: bool = False,
+    mode: h5py.File.mode = "a",
     skip_if_exists: bool = True,
 ) -> pathlib.Path:
     """Compile features vectors to H5 format with metadata.
@@ -77,8 +215,9 @@ def compile_features(
         computed like `dataset.get_metadata(i)[dsetname_format...]` where
         `dsetname_format` is a list of strings choosing the metadata to be used to
         name the hierarchical groups and datasets.
-    overwrite : bool, default=False
-        Overwrite items in the hdf5 file.
+    mode : h5py.File.mode, default="a"
+        Mode to open hdf5 file with, using h5py.
+        See `h5py.File` for possible modes.
     skip_if_exists : bool, default=True
         Return filename if overwrite
 
@@ -87,49 +226,21 @@ def compile_features(
     filepath : `pathlib.Path`
         Path to the compiled h5 file.
     """
-    model.eval()
-    dataloader_tiles = DataLoader(dataset)
+    tempfilepath = dir_name / ("temp_" + filename)
 
     filepath = dir_name / filename
-    if skip_if_exists and filepath.exists():
-        return filepath
 
-    mode = "w" if overwrite else "w-"
-
-    try:
-        f = h5py.File(str(filepath), mode)
-
-        # TODO: extract features in batches. It currently takes a long time.
-        for i, (tile, _) in tqdm(
-            enumerate(dataloader_tiles),
-            total=len(dataset),
-            desc="Extracting HDF5 features",
-            unit="tiles",
-        ):
-            metadata = dataset.get_metadata(i)
-
-            with torch.no_grad():
-                output: torch.Tensor = model(tile)
-                features = output.view(-1)
-
-            dsetname = "".join(
-                [f"/{metadata[dsetname]}" for dsetname in dsetname_format]
-            )
-            dset = f.create_dataset(
-                name=dsetname, shape=features.shape, dtype="f", data=features
-            )
-
-            dset.attrs.update(metadata["meta"])
-
-    except FileExistsError:
-        raise FileExistsError(
-            "Preventing overwrite. Use the overwrite keyword to overwrite features."
+    with careful_hdf5(name=tempfilepath, mode=mode) as tile_file:
+        feature_batch_extract(
+            tile_file, model, dataset, dsetname_format, skip_if_exists
         )
-    except KeyboardInterrupt:
-        f.flush()
-        logger.info("Interrupted...")
-    finally:
-        f.close()
+
+        with careful_hdf5(name=filepath, mode=mode) as stacked_feature_file:
+            stack_features(
+                tempfile=tile_file,
+                file=stacked_feature_file,
+                skip_if_exists=skip_if_exists,
+            )
 
     return filepath
 
@@ -164,7 +275,7 @@ class H5Dataset(Dataset):
         self.transform = transform
         self.load_encoded = load_encoded
 
-        self.hdf5 = None
+        self.hdf5: Union[h5py.File, None] = None
 
         self.dataset_indices = _H5ls(self.file_path)
         if metadata_keys is None:
@@ -177,18 +288,19 @@ class H5Dataset(Dataset):
         if load_encoded:
             raise NotImplementedError
 
-    def get_dataset_at_index(self, index):
+    def get_dataset_at_index(self, index) -> h5py.Dataset:
         """Get dataset at index."""
         # Convert numerical index to string index.
         hdf5_index = self.dataset_indices[index]
-        dataset = self.hdf5[hdf5_index]
-
-        return dataset
+        if self.hdf5 is not None:
+            return self.hdf5[hdf5_index]
+        else:
+            return None
 
     @classmethod
     def from_pmchhg_data_and_model(
         cls: Type[T],
-        filename: pathlib.Path,
+        filename: str,
         dir_name: pathlib.Path,
         dataset: SizedMetaDataDataset,
         model: nn.Module,
@@ -196,7 +308,7 @@ class H5Dataset(Dataset):
         dsetname_format: list[str],
         transform: torchvision.transforms = None,
         cache: bool = False,
-        overwrite: bool = False,
+        mode: h5py.File.mode = "a",
         skip_if_exists: bool = True,
     ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
@@ -209,12 +321,13 @@ class H5Dataset(Dataset):
 
         Parameters
         ----------
-        filename : pathlib.Path
+        filename : str
             Filename of the dataset.
         dir_name : pathlib.Path
             Directory to save the file to.
-        dataset : PMCHHGImageDataset
-            The dataset to extract hdf5 features from. Must be of PMCHHGImageDataset.
+        dataset : `SizedMetaDataDataset`
+            The dataset to extract hdf5 features from. Must be of
+            `SizedMetaDataDataset`.
         model : nn.Module
             The model to use to extract the features.
             E.g. this is the backbone attribute of a trained model with SwAV.
@@ -222,8 +335,9 @@ class H5Dataset(Dataset):
             Must be a torchvision transform.
         cache : bool, default=False
             Cache features during training.
-        overwrite : bool, default=False
-            If True, overwrite items from the file given by `dir`/`filename`.
+        mode : h5py.File.mode, default="a"
+            Mode to open hdf5 file with, using h5py.
+            See `h5py.File` for possible modes.
         skip_if_exists : bool, default=True
             If True, does not write new items to h5 file if it already exists,
             but returns file path.
@@ -234,7 +348,7 @@ class H5Dataset(Dataset):
             dir_name=dir_name,
             filename=filename,
             dsetname_format=dsetname_format,
-            overwrite=overwrite,
+            mode=mode,
             skip_if_exists=skip_if_exists,
         )
 
