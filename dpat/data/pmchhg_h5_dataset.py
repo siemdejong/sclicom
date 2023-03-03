@@ -2,7 +2,7 @@
 import logging
 import pathlib
 from pprint import pformat
-from typing import Union
+from typing import Type, TypeVar, Union
 
 import h5py
 import torch
@@ -15,7 +15,7 @@ from dpat.types import SizedMetaDataDataset
 
 logger = logging.getLogger(__name__)
 
-
+T = TypeVar("T", bound="H5Dataset")
 H5ItemObject = dict[str, Union[torch.Tensor, torch.LongTensor, float, int]]
 
 
@@ -135,10 +135,7 @@ def compile_features(
 
 
 class H5Dataset(Dataset):
-    """Dataset for packed HDF5 files to pass to a PyTorch dataloader.
-
-    TODO: ADD MOVE COMPILATION TO HERE.
-    """
+    """Dataset for packed HDF5 files to pass to a PyTorch dataloader."""
 
     def __init__(
         self,
@@ -190,7 +187,7 @@ class H5Dataset(Dataset):
 
     @classmethod
     def from_pmchhg_data_and_model(
-        cls,
+        cls: Type[T],
         filename: pathlib.Path,
         dir_name: pathlib.Path,
         dataset: SizedMetaDataDataset,
@@ -201,7 +198,7 @@ class H5Dataset(Dataset):
         cache: bool = False,
         overwrite: bool = False,
         skip_if_exists: bool = True,
-    ) -> "H5Dataset":
+    ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
 
         Example structure
