@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.1 (2023-03-03)
+### Fix
+* Concatenate features ([`349b13d`](https://github.com/siemdejong/dpat/commit/349b13d5c0be43dea0ede14cffc65c11089c9154))
+* H5 classmethod return type ([`bc4b24a`](https://github.com/siemdejong/dpat/commit/bc4b24af8dcd40caca4089217a5dd9c98ee2aae8))
+
 ## v2.3.0 (2023-03-02)
 ### Feature
 * Add h5 dataset ([`0f6cfe2`](https://github.com/siemdejong/dpat/commit/0f6cfe24673dd27c43bd230636d4ad4698813865))
