@@ -148,14 +148,20 @@ def stack_features(
         # Filter which tiles are in the current image group.
         # Make sure every tile is unique.
         tiles_in_img_group = np.unique(
-            [tile for tile in h5ls_tempfile if img_group in tile]
+            [
+                tile
+                for tile in h5ls_tempfile
+                if str(pathlib.Path(tile).parent) == img_group
+            ]
         )
+
+        assert len(tiles_in_img_group) == len(tempfile[img_group])
 
         # Assuming the content of the vectors has remained the same,
         # skip concatenating img groups already concatenated.
         # Else, make room for the newly concatenated dataset.
         if img_group in file:
-            if len(file[img_group]["data"][()]) == len(tiles_in_img_group):
+            if len(file[img_group]["data"]) == len(tiles_in_img_group):
                 if skip_if_exists:
                     continue
             del file[img_group]
@@ -231,9 +237,9 @@ def compile_features(
     filepath = dir_name / filename
 
     with careful_hdf5(name=tempfilepath, mode=mode) as tile_file:
-        feature_batch_extract(
-            tile_file, model, dataset, dsetname_format, skip_if_exists
-        )
+        # feature_batch_extract(
+        #     tile_file, model, dataset, dsetname_format, skip_if_exists
+        # )
 
         with careful_hdf5(name=filepath, mode=mode) as stacked_feature_file:
             stack_features(
