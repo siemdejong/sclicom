@@ -2,6 +2,5 @@
 max-line-length = 88
 extend-ignore = E203
 exclude =
-    dpat/extract_features,
     build
     tests/*
