@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.2 (2023-03-04)
+### Fix
+* Fix number of compiled feature vectors ([`b659501`](https://github.com/siemdejong/dpat/commit/b659501ccec8e7521e8c4d61d6e6e200a8956f40))
+
 ## v2.3.1 (2023-03-03)
 ### Fix
 * Concatenate features ([`349b13d`](https://github.com/siemdejong/dpat/commit/349b13d5c0be43dea0ede14cffc65c11089c9154))
