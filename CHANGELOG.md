@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.3.3 (2023-03-04)
+### Fix
+* Uncomment feature compilation ([`4e018fe`](https://github.com/siemdejong/dpat/commit/4e018fe2c0760a1292edae65be11effd9c1f0787))
+
 ## v2.3.2 (2023-03-04)
 ### Fix
 * Fix number of compiled feature vectors ([`b659501`](https://github.com/siemdejong/dpat/commit/b659501ccec8e7521e8c4d61d6e6e200a8956f40))
