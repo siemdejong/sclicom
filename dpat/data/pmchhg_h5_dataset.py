@@ -237,9 +237,9 @@ def compile_features(
     filepath = dir_name / filename
 
     with careful_hdf5(name=tempfilepath, mode=mode) as tile_file:
-        # feature_batch_extract(
-        #     tile_file, model, dataset, dsetname_format, skip_if_exists
-        # )
+        feature_batch_extract(
+            tile_file, model, dataset, dsetname_format, skip_if_exists
+        )
 
         with careful_hdf5(name=filepath, mode=mode) as stacked_feature_file:
             stack_features(
