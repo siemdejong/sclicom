@@ -329,16 +329,18 @@ class VarAttention(Attention):
         ----------
         [1] https://www.itl.nist.gov/div898/software/dataplot/refman2/ch2/weightsd.pdf
         """
+        if M is None:
+            M = torch.mm(A, H)
+
         # TODO Now implemented to work with output as given above which is only for
         # batch size of 1.
+
         A, H = A.unsqueeze(2), H.unsqueeze(0)
         # A: Attention (weight):    batch x instances x 1
         # H: Hidden:                batch x instances x channels
         H = H.permute(0, 2, 1)  # batch x channels x instances
 
         # M: Weighted average:      batch x channels
-        if M is None:
-            M = torch.mm(A, H)
         M = M.unsqueeze(dim=2)  # batch x channels x 1
         # ---> S: weighted stdev:   batch x channels
 
