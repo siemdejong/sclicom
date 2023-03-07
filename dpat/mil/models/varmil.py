@@ -14,9 +14,9 @@ import h5py
 import lightning.pytorch as pl
 import torch
 import torch.nn.functional as F
-import torchmetrics
 from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
 from torch import nn
+from torchmetrics import AUROC, F1Score, Metric, PrecisionRecallCurve
 
 # Of course the targets are equal per batch all the time, because of MIL.
 # Suppress this warning.
@@ -98,9 +98,9 @@ class Attention(pl.LightningModule):
         task: Literal["binary", "multiclass", "multilabel"] = (
             "binary" if num_classes == 2 else "multiclass"
         )
-        self.auroc = torchmetrics.AUROC(task=task, num_classes=num_classes)
-        self.f1 = torchmetrics.F1Score(task=task, num_classes=num_classes)
-        self.pr_curve = torchmetrics.PrecisionRecallCurve(
+        self.auroc: Metric = AUROC(task=task, num_classes=num_classes)  # type: ignore
+        self.f1: Metric = F1Score(task=task, num_classes=num_classes)  # type: ignore
+        self.pr_curve: Metric = PrecisionRecallCurve(  # type: ignore
             task=task, num_classes=num_classes
         )
 
@@ -234,7 +234,11 @@ class Attention(pl.LightningModule):
         self.test_output = self._reset_output()
 
     def save_output(
-        self, batch: torch.Tensor, As: torch.Tensor, y_hats: torch.Tensor, fold: str
+        self,
+        batch: dict[str, torch.Tensor],
+        As: torch.Tensor,
+        y_hats: torch.Tensor,
+        fold: str,
     ) -> None:
         """Save output to disk.
 
@@ -251,8 +255,13 @@ class Attention(pl.LightningModule):
         fold : str
             Fold (train/val/test) of the output to be saved.
         """
-        if not (Path(self.trainer.log_dir) / f"output/{fold}").is_dir():
-            Path.mkdir(Path(self.trainer.log_dir) / f"output/{fold}", parents=True)
+        if self.trainer.log_dir is None:
+            log_dir: Path = Path.cwd()
+        else:
+            log_dir = Path(self.trainer.log_dir)
+
+        if not (log_dir / f"output/{fold}").is_dir():
+            (log_dir / f"output/{fold}").mkdir(parents=True)
 
         batch_size = len(batch["target"])  # could be any other
 
