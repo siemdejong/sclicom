@@ -8,6 +8,7 @@ import click
 
 from dpat.cli.dpat_trainer_cli import DpatTrainerCLI  # noqa:F401
 from dpat.cli.logging import config_logging
+from dpat.cli.mil_cli import MILTrainCLI  # noqa:F401
 from dpat.cli.pretrain_cli import PreTrainCLI  # noqa:F401
 from dpat.configs import register_conf_resolvers
 from dpat.convert import AvailableImageFormats

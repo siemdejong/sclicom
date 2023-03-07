@@ -8,12 +8,12 @@ trainer:
       init_args:
         dirpath: null
         filename: null
-        monitor: train/loss
+        monitor: val_auc
         verbose: false
         save_last: true
         save_top_k: 1
         save_weights_only: false
-        mode: min
+        mode: max
         auto_insert_metric_name: true
         every_n_train_steps: null
         train_time_interval: null
@@ -50,7 +50,7 @@ trainer:
     class_path: lightning.pytorch.strategies.DDPStrategy
     init_args:
       find_unused_parameters: false
-  sync_batchnorm: true
+  sync_batchnorm: false
   precision: bf16
   enable_model_summary: true
   num_sanity_val_steps: 2
@@ -67,17 +67,15 @@ trainer:
   multiple_trainloader_mode: max_size_cycle
   inference_mode: true
 model:
-  class_path: dpat.extract_features.models.SwAV
+  class_path: dpat.mil.models.VarAttention
   init_args:
-    input_dim: 512
-    hidden_dim: 256
-    output_dim: 64
-    n_prototypes: 16
-    backbone: resnet18
+    in_features: 512  # Depends on output of the (pretrained) ResNet
+    hidden_features: 256
+    num_classes: ${data.init_args.num_classes}
     optimizer:
       class_path: torch.optim.Adam
       init_args:
-        lr: 0.001
+        lr: 0.0001
         betas:
           - 0.9
           - 0.999
@@ -87,25 +85,12 @@ model:
       init_args:
         T_max: ${trainer.max_epochs}
 data:
-  class_path: dpat.data.PMCHHGImageDataModule
+  class_path: dpat.data.PMCHHGH5DataModule
   init_args:
-    model: swav # Set this to the model used, as it invokes the right collate functions.
-    root_dir: /scistor/guest/sjg203/projects/pmc-hhg/images-tif
-    train_img_paths_and_targets: /scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmc-hhg_train-subfold-0-fold-0.csv
-    val_img_paths_and_targets: /scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmc-hhg_val-subfold-0-fold-0.csv
-    test_img_paths_and_targets: /scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmc-hhg_test-subfold-0-fold-0.csv
-    mpp: 0.2
-    tile_size_x: 224
-    tile_size_y: 224
-    tile_overlap_x: 0
-    tile_overlap_y: 0
-    tile_mode: overflow
-    crop: false
-    mask_factory: no_mask
-    mask_foreground_threshold: null
-    mask_root_dir: null
+    train_path: /scistor/guest/sjg203/projects/pmc-hhg/features/train.hdf5
+    val_path: /scistor/guest/sjg203/projects/pmc-hhg/features/val.hdf5
+    test_path: /scistor/guest/sjg203/projects/pmc-hhg/features/test.hdf5
     num_workers: 4
-    batch_size: 512
-    transform: null
+    num_classes: 2
 enable_cudnn_auto_tuner: true
 set_float32_matmul_precision: medium

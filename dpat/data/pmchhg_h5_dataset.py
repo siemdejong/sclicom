@@ -6,6 +6,7 @@ from pprint import pformat
 from typing import Generator, Type, TypeVar, Union
 
 import h5py
+import lightning.pytorch as pl
 import numpy as np
 import torch
 import torchvision
@@ -17,34 +18,45 @@ from dpat.types import SizedMetaDataDataset
 
 logger = logging.getLogger(__name__)
 
-T = TypeVar("T", bound="H5Dataset")
+T = TypeVar("T", bound="PMCHHGH5Dataset")
 H5ItemObject = dict[str, Union[torch.Tensor, torch.LongTensor, float, int]]
 
 
 class _H5ls:
     """List all datasets in a given H5 file."""
 
-    def __init__(self, file_path: pathlib.Path) -> None:
+    def __init__(
+        self,
+        file_path: pathlib.Path,
+        h5type: Union[h5py.Group, h5py.Dataset] = h5py.Dataset,
+        depth: int = 3,
+    ) -> None:
         """Index H5 file."""
         logger.info(f"Indexing H5 datasets of {file_path}...")
 
         self.file_path = file_path
         self.names: list[str] = []
+        self.h5type = h5type
+        self.depth = depth
 
         with h5py.File(self.file_path, "r") as file:
             file.visititems(self.get_datasets)
         logger.info("Indexing complete.")
 
     def get_datasets(self, name: str, node: h5py.HLObject) -> None:
-        """h5py visititems function to index datasets."""
-        if isinstance(node, h5py.Dataset) and name not in self.names:
-            self.names.append(name)
+        """h5py visititems function to index groups."""
+        if isinstance(node, self.h5type) and name not in self.names:
+            if len(name.split("/")) == self.depth:
+                self.names.append(name)
 
     def __getitem__(self, index: int) -> str:
         return self.names[index]
 
     def __iter__(self) -> Generator[str, None, None]:
         yield from self.names
+
+    def __len__(self) -> int:
+        return len(self.names)
 
     def __repr__(self) -> str:
         """Represent H5ls, showing its origin."""
@@ -120,7 +132,7 @@ def feature_batch_extract(
         metadata = dataset.get_metadata(i)
         dsetname = "".join([f"/{metadata[dsetname]}" for dsetname in dsetname_format])
 
-        if f[dsetname] and skip_if_exists:
+        if dsetname in f and skip_if_exists:
             continue
 
         with torch.no_grad():
@@ -167,27 +179,30 @@ def stack_features(
             del file[img_group]
 
         all_features = []
-        all_mpp = []
-        all_x = []
-        all_y = []
+        all_tile_mpp = []
+        all_tile_region_index = []
+        all_tile_x = []
+        all_tile_y = []
         all_target = []
 
         for tile in tqdm(
             tiles_in_img_group, desc="Concatenating tile", unit="tile", leave=False
         ):
             all_features.append(tempfile[tile][()])
-            all_mpp.append(tempfile[tile].attrs["tile_mpp"])
-            all_x.append(tempfile[tile].attrs["tile_x"])
-            all_y.append(tempfile[tile].attrs["tile_y"])
+            all_tile_region_index.append(int(str(tile).split("/")[-1]))
+            all_tile_mpp.append(tempfile[tile].attrs["tile_mpp"])
+            all_tile_x.append(tempfile[tile].attrs["tile_x"])
+            all_tile_y.append(tempfile[tile].attrs["tile_y"])
             all_target.append(tempfile[tile].attrs["target"])
 
         assert len(set(all_target)) == 1  # All targets must be equal within one img.
 
         img_group_h5 = file.create_group(img_group)
         img_group_h5.create_dataset("data", data=all_features)
-        img_group_h5.create_dataset("all_mpp", data=all_mpp)
-        img_group_h5.create_dataset("all_x", data=all_x)
-        img_group_h5.create_dataset("all_y", data=all_y)
+        img_group_h5.create_dataset("all_tile_mpp", data=all_tile_mpp)
+        img_group_h5.create_dataset("all_tile_region_index", data=all_tile_region_index)
+        img_group_h5.create_dataset("all_tile_x", data=all_tile_x)
+        img_group_h5.create_dataset("all_tile_y", data=all_tile_y)
         img_group_h5.create_dataset("all_target", data=all_target)
 
 
@@ -251,7 +266,7 @@ def compile_features(
     return filepath
 
 
-class H5Dataset(Dataset):
+class PMCHHGH5Dataset(Dataset):
     """Dataset for packed HDF5 files to pass to a PyTorch dataloader."""
 
     def __init__(
@@ -283,7 +298,7 @@ class H5Dataset(Dataset):
 
         self.hdf5: Union[h5py.File, None] = None
 
-        self.dataset_indices = _H5ls(self.file_path)
+        self.dataset_indices = _H5ls(self.file_path, h5py.Group, 2)
         if metadata_keys is None:
             self.metadata_keys = ["target"]
         else:
@@ -316,6 +331,7 @@ class H5Dataset(Dataset):
         cache: bool = False,
         mode: h5py.File.mode = "a",
         skip_if_exists: bool = True,
+        skip_feature_compilation: bool = False,
     ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
 
@@ -347,21 +363,30 @@ class H5Dataset(Dataset):
         skip_if_exists : bool, default=True
             If True, does not write new items to h5 file if it already exists,
             but returns file path.
+        skip_feature_compilation : bool, default=False
+            Skip feature compilation. Asserts a file at hdf5 exists.
         """
-        filepath = compile_features(
-            model=model,
-            dataset=dataset,
-            dir_name=dir_name,
-            filename=filename,
-            dsetname_format=dsetname_format,
-            mode=mode,
-            skip_if_exists=skip_if_exists,
-        )
+        if not skip_feature_compilation:
+            filepath = compile_features(
+                model=model,
+                dataset=dataset,
+                dir_name=dir_name,
+                filename=filename,
+                dsetname_format=dsetname_format,
+                mode=mode,
+                skip_if_exists=skip_if_exists,
+            )
+        else:
+            filepath = dir_name / filename
+            assert pathlib.Path(filepath).exists()
+            # TODO: Test if file is compatible with downstream tasks.
 
         h5_dataset = cls(
             path=filepath,
             num_classes=num_classes,
-            metadata_keys=list(dataset.get_metadata(0).keys()),
+            metadata_keys=[
+                "all_" + key for key in dataset.get_metadata(0)["meta"].keys()
+            ],
             cache=cache,
             transform=transform,
             load_encoded=False,
@@ -407,25 +432,31 @@ class H5Dataset(Dataset):
             self.hdf5 = h5py.File(self.file_path, "r")
 
         dataset = self.get_dataset_at_index(index)
-        metadata = {key: dataset.attrs[key] for key in self.metadata_keys}
+        metadata = {
+            key: dataset[key][()] for key in self.metadata_keys if key in dataset
+        }
 
-        data = dataset[()]
+        data = dataset["data"][()]
 
         if self.transform:
             data = self.transform(data)
         else:
-            data = torch.Tensor(data)
+            data = torch.tensor(data)
 
-        target = dataset.attrs["target"]
-        target = torch.Tensor(target).long()  # one_hot needs integers.
-        target = nn.functional.one_hot(target, num_classes=self.num_classes)
+        # Select only one, as the target is equal for the whole image.
+        target = torch.tensor(dataset["all_target"])[0]
+
+        case_id, img_id = str(dataset.name).split("/")[1:]
 
         data_obj = dict(
             data=data,
-            target=target,
-            tile_mpp=metadata["tile_mpp"],
-            tile_x=metadata["tile_x"],
-            tile_y=metadata["tile_y"],
+            target=target,  # All targets are equal, so just choose one.
+            tile_region_index=metadata["all_tile_region_index"],
+            tile_mpp=metadata["all_tile_mpp"],
+            tile_x=metadata["all_tile_x"],
+            tile_y=metadata["all_tile_y"],
+            case_id=case_id,
+            img_id=img_id,
         )
 
         return data_obj
@@ -433,3 +464,90 @@ class H5Dataset(Dataset):
     def __len__(self):
         """Calculate length of h5 dataset."""
         return len(self.dataset_indices)
+
+
+class PMCHHGH5DataModule(pl.LightningDataModule):
+    """H5 Datamodule for use with Pytorch Lightning and the PMC-HHG dataset."""
+
+    def __init__(
+        self,
+        train_path: pathlib.Path,
+        val_path: pathlib.Path,
+        test_path: pathlib.Path,
+        num_workers: int = 0,
+        num_classes: int = 2,
+    ):
+        """Create PMCHHGH5Dataset DataModule.
+
+        Note that batch sizes are forced to be one (bag).
+
+        Parameters
+        ----------
+        train_path : pathlib.Path
+            Path to train hdf5 file.
+        val_path : pathlib.Path
+            Path to validation hdf5 file.
+        test_path : pathlib.Path
+            Path to test hdf5 file.
+        num_workers : int, default=0
+            Number of workers for the datalaoders.
+        num_classes : int, default=2,
+            Number of classes for prediction.
+        """
+        super().__init__()
+        self.train_path = train_path
+        self.val_path = val_path
+        self.test_path = test_path
+        self.num_workers = num_workers
+        self.num_classes = num_classes
+
+    def prepare_data(self):
+        """Prepare data."""
+        # TODO: if storing the data somewhere in the cloud
+        # and it is downloaded in prepare_data,
+        # use setup() to make the splits with dpat.splits.create_splits.
+        pass
+
+    def setup(self, stage):
+        """Split dataset and apply stage transform.
+
+        Is done on every device.
+        """
+        metadata_keys = [
+            "all_tile_mpp",
+            "all_tile_region_index",
+            "all_tile_x",
+            "all_tile_y",
+        ]
+        if stage == "fit":
+            self.train_dataset = PMCHHGH5Dataset(
+                self.train_path, self.num_classes, metadata_keys
+            )
+            self.val_dataset = PMCHHGH5Dataset(
+                self.val_path, self.num_classes, metadata_keys
+            )
+        elif stage == "test":
+            self.test_dataset = PMCHHGH5Dataset(
+                self.test_path, self.num_classes, metadata_keys
+            )
+
+    def train_dataloader(self):
+        """Build train dataloader."""
+        return DataLoader(
+            dataset=self.train_dataset,
+            num_workers=self.num_workers,
+            shuffle=True,
+            pin_memory=True,
+        )
+
+    def val_dataloader(self):
+        """Build validation dataloader."""
+        return DataLoader(
+            self.val_dataset, num_workers=self.num_workers, pin_memory=True
+        )
+
+    def test_dataloader(self):
+        """Build test dataloader."""
+        return DataLoader(
+            self.test_dataset, num_workers=self.num_workers, pin_memory=True
+        )

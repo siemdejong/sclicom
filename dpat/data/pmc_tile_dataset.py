@@ -132,7 +132,7 @@ class PMCHHGImageDataset(Dataset):
 
         self.transform = Dlup2DpatTransform(transform)
 
-        self.foreground_threshold: float
+        self.foreground_threshold: Union[float, None]
         if mask_factory != "no_mask":
             self.foreground_threshold = mask_foreground_threshold
         else:
