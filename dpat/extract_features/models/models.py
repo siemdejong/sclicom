@@ -1,4 +1,6 @@
 """Provide self-supervising models."""
+from typing import Union
+
 import lightning.pytorch as pl
 import torch
 import torchvision
@@ -86,13 +88,29 @@ class SwAV(pl.LightningModule):
         self.log("loss/train", loss)
         return loss
 
-    def configure_optimizers(self):
+    def configure_optimizers(
+        self,
+    ) -> tuple[
+        list[torch.optim.Optimizer],
+        list[
+            Union[
+                torch.optim.lr_scheduler._LRScheduler,
+                torch.optim.lr_scheduler.ReduceLROnPlateau,
+            ]
+        ],
+    ]:
         """Configure optimizers."""
         optimizer = self.optimizer(self.parameters())
         scheduler = self.scheduler(optimizer)
         return [optimizer], [scheduler]
 
-    def optimizer_zero_grad(self, epoch, batch_idx, optimizer, optimizer_idx):
+    def optimizer_zero_grad(
+        self,
+        epoch: int,
+        batch_idx: int,
+        optimizer: torch.optim.Optimizer,
+        optimizer_idx: int,
+    ) -> None:
         """Set gradients to None instead of zero.
 
         This improves performance.

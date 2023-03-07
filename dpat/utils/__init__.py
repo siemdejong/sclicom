@@ -1,3 +1,5 @@
 """Provide utilities."""
-from .cudnn_auto_tuner import enable_cudnn_auto_tuner  # noqa:F401
-from .float32_matmul_precision import set_float32_matmul_precision  # noqa:F401
+from .cudnn_auto_tuner import enable_cudnn_auto_tuner
+from .float32_matmul_precision import set_float32_matmul_precision
+
+__all__ = ["enable_cudnn_auto_tuner", "set_float32_matmul_precision"]

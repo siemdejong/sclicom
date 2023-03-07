@@ -1,2 +1,4 @@
 """Provide feature extraction models."""
-from .models import SwAV  # noqa:F401
+from .models import SwAV
+
+__all__ = ["SwAV"]

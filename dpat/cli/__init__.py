@@ -6,14 +6,16 @@ import pathlib
 
 import click
 
-from dpat.cli.dpat_trainer_cli import DpatTrainerCLI  # noqa:F401
+from dpat.cli.dpat_trainer_cli import DpatTrainerCLI
 from dpat.cli.logging import config_logging
-from dpat.cli.mil_cli import MILTrainCLI  # noqa:F401
-from dpat.cli.pretrain_cli import PreTrainCLI  # noqa:F401
+from dpat.cli.mil_cli import MILTrainCLI
+from dpat.cli.pretrain_cli import PreTrainCLI
 from dpat.configs import register_conf_resolvers
 from dpat.convert import AvailableImageFormats
 from dpat.convert.hhg import hhg_batch_convert
 from dpat.splits.create_splits import create_splits
+
+__all__ = ["DpatTrainerCLI", "MILTrainCLI", "PreTrainCLI"]
 
 register_conf_resolvers()
 
@@ -21,13 +23,13 @@ config_logging()
 
 
 @click.group(context_settings=dict(ignore_unknown_options=True))
-def cli():
+def cli() -> None:
     """Click group to attach all cli subcommands to."""
     pass
 
 
 @cli.group()
-def convert():
+def convert() -> None:
     """Click group to attach all convert commands to."""
     pass
 
@@ -152,12 +154,12 @@ def splits():
     multiple=True,
     help="Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.",
 )
-def create(*args, **kwargs):
+def create(*args, **kwargs) -> None:
     """Click command passing args to the split creator."""
     create_splits(*args, **kwargs)
 
 
 @cli.group()
-def extract_features():
+def extract_features() -> None:
     """Click group to attach all extract features commands to."""
     pass
