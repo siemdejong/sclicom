@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.2 (2023-03-08)
+### Fix
+* **type:** Fix __iter__ type error ([`d69fb24`](https://github.com/siemdejong/dpat/commit/d69fb24dee31c13cb3cd543b66526a9bdf4d87e9))
+* Use WeightedRandomSampler ([`55334c4`](https://github.com/siemdejong/dpat/commit/55334c4ce402de9d39f49eea0ab39fbf99f98478))
+
 ## v2.4.1 (2023-03-08)
 ### Performance
 * **varmil:** Set gradients to none instead of 0 ([`b8a850a`](https://github.com/siemdejong/dpat/commit/b8a850a9ce5ae8fe896585ff8eeb3d308049feb7))
