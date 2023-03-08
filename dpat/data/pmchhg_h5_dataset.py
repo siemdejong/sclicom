@@ -402,7 +402,7 @@ class PMCHHGH5Dataset(Dataset):
         Pytorch's WeightedRandomSampler requires weights for every
         sample to give probabilities of every sample being drawn.
         """
-        all_targets = [item["target"] for item in self]
+        all_targets = list(map(lambda tile: self[tile]["target"], range(len(self))))
         counts = Counter(all_targets)
         weights = [1 / counts[i] for i in all_targets]
         return weights
