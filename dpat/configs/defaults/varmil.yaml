@@ -34,7 +34,7 @@ trainer:
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
-  max_epochs: 200
+  max_epochs: 10000
   min_epochs: null
   max_steps: -1
   min_steps: null
@@ -92,5 +92,6 @@ data:
     test_path: /scistor/guest/sjg203/projects/pmc-hhg/features/test.hdf5
     num_workers: 4
     num_classes: 2
+    balance: true
 enable_cudnn_auto_tuner: true
 set_float32_matmul_precision: medium
