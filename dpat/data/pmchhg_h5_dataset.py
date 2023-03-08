@@ -1,6 +1,7 @@
 """Provide H5 dataset to read and compile features."""
 import logging
 import pathlib
+from collections import Counter
 from contextlib import contextmanager
 from pprint import pformat
 from typing import Generator, Type, TypeVar, Union
@@ -12,6 +13,7 @@ import torch
 import torchvision
 from torch import nn
 from torch.utils.data import DataLoader, Dataset
+from torch.utils.data.sampler import WeightedRandomSampler
 from tqdm import tqdm
 
 from dpat.types import SizedMetaDataDataset
@@ -394,6 +396,17 @@ class PMCHHGH5Dataset(Dataset):
 
         return h5_dataset
 
+    def compute_sampler_weights(self) -> list[float]:
+        """Compute weights to oversample the minority class.
+
+        Pytorch's WeightedRandomSampler requires weights for every
+        sample to give probabilities of every sample being drawn.
+        """
+        all_targets = [item["target"] for item in self]
+        counts = Counter(all_targets)
+        weights = [1 / counts[i] for i in all_targets]
+        return weights
+
     def __getitem__(self, index: int) -> H5ItemObject:
         """Get feature vectors and metadata at the index.
 
@@ -476,6 +489,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         test_path: pathlib.Path,
         num_workers: int = 0,
         num_classes: int = 2,
+        balance: bool = True,
     ):
         """Create PMCHHGH5Dataset DataModule.
 
@@ -493,6 +507,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
             Number of workers for the datalaoders.
         num_classes : int, default=2,
             Number of classes for prediction.
+        balance : bool, default=True
+            Balance the training set using minority oversampling.
         """
         super().__init__()
         self.train_path = train_path
@@ -500,6 +516,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         self.test_path = test_path
         self.num_workers = num_workers
         self.num_classes = num_classes
+
+        self.balance = balance
 
     def prepare_data(self):
         """Prepare data."""
@@ -533,10 +551,16 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         """Build train dataloader."""
+        if self.balance:
+            sampler = WeightedRandomSampler(
+                weights=self.train_dataset.compute_sampler_weights(),
+                num_samples=len(self.train_dataset),
+            )
         return DataLoader(
             dataset=self.train_dataset,
             num_workers=self.num_workers,
-            shuffle=True,
+            sampler=sampler,
+            shuffle=None if self.balance else True,
             pin_memory=True,
         )
 
