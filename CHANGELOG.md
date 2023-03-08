@@ -2,6 +2,15 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.0 (2023-03-07)
+### Feature
+* Train varmil ([`56a3ae9`](https://github.com/siemdejong/dpat/commit/56a3ae9ae1bddf481867ac146322ea9852e1cb2e))
+
+### Fix
+* Some typing issues ([`6a46853`](https://github.com/siemdejong/dpat/commit/6a46853ea016ee8dc8849b4dfb992a7d52cdedff))
+* Bug where M was calculated wrong ([`d3a675b`](https://github.com/siemdejong/dpat/commit/d3a675b7befec145976f9a95774e591ef61ddd9e))
+* Export variables from packages ([`e0db9e3`](https://github.com/siemdejong/dpat/commit/e0db9e3191c2455085ce2671694634cddc3cfde7))
+
 ## v2.3.3 (2023-03-04)
 ### Fix
 * Uncomment feature compilation ([`4e018fe`](https://github.com/siemdejong/dpat/commit/4e018fe2c0760a1292edae65be11effd9c1f0787))
