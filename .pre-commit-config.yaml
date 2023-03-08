@@ -54,3 +54,4 @@ repos:
     rev: v1.0.1
     hooks:
     - id: mypy
+      files: ^dpat
