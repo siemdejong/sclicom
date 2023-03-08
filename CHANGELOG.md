@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.4.1 (2023-03-08)
+### Performance
+* **varmil:** Set gradients to none instead of 0 ([`b8a850a`](https://github.com/siemdejong/dpat/commit/b8a850a9ce5ae8fe896585ff8eeb3d308049feb7))
+
 ## v2.4.0 (2023-03-07)
 ### Feature
 * Train varmil ([`56a3ae9`](https://github.com/siemdejong/dpat/commit/56a3ae9ae1bddf481867ac146322ea9852e1cb2e))
