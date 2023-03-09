@@ -1,0 +1,8 @@
+model:
+  class_path: dpat.extract_features.models.SwAV
+  input_args:
+    input_dim: 512
+    hidden_dim: 256
+    output_dim: 64
+    n_prototypes: 16
+    backbone: resnet18

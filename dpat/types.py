@@ -2,6 +2,7 @@
 
 from typing import Any, Protocol, Sized
 
+from torch import nn
 from torch.utils.data import Dataset
 
 
@@ -27,5 +28,17 @@ class MetaDataDataset(MetaDataProtocol, Dataset):
 
 class SizedMetaDataDataset(SizedDataset, MetaDataDataset):
     """Type stub for a dataset with size and metadata."""
+
+    pass
+
+
+class FcProtocol(Protocol):
+    """Protocol for modules that implement a Linear layer."""
+
+    fc: nn.Linear
+
+
+class VisionBackbone(nn.Module, FcProtocol):
+    """Type stub for a vision model with the fc.in_features attribute."""
 
     pass

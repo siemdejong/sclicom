@@ -1,55 +1,42 @@
-"""Provide self-supervising models."""
+"""Provide SimCLR model."""
 from typing import Union
 
 import lightning.pytorch as pl
 import torch
 import torchvision
-from lightly.loss import SwaVLoss
-from lightly.models.modules import SwaVProjectionHead, SwaVPrototypes
+from lightly.loss import NTXentLoss
+from lightly.models.modules import SimCLRProjectionHead
 from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
 from torch import nn
 
+from dpat.types import VisionBackbone
 
-class SwAV(pl.LightningModule):
-    """Swapping Augmented Views SSL.
+
+class SimCLR(pl.LightningModule):
+    """Simple contrastive learning of visual representations [1].
 
     Depends on Lightly.
+
+    [1] https://arxiv.org/abs/2002.05709
     """
 
     def __init__(
         self,
-        input_dim: int = 512,
-        hidden_dim: int = 256,
-        output_dim: int = 64,
-        n_prototypes: int = 16,
         backbone: str = "resnet18",
         optimizer: OptimizerCallable = torch.optim.Adam,
         scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
     ):
-        """Build SwAV model.
+        """Build SimCLR model.
 
         Parameters
         ----------
-        input_dim : int, default=512
-            Input dimension of the SwAV projection head.
-        hidden_dim : int, default=256
-            Dimension of the hidden layer in the SwAV projection head.
-        output_dim : int, default=64
-            Output dimension of the SwAV projection head. Will also be used as input
-            dimension of SwAV prototypes.
-        n_prototypes : int, default=16
-            Number of prototypes to let SwAV work with.
         backbone : str, default=resnet18
             Backbone to pretrain. Can be any attribute of `torchvision.models`. E.g.
             `resnet9|18`. or `shufflenet_v2_x1_0`.
         optimizer : `OptimizerCallable`, default=torch.optim.Adam
             Optimizer to use.
-        optimizer_kwargs : dict[str, Any] | None, default = None
-            Kwargs to configure optimizer with. E.g. `lr`, `betas`, etc.
         scheduler : `SchedulerCallable`, default=CosineAnnealingLR
             Scheduler to use.
-        scheduler_kwargs : dict[str, Any] | None, default=None
-            Kwargs to configure scheduler with. E.g. `T_max`.
         """
         super().__init__()
 
@@ -59,32 +46,29 @@ class SwAV(pl.LightningModule):
         self.scheduler = scheduler
 
         # Get any vision model from torchvision as backbone.
-        vision_backbone: nn.Module = getattr(torchvision.models, backbone)()
+        vision_backbone: VisionBackbone = getattr(torchvision.models, backbone)()
 
         self.backbone = nn.Sequential(*list(vision_backbone.children())[:-1])
-        self.projection_head = SwaVProjectionHead(input_dim, hidden_dim, output_dim)
-        self.prototypes = SwaVPrototypes(output_dim, n_prototypes=n_prototypes)
 
-        # enable sinkhorn_gather_distributed to gather features from all gpus
-        # while running the sinkhorn algorithm in the loss calculation
-        self.criterion = SwaVLoss(sinkhorn_gather_distributed=True)
+        hidden_dim = vision_backbone.fc.in_features
+        self.projection_head = SimCLRProjectionHead(hidden_dim, hidden_dim, 128)
+
+        # Enable gather_distributed to gather features from all gpus
+        # before calculating the loss.
+        self.criterion = NTXentLoss(gather_distributed=True)
 
     def forward(self, x):
         """Calculate prototypes."""
         x = self.backbone(x).flatten(start_dim=1)
-        x = self.projection_head(x)
-        x = nn.functional.normalize(x, dim=1, p=2)
-        p = self.prototypes(x)
-        return p
+        z = self.projection_head(x)
+        return z
 
     def training_step(self, batch, batch_idx):
         """Perform training step."""
-        self.prototypes.normalize()
-        crops, _, _ = batch
-        multi_crop_features = [self.forward(x.to(self.device)) for x in crops]
-        high_resolution = multi_crop_features[:2]
-        low_resolution = multi_crop_features[2:]
-        loss = self.criterion(high_resolution, low_resolution)
+        (x0, x1), _, _ = batch
+        z0 = self.forward(x0)
+        z1 = self.forward(x1)
+        loss = self.criterion(z0, z1)
         self.log("loss/train", loss)
         return loss
 
