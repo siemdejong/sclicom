@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.0 (2023-03-09)
+### Feature
+* **pretrain:** Add SimCLR ([`502bba3`](https://github.com/siemdejong/dpat/commit/502bba37010819a4f0a90292e3e47e721aac8738))
+
 ## v2.4.2 (2023-03-08)
 ### Fix
 * **type:** Fix __iter__ type error ([`d69fb24`](https://github.com/siemdejong/dpat/commit/d69fb24dee31c13cb3cd543b66526a9bdf4d87e9))
