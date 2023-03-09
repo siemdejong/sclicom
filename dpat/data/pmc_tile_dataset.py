@@ -10,7 +10,7 @@ import torchvision
 from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
-from lightly.data import LightlyDataset, SwaVCollateFunction
+from lightly.data import LightlyDataset, SimCLRCollateFunction, SwaVCollateFunction
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -297,7 +297,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
 
     def __init__(
         self,
-        model: Literal["swav"],
+        model: Literal["swav", "simclr"],
         root_dir: str,
         train_img_paths_and_targets: str,
         val_img_paths_and_targets: str,
@@ -314,6 +314,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         mask_root_dir: Union[str, None] = None,
         num_workers: int = 4,
         batch_size: int = 512,
+        color_jitter: bool = True,
         transform: Union[list[AvailableTransforms], None] = None,
         **kwargs,
     ) -> None:
@@ -383,6 +384,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         self.mask_foreground_threshold = mask_foreground_threshold
         self.mask_root_dir = mask_root_dir
         self.batch_size = batch_size
+        self.color_jitter = color_jitter
 
         assert tile_size_x == tile_size_y
 
@@ -398,12 +400,24 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         else:
             self.transform = transform
 
+    @property
+    def collate_fn(self):
+        """Return the collate function related to the model."""
+        collate_fn_kwargs = dict(
+            normalize=PMCHHGImageDataset.NORMALIZE,
+            rr_prob=1,
+            rr_degrees=180,
+            cj_prob=1 if self.color_jitter else 0,
+        )
+
         if self.model == "swav":
-            self.collate_fn = SwaVCollateFunction(
-                normalize=PMCHHGImageDataset.NORMALIZE
-            )
+            collate_fn = SwaVCollateFunction(**collate_fn_kwargs)
+        elif self.model == "simclr":
+            collate_fn = SimCLRCollateFunction(**collate_fn_kwargs)
         else:
-            self.collate_fn = None
+            collate_fn = None
+
+        return collate_fn
 
     def prepare_data(self):
         """Prepare data."""

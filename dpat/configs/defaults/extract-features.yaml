@@ -8,7 +8,7 @@ trainer:
       init_args:
         dirpath: null
         filename: null
-        monitor: train/loss
+        monitor: loss/train
         verbose: false
         save_last: true
         save_top_k: 1
@@ -69,11 +69,6 @@ trainer:
 model:
   class_path: dpat.extract_features.models.SwAV
   init_args:
-    input_dim: 512
-    hidden_dim: 256
-    output_dim: 64
-    n_prototypes: 16
-    backbone: resnet18
     optimizer:
       class_path: torch.optim.Adam
       init_args:
@@ -107,5 +102,6 @@ data:
     num_workers: 4
     batch_size: 512
     transform: null
+    color_jitter: true
 enable_cudnn_auto_tuner: true
 set_float32_matmul_precision: medium
