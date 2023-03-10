@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.1 (2023-03-10)
+### Fix
+* **log:** Log origin of image data ([`1bb50ae`](https://github.com/siemdejong/dpat/commit/1bb50aea5c76849fe9be7b5219abc6f938de9922))
+
 ## v2.5.0 (2023-03-09)
 ### Feature
 * **pretrain:** Add SimCLR ([`502bba3`](https://github.com/siemdejong/dpat/commit/502bba37010819a4f0a90292e3e47e721aac8738))
