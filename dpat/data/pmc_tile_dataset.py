@@ -146,6 +146,7 @@ class PMCHHGImageDataset(Dataset):
         # Build dataset
         single_img_datasets: list = []
         logger.info("Building dataset...")
+        logger.info(f"Reading images from {self.root_dir}")
         for idx, relative_img_path in enumerate(self.relative_img_paths):
             absolute_img_path = self.root_dir / relative_img_path
             try:
