@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.0 (2023-03-10)
+### Feature
+* Nearest neighbours visualization features ([`6239607`](https://github.com/siemdejong/dpat/commit/6239607b792d561a4ca3ce5c424e3ac6b273b1ea))
+
 ## v2.5.2 (2023-03-10)
 ### Fix
 * Jsonargparse dependency ([`94242b2`](https://github.com/siemdejong/dpat/commit/94242b2b7654ef4fb015f332a9c256a59c6d5aad))
