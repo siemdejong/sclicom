@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.6.1 (2023-03-10)
+### Fix
+* Show case distribution ([`e2dcd66`](https://github.com/siemdejong/dpat/commit/e2dcd667eb1f48d00eb4fb2ce5ba653ec7149ebb))
+
 ## v2.6.0 (2023-03-10)
 ### Feature
 * Nearest neighbours visualization features ([`6239607`](https://github.com/siemdejong/dpat/commit/6239607b792d561a4ca3ce5c424e3ac6b273b1ea))
