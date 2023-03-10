@@ -163,12 +163,6 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     conda env update -f environment.yml
     ```
-1.  Windows only: if you use this library for use in scripts, make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
-    If using this library in a script, make sure to properly install the package with
-    ```python
-    import dpat
-    dpat.install_windows("path/to/vips/bin")
-    ```
 1.  If you use this library for deep learning and want to use CUDA-enabled Pytorch,
     follow instructions on [pytorch.org](https://pytorch.org/get-started).
     Make sure CUDA is available, see <a href="#cuda">Prerequisites#CUDA</a>.
@@ -180,6 +174,13 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
     ```
     python -c "import dpat"
     ```
+1.  Windows only: if you use this library for use in scripts, make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
+    If using this library in a script, make sure to properly install the package with
+    ```python
+    import dpat
+    dpat.install_windows("path/to/vips/bin")
+    ```
+    every time the package is used.
 <!-- 1.  Check if CUDA is available for the installed Pytorch distribution.
     In a Python shell, execute
     ```python
