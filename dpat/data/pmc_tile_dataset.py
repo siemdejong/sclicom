@@ -11,6 +11,7 @@ from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
 from lightly.data import LightlyDataset, SimCLRCollateFunction, SwaVCollateFunction
+from lightning.pytorch.utilities.types import TRAIN_DATALOADERS
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
@@ -459,7 +460,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
                 images_paths_and_targets=self.train_path, **dataset_kwargs
             )
 
-    def train_dataloader(self):
+    def train_dataloader(self) -> TRAIN_DATALOADERS:
         """Build train dataloader."""
         return DataLoader(
             dataset=self.train_dataset,
