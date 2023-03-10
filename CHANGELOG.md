@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.5.2 (2023-03-10)
+### Fix
+* Jsonargparse dependency ([`94242b2`](https://github.com/siemdejong/dpat/commit/94242b2b7654ef4fb015f332a9c256a59c6d5aad))
+
 ## v2.5.1 (2023-03-10)
 ### Fix
 * **log:** Log origin of image data ([`1bb50ae`](https://github.com/siemdejong/dpat/commit/1bb50aea5c76849fe9be7b5219abc6f938de9922))
