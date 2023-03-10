@@ -42,6 +42,7 @@ dependencies = [
     "pandas",
     "tensorboard",
     "h5py",
+    "ipywidgets",
 ]
 
 [project.urls]
