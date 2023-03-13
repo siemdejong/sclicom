@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.0 (2023-03-10)
+### Feature
+* Visualize embedding distribution using t-sne ([`91c4190`](https://github.com/siemdejong/dpat/commit/91c4190f4477e2cb53fa5e855d1bf64cfd5a6ecf))
+
+### Documentation
+* Change installation order. ([`63d51c8`](https://github.com/siemdejong/dpat/commit/63d51c8b27db4711b141b9c4aa5104bc658aca57))
+
 ## v2.6.1 (2023-03-10)
 ### Fix
 * Show case distribution ([`e2dcd66`](https://github.com/siemdejong/dpat/commit/e2dcd667eb1f48d00eb4fb2ce5ba653ec7149ebb))
