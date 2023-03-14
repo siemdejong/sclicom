@@ -1,7 +1,8 @@
 """Provide Pytorch datasets and Pytorch Lightning datamodules."""
 import logging
 import pathlib
-from typing import Literal, Union
+from io import BytesIO
+from typing import Any, Literal, Union
 
 import lightning.pytorch as pl
 import pandas as pd
@@ -71,7 +72,7 @@ class PMCHHGImageDataset(Dataset):
     def __init__(
         self,
         root_dir: str,
-        image_paths_and_targets: str,
+        image_paths_and_targets: Union[pathlib.Path, str, BytesIO],
         mpp: float = 0.2,
         tile_size_x: int = 224,
         tile_size_y: int = 224,
@@ -123,8 +124,9 @@ class PMCHHGImageDataset(Dataset):
 
         self.root_dir = pathlib.Path(root_dir)
 
-        path_image_paths_and_targets = pathlib.Path(image_paths_and_targets)
-        self.df = pd.read_csv(path_image_paths_and_targets, header=None)
+        if isinstance(image_paths_and_targets, str):
+            image_paths_and_targets = pathlib.Path(image_paths_and_targets)
+        self.df = pd.read_csv(image_paths_and_targets, header=None)
         self.relative_img_paths = self.df[0]
 
         self.df = self.df.set_index(0)
@@ -198,16 +200,25 @@ class PMCHHGImageDataset(Dataset):
         return sample["path"]
 
     def get_metadata(
-        self, index: int
-    ) -> dict[str, Union[int, str, dict[str, Union[float, int]]]]:
+        self,
+        index: int,
+        from_tile_rois_slide_image_dataset: Union[
+            TiledROIsSlideImageDataset, None
+        ] = None,
+    ) -> Any:  # TODO: Add strong typing.
         """Get metadata of a sample.
 
         Parameters
         ----------
         index : int
             Index of tile dataset to fetch metadata from.
+        from_tile_rois_slide_image_dataset : `TiledROIsSlideImageDataset`
+            Specific inner dataset to read tiles from.
         """
-        sample = self.dlup_dataset[index]
+        if from_tile_rois_slide_image_dataset is not None:
+            sample = from_tile_rois_slide_image_dataset[index]
+        else:
+            sample = self.dlup_dataset[index]
 
         relative_path = str(pathlib.Path(sample["path"]).relative_to(self.root_dir))
         (case_id, img_id, target) = self.df.loc[relative_path, [1, 2, 3]]

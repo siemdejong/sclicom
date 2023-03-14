@@ -8,7 +8,6 @@ from typing import Generator, Type, TypeVar, Union
 
 import h5py
 import lightning.pytorch as pl
-import numpy as np
 import torch
 import torchvision
 from torch import nn
@@ -16,7 +15,7 @@ from torch.utils.data import DataLoader, Dataset
 from torch.utils.data.sampler import WeightedRandomSampler
 from tqdm import tqdm
 
-from dpat.types import SizedMetaDataDataset
+from dpat.data import PMCHHGImageDataset
 
 logger = logging.getLogger(__name__)
 
@@ -94,10 +93,27 @@ def careful_hdf5(*args, **kwargs) -> h5py.File:
         f.close()
 
 
+def generate_embeddings(model, dataloader):
+    """Generate vector reps of tiles."""
+    embeddings = []
+    with torch.no_grad():
+        for img in tqdm(
+            dataloader, total=len(dataloader), desc="Extracting features", leave=False
+        ):
+            img = img["image"]
+            img = img.to(model.device)
+            emb = model.backbone(img).flatten(start_dim=1)
+            embeddings.append(emb)
+
+    embeddings = torch.cat(embeddings, 0)
+    return embeddings
+
+
 def feature_batch_extract(
     f: h5py.File,
     model: nn.Module,
-    dataset: SizedMetaDataDataset,
+    dataset: PMCHHGImageDataset,
+    batch_size: int,
     dsetname_format: list[str],
     skip_if_exists: bool = True,
 ) -> None:
@@ -111,6 +127,8 @@ def feature_batch_extract(
         Model to calculate the features with.
     dataset : SizedMetaDataDataset
         Dataset with metadata and length, with tiles to extract features from.
+    batch_size : int
+        Batch size to use to feed data to the model.
     dsetname_format : list[str]
         List of strings which determine where the individual items of the dataset
         will be stored in the hierarchical h5 structure.
@@ -123,99 +141,54 @@ def feature_batch_extract(
     """
     # TODO: extract features in batches. It currently takes a long time.
     model.eval()
-    dataloader_tiles = DataLoader(dataset=dataset)
 
-    for i, (tile, _) in tqdm(
-        enumerate(dataloader_tiles),
-        total=len(dataset),
-        desc="Extracting HDF5 features",
-        unit="tiles",
-    ):
-        metadata = dataset.get_metadata(i)
+    # PMCHHGDataset.dlup_dataset.datasets contain tiles belonging to one image.
+    all_img_dataset = dataset.dlup_dataset.datasets
+
+    length_all_img_datasets = len(all_img_dataset)
+    for img_dataset in tqdm(all_img_dataset, total=length_all_img_datasets):
+        tile_metadata = []
+        for i in range(len(img_dataset)):
+            metadata = dataset.get_metadata(i, img_dataset)
+            tile_metadata.append(metadata)
+
         dsetname = "".join([f"/{metadata[dsetname]}" for dsetname in dsetname_format])
 
         if dsetname in f and skip_if_exists:
             continue
 
-        with torch.no_grad():
-            output: torch.Tensor = model(tile)
-            features = output.view(-1)
+        dataloader = DataLoader(img_dataset, batch_size=batch_size)
+        embeddings = generate_embeddings(model, dataloader)
 
-        # E.g. interpolated /case_id/img_id/tile_id.
-        dset = f.create_dataset(
-            name=dsetname, shape=features.shape, dtype="f", data=features
+        img_group_h5 = f.create_group(dsetname)
+        img_group_h5.create_dataset("data", data=embeddings)
+        img_group_h5.create_dataset(
+            "all_tile_mpp", data=[tile["meta"]["tile_mpp"] for tile in tile_metadata]
         )
-
-        dset.attrs.update(metadata["meta"])
-
-
-def stack_features(
-    tempfile: h5py.File, file: h5py.File, skip_if_exists: bool = True
-) -> None:
-    """Stack features."""
-    h5ls_tempfile = _H5ls(tempfile.filename)
-    img_groups = np.unique([str(pathlib.Path(item).parent) for item in h5ls_tempfile])
-
-    logger.info("Stacking features.")
-
-    for img_group in tqdm(img_groups, desc="Stacking features, image", unit="images"):
-        # Filter which tiles are in the current image group.
-        # Make sure every tile is unique.
-        tiles_in_img_group = np.unique(
-            [
-                tile
-                for tile in h5ls_tempfile
-                if str(pathlib.Path(tile).parent) == img_group
-            ]
+        img_group_h5.create_dataset(
+            "all_tile_region_index",
+            data=[tile["tile_region_index"] for tile in tile_metadata],
         )
-
-        assert len(tiles_in_img_group) == len(tempfile[img_group])
-
-        # Assuming the content of the vectors has remained the same,
-        # skip concatenating img groups already concatenated.
-        # Else, make room for the newly concatenated dataset.
-        if img_group in file:
-            if len(file[img_group]["data"]) == len(tiles_in_img_group):
-                if skip_if_exists:
-                    continue
-            del file[img_group]
-
-        all_features = []
-        all_tile_mpp = []
-        all_tile_region_index = []
-        all_tile_x = []
-        all_tile_y = []
-        all_target = []
-
-        for tile in tqdm(
-            tiles_in_img_group, desc="Concatenating tile", unit="tile", leave=False
-        ):
-            all_features.append(tempfile[tile][()])
-            all_tile_region_index.append(int(str(tile).split("/")[-1]))
-            all_tile_mpp.append(tempfile[tile].attrs["tile_mpp"])
-            all_tile_x.append(tempfile[tile].attrs["tile_x"])
-            all_tile_y.append(tempfile[tile].attrs["tile_y"])
-            all_target.append(tempfile[tile].attrs["target"])
-
-        assert len(set(all_target)) == 1  # All targets must be equal within one img.
-
-        img_group_h5 = file.create_group(img_group)
-        img_group_h5.create_dataset("data", data=all_features)
-        img_group_h5.create_dataset("all_tile_mpp", data=all_tile_mpp)
-        img_group_h5.create_dataset("all_tile_region_index", data=all_tile_region_index)
-        img_group_h5.create_dataset("all_tile_x", data=all_tile_x)
-        img_group_h5.create_dataset("all_tile_y", data=all_tile_y)
-        img_group_h5.create_dataset("all_target", data=all_target)
+        img_group_h5.create_dataset(
+            "all_tile_x", data=[tile["meta"]["tile_x"] for tile in tile_metadata]
+        )
+        img_group_h5.create_dataset(
+            "all_tile_y", data=[tile["meta"]["tile_y"] for tile in tile_metadata]
+        )
+        img_group_h5.create_dataset(
+            "all_target", data=[tile["meta"]["target"] for tile in tile_metadata]
+        )
 
 
 def compile_features(
     model: nn.Module,
-    dataset: SizedMetaDataDataset,
+    dataset: PMCHHGImageDataset,
     dir_name: pathlib.Path,
     filename: str,
     dsetname_format: list[str],
     mode: h5py.File.mode = "a",
     skip_if_exists: bool = True,
+    batch_size: int = 32,
 ) -> pathlib.Path:
     """Compile features vectors to H5 format with metadata.
 
@@ -250,21 +223,13 @@ def compile_features(
         Path to the compiled h5 file.
     """
     dir_name.mkdir(exist_ok=True, parents=True)
-    tempfilepath = dir_name / ("temp_" + filename)
 
     filepath = dir_name / filename
 
-    with careful_hdf5(name=tempfilepath, mode=mode) as tile_file:
+    with careful_hdf5(name=filepath, mode=mode) as file:
         feature_batch_extract(
-            tile_file, model, dataset, dsetname_format, skip_if_exists
+            file, model, dataset, batch_size, dsetname_format, skip_if_exists
         )
-
-        with careful_hdf5(name=filepath, mode=mode) as stacked_feature_file:
-            stack_features(
-                tempfile=tile_file,
-                file=stacked_feature_file,
-                skip_if_exists=skip_if_exists,
-            )
 
     return filepath
 
@@ -326,7 +291,7 @@ class PMCHHGH5Dataset(Dataset):
         cls: Type[T],
         filename: str,
         dir_name: pathlib.Path,
-        dataset: SizedMetaDataDataset,
+        dataset: PMCHHGImageDataset,
         model: nn.Module,
         num_classes: int,
         dsetname_format: list[str],
@@ -335,6 +300,7 @@ class PMCHHGH5Dataset(Dataset):
         mode: h5py.File.mode = "a",
         skip_if_exists: bool = True,
         skip_feature_compilation: bool = False,
+        batch_size: int = 32,
     ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
 
@@ -350,9 +316,8 @@ class PMCHHGH5Dataset(Dataset):
             Filename of the dataset.
         dir_name : pathlib.Path
             Directory to save the file to.
-        dataset : `SizedMetaDataDataset`
-            The dataset to extract hdf5 features from. Must be of
-            `SizedMetaDataDataset`.
+        dataset : `PMCHHGImageDataset`
+            The dataset to extract hdf5 features from.
         model : nn.Module
             The model to use to extract the features.
             E.g. this is the backbone attribute of a trained model with SwAV.
@@ -378,6 +343,7 @@ class PMCHHGH5Dataset(Dataset):
                 dsetname_format=dsetname_format,
                 mode=mode,
                 skip_if_exists=skip_if_exists,
+                batch_size=batch_size,
             )
         else:
             filepath = dir_name / filename
