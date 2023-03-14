@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.2 (2023-03-14)
+### Fix
+* Create feature directory if not exists ([`674c8c4`](https://github.com/siemdejong/dpat/commit/674c8c4eb33ac614d03cee35a0993bec5b50b4e7))
+
 ## v2.7.1 (2023-03-13)
 ### Fix
 * Bypass oom error ([`0177032`](https://github.com/siemdejong/dpat/commit/01770320bcae9608d4efc15793a9d53135e764f3))
