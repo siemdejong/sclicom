@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.1 (2023-03-13)
+### Fix
+* Bypass oom error ([`0177032`](https://github.com/siemdejong/dpat/commit/01770320bcae9608d4efc15793a9d53135e764f3))
+* Add ipywidgets dependency ([`3c26dcd`](https://github.com/siemdejong/dpat/commit/3c26dcd0b43e868ff34bf424f0c1bf5c73bdc433))
+
 ## v2.7.0 (2023-03-10)
 ### Feature
 * Visualize embedding distribution using t-sne ([`91c4190`](https://github.com/siemdejong/dpat/commit/91c4190f4477e2cb53fa5e855d1bf64cfd5a6ecf))
