@@ -249,6 +249,7 @@ def compile_features(
     filepath : `pathlib.Path`
         Path to the compiled h5 file.
     """
+    dir_name.mkdir(exist_ok=True, parents=True)
     tempfilepath = dir_name / ("temp_" + filename)
 
     filepath = dir_name / filename
