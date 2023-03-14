@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v2.7.3 (2023-03-14)
+### Performance
+* Speed up feature compilation ([`772a0bd`](https://github.com/siemdejong/dpat/commit/772a0bd38e356b9d6b547e757286c0b973a45c2e))
+
 ## v2.7.2 (2023-03-14)
 ### Fix
 * Create feature directory if not exists ([`674c8c4`](https://github.com/siemdejong/dpat/commit/674c8c4eb33ac614d03cee35a0993bec5b50b4e7))
