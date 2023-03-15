@@ -157,6 +157,7 @@ def create_splits(
     include_pattern: list[str] = ["*.*"],
     exclude_pattern: list[str] = [""],
     filter_diagnosis: Union[list[str], None] = None,
+    num_subfolds: int = 1,
 ) -> None:
     """Create data splits.
 
@@ -191,6 +192,10 @@ def create_splits(
         to be included by `include_pattern`.
     filter_diagnosis : iterable of str, optional
         Iterable of strings choosing the diagnoses to create the splits for.
+    num_subfolds : int, default=1
+        Number of subfolds within one fold.
+        If 1, creates 5 folds (fold-x-train|val|test).
+        If `subfolds`>1, creates 5*`subfolds` folds (fold-x-subfold-y-train|val|test).
 
     Raises
     ------
@@ -279,7 +284,7 @@ def create_splits(
 
     # Use random stratified shuffle split for the train-val split
     sss = StratifiedShuffleSplit(
-        n_splits=5, test_size=0.2, random_state=42
+        n_splits=num_subfolds, test_size=0.2, random_state=42
     )  # split into val and train
 
     stratify_on = ["diagnosis"]
