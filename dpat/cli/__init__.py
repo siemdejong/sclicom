@@ -13,7 +13,7 @@ from dpat.cli.pretrain_cli import PreTrainCLI
 from dpat.configs import register_conf_resolvers
 from dpat.convert import AvailableImageFormats
 from dpat.convert.hhg import hhg_batch_convert
-from dpat.splits.create_splits import create_splits
+from dpat.splits import create_splits
 
 __all__ = ["DpatTrainerCLI", "MILTrainCLI", "PreTrainCLI"]
 
@@ -153,6 +153,15 @@ def splits():
     show_default=True,
     multiple=True,
     help="Filter a diagnosis. For multiple diagnoses, use `-f 1 -f 2`.",
+)
+@click.option(
+    "-s",
+    "--num-subfolds",
+    "num_subfolds",
+    type=int,
+    default=1,
+    show_default=True,
+    help="Number of subfolds within one fold.",
 )
 def create(*args, **kwargs) -> None:
     """Click command passing args to the split creator."""
