@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v3.1.0 (2023-03-15)
+### Feature
+* Add num_subfolds parameter to create_splits ([`dfe7ceb`](https://github.com/siemdejong/dpat/commit/dfe7ceb3380fef3ea595cd3f7e68ed426b33989d))
+
+### Fix
+* Splits tests with num_subfolds ([`3a9d44e`](https://github.com/siemdejong/dpat/commit/3a9d44e84ae570e35fc2262a46fe4b467fc97f98))
+
 ## v3.0.1 (2023-03-15)
 ### Fix
 * Update viz of untrained model ([`e32d9f5`](https://github.com/siemdejong/dpat/commit/e32d9f5a1bcacf45b3893c94ec3dddf6cd3682c2))
