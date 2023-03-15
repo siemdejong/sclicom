@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.0 (2023-03-15)
+### Feature
+* From torchvision.models to pytorchcv models ([`bb5732d`](https://github.com/siemdejong/dpat/commit/bb5732d3f8b9fc0434720077d37a448df80e8670))
+* Show targets/img_id/case_id distribution ([`c757995`](https://github.com/siemdejong/dpat/commit/c7579958dcb63b2664dc120ba1feac16af208489))
+
+### Fix
+* Pytorchcv not typed ignore missing imports ([`2b33f70`](https://github.com/siemdejong/dpat/commit/2b33f705443d4d2e92eb045f42f63efdba5feb34))
+
+### Breaking
+* in the config files, models must be specified by corresponding pytorchcv models, not torchvision. ([`bb5732d`](https://github.com/siemdejong/dpat/commit/bb5732d3f8b9fc0434720077d37a448df80e8670))
+
 ## v2.7.3 (2023-03-14)
 ### Performance
 * Speed up feature compilation ([`772a0bd`](https://github.com/siemdejong/dpat/commit/772a0bd38e356b9d6b547e757286c0b973a45c2e))
