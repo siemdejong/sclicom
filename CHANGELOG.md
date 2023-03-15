@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.1.1 (2023-03-15)
+### Fix
+* Pretrained config typo ([`e6a3778`](https://github.com/siemdejong/dpat/commit/e6a37785d9b9ef49bdbf40eb009d83f35edff82e))
+
 ## v3.1.0 (2023-03-15)
 ### Feature
 * Add num_subfolds parameter to create_splits ([`dfe7ceb`](https://github.com/siemdejong/dpat/commit/dfe7ceb3380fef3ea595cd3f7e68ed426b33989d))
