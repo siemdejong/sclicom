@@ -22,7 +22,9 @@ def file_of_paths_to_list(path: pathlib.Path) -> list[str]:
     return content
 
 
-def test_overlap(save_to_dir: pathlib.Path, dataset_name, diagnoses_fn: str) -> None:
+def test_overlap(
+    save_to_dir: pathlib.Path, dataset_name, diagnoses_fn: str, num_subfolds: int
+) -> None:
     """Test overlap of splits.
 
     Load the paths to images of the train-val-test splits as previously produced,
@@ -32,7 +34,9 @@ def test_overlap(save_to_dir: pathlib.Path, dataset_name, diagnoses_fn: str) -> 
     If this fails, these splits should not be used.
     """
     save_to_dir = pathlib.Path(save_to_dir)
-    for product in itertools.product(range(5), range(5), ["paths", diagnoses_fn]):
+    for product in itertools.product(
+        range(5), range(num_subfolds), ["paths", diagnoses_fn]
+    ):
         fold, subfold, filetype = product
 
         train_slides = file_of_paths_to_list(
@@ -60,7 +64,7 @@ def test_overlap(save_to_dir: pathlib.Path, dataset_name, diagnoses_fn: str) -> 
 
 
 def test_lengths(
-    save_to_dir: pathlib.Path, dataset_name: str, diagnoses_fn: str
+    save_to_dir: pathlib.Path, dataset_name: str, diagnoses_fn: str, num_subfolds: int
 ) -> None:
     """Test lengths across all splits.
 
@@ -68,7 +72,9 @@ def test_lengths(
     fold.
     """
     lengths = []
-    for product in itertools.product(range(5), range(5), ["paths", diagnoses_fn]):
+    for product in itertools.product(
+        range(5), range(num_subfolds), ["paths", diagnoses_fn]
+    ):
         fold, subfold, filetype = product
 
         fold_length = 0
@@ -90,6 +96,7 @@ def test_distributions(
     save_to_dir: pathlib.Path,
     dataset_name: str,
     diagnoses_fn: str,
+    num_subfolds: int,
 ) -> None:
     """Tests if the fraction of classes are 1 / (included diagnoses)."""
     path_to_patient_df = pd.read_csv(f"{save_to_dir}/paths_to_patient_id.csv")
@@ -97,7 +104,7 @@ def test_distributions(
         f"{save_to_dir}/{dataset_name}-DeepSMILE_"
         f"{pathlib.Path(path_to_labels_file).stem}.csv"
     )
-    for product in itertools.product(range(5), range(5)):
+    for product in itertools.product(range(5), range(num_subfolds)):
         fold, subfold = product
 
         for subset in ["train", "val", "test"]:
@@ -133,19 +140,22 @@ def test(
     save_to_dir: pathlib.Path,
     dataset_name: str,
     diagnoses_fn: str,
+    num_subfolds: int,
 ) -> None:
     """Test the splits.
 
     Test for overlap, length, and distributions.
     """
     # Assert that there's no overlap between train/val, train/test, val/test.
-    test_overlap(save_to_dir, dataset_name, diagnoses_fn)
+    test_overlap(save_to_dir, dataset_name, diagnoses_fn, num_subfolds)
 
     # Assert that the length of test_i + val_i + train_i are the same for all i
-    test_lengths(save_to_dir, dataset_name, diagnoses_fn)
+    test_lengths(save_to_dir, dataset_name, diagnoses_fn, num_subfolds)
 
     # # Check if the fraction of labels is around 1/N_classes for each fold
-    test_distributions(path_to_labels_file, save_to_dir, dataset_name, diagnoses_fn)
+    test_distributions(
+        path_to_labels_file, save_to_dir, dataset_name, diagnoses_fn, num_subfolds
+    )
 
 
 def create_splits(
@@ -334,7 +344,7 @@ def create_splits(
         [diagnosis.replace(" ", "-") for diagnosis in filter_diagnosis]
     )
 
-    for product in itertools.product(range(5), range(5)):
+    for product in itertools.product(range(5), range(num_subfolds)):
         fold, subfold = product
 
         for subset in ["train", "val", "test"]:
@@ -355,7 +365,7 @@ def create_splits(
     )
 
     # Run some tests with the recently saved files
-    test(path_to_labels_file, save_to_dir, dataset_name, diagnoses_fn)
+    test(path_to_labels_file, save_to_dir, dataset_name, diagnoses_fn, num_subfolds)
 
 
 if __name__ == "__main__":

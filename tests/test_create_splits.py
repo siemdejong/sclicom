@@ -53,7 +53,8 @@ class TestCreateSplits:
         assert isinstance(pathlist, list)
         assert len(pathlist)
 
-    def test_create_splits(self, image_files, path_to_labels_file):
+    @pytest.mark.parametrize("num_subfolds", [1, 5])
+    def test_create_splits(self, num_subfolds, image_files, path_to_labels_file):
         dataset_name = "test"
         create_splits(
             image_dir=image_files[0].parent,
@@ -61,6 +62,7 @@ class TestCreateSplits:
             include_pattern=["*.bmp"],
             dataset_name=dataset_name,
             overwrite=True,
+            num_subfolds=num_subfolds,
         )
 
         # Reuse tests written that are ran at runtime anyway,
@@ -70,6 +72,7 @@ class TestCreateSplits:
             save_to_dir=image_files[0].parent / "splits",
             dataset_name=dataset_name,
             diagnoses_fn="a+b",
+            num_subfolds=num_subfolds,
         )
 
     def test_raise_dir_exists_error(self, image_files, path_to_labels_file):
@@ -83,6 +86,7 @@ class TestCreateSplits:
 
     def test_filter_diagnosis(self, image_files, path_to_labels_file):
         dataset_name = "test"
+        num_subfolds = 1
         create_splits(
             image_dir=image_files[0].parent,
             path_to_labels_file=path_to_labels_file,
@@ -90,10 +94,12 @@ class TestCreateSplits:
             dataset_name=dataset_name,
             filter_diagnosis=["a"],
             overwrite=True,
+            num_subfolds=num_subfolds,
         )
         splits_test(
             path_to_labels_file=path_to_labels_file,
             save_to_dir=image_files[0].parent / "splits",
             dataset_name=dataset_name,
             diagnoses_fn="a",
+            num_subfolds=num_subfolds,
         )
