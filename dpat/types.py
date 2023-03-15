@@ -32,13 +32,13 @@ class SizedMetaDataDataset(SizedDataset, MetaDataDataset):
     pass
 
 
-class FcProtocol(Protocol):
+class OutputProtocol(Protocol):
     """Protocol for modules that implement a Linear layer."""
 
-    fc: nn.Linear
+    output: nn.Linear
 
 
-class VisionBackbone(nn.Module, FcProtocol):
+class VisionBackbone(nn.Module, OutputProtocol):
     """Type stub for a vision model with the fc.in_features attribute."""
 
     pass

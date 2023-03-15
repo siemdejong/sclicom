@@ -3,11 +3,13 @@ from typing import Union
 
 import lightning.pytorch as pl
 import torch
-import torchvision
 from lightly.loss import SwaVLoss
 from lightly.models.modules import SwaVProjectionHead, SwaVPrototypes
 from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
+from pytorchcv.model_provider import get_model as ptcv_get_model
 from torch import nn
+
+from dpat.types import VisionBackbone
 
 
 class SwAV(pl.LightningModule):
@@ -22,7 +24,8 @@ class SwAV(pl.LightningModule):
         hidden_dim: int = 256,
         output_dim: int = 64,
         n_prototypes: int = 16,
-        backbone: str = "resnet18",
+        backbone: str = "shufflenetv2_w1",
+        pretrained: bool = False,
         optimizer: OptimizerCallable = torch.optim.Adam,
         scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
     ):
@@ -39,9 +42,11 @@ class SwAV(pl.LightningModule):
             dimension of SwAV prototypes.
         n_prototypes : int, default=16
             Number of prototypes to let SwAV work with.
-        backbone : str, default=resnet18
-            Backbone to pretrain. Can be any attribute of `torchvision.models`. E.g.
-            `resnet9|18`. or `shufflenet_v2_x1_0`.
+        backbone : str, default=shufflenetv2_w1
+            Backbone to pretrain. Can be any model provided by pytorchcv,
+            e.g. `resnet18_wd4|shufflenetv2_w1`.
+        pretrained : bool, default=False,
+            Specify if the model should already be trained on ImageNet.
         optimizer : `OptimizerCallable`, default=torch.optim.Adam
             Optimizer to use.
         optimizer_kwargs : dict[str, Any] | None, default = None
@@ -58,8 +63,10 @@ class SwAV(pl.LightningModule):
         self.optimizer = optimizer
         self.scheduler = scheduler
 
-        # Get any vision model from torchvision as backbone.
-        vision_backbone: nn.Module = getattr(torchvision.models, backbone)()
+        # Get any vision model from pytorchcv as backbone.
+        vision_backbone: VisionBackbone = ptcv_get_model(
+            backbone, pretrained=pretrained
+        )
 
         self.backbone = nn.Sequential(*list(vision_backbone.children())[:-1])
         self.projection_head = SwaVProjectionHead(input_dim, hidden_dim, output_dim)

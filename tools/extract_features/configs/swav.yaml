@@ -1,8 +1,9 @@
 model:
   class_path: dpat.extract_features.models.SwAV
   input_args:
-    input_dim: 512
+    input_dim: 256
     hidden_dim: 256
     output_dim: 64
     n_prototypes: 16
-    backbone: resnet18
+    backbone: shufflenetv2_w1 # Load a model from https://github.com/osmr/imgclsmob/tree/master/pytorch
+    pretrain: false # Want it to be pretrained on ImageNet?

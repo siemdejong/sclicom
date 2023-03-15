@@ -4,7 +4,8 @@ trainer:
 model:
   class_path: dpat.extract_features.models.SimCLR
   init_args:
-    backbone: resnet18
+    backbone: shufflenetv2_w1 # Load a model from https://github.com/osmr/imgclsmob/tree/master/pytorch
+    pretrain: false # Want it to be pretrained on ImageNet?
 data:
   init_args:
     model: simclr

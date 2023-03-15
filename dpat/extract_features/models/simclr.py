@@ -3,10 +3,10 @@ from typing import Union
 
 import lightning.pytorch as pl
 import torch
-import torchvision
 from lightly.loss import NTXentLoss
 from lightly.models.modules import SimCLRProjectionHead
 from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
+from pytorchcv.model_provider import get_model as ptcv_get_model
 from torch import nn
 
 from dpat.types import VisionBackbone
@@ -22,7 +22,8 @@ class SimCLR(pl.LightningModule):
 
     def __init__(
         self,
-        backbone: str = "resnet18",
+        backbone: str = "shufflenetv2_w1",
+        pretrained: bool = False,
         optimizer: OptimizerCallable = torch.optim.Adam,
         scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
     ):
@@ -30,9 +31,11 @@ class SimCLR(pl.LightningModule):
 
         Parameters
         ----------
-        backbone : str, default=resnet18
-            Backbone to pretrain. Can be any attribute of `torchvision.models`. E.g.
-            `resnet9|18`. or `shufflenet_v2_x1_0`.
+        backbone : str, default=shufflenetv2_w1
+            Backbone to pretrain. Can be any model provided by pytorchcv,
+            e.g. `resnet18_wd4|shufflenetv2_w1`.
+        pretrained : bool, default=False,
+            Specify if the model should already be trained on ImageNet.
         optimizer : `OptimizerCallable`, default=torch.optim.Adam
             Optimizer to use.
         scheduler : `SchedulerCallable`, default=CosineAnnealingLR
@@ -45,12 +48,14 @@ class SimCLR(pl.LightningModule):
         self.optimizer = optimizer
         self.scheduler = scheduler
 
-        # Get any vision model from torchvision as backbone.
-        vision_backbone: VisionBackbone = getattr(torchvision.models, backbone)()
+        # Get any vision model from pytorchcv as backbone.
+        vision_backbone: VisionBackbone = ptcv_get_model(
+            backbone, pretrained=pretrained
+        )
 
         self.backbone = nn.Sequential(*list(vision_backbone.children())[:-1])
 
-        hidden_dim = vision_backbone.fc.in_features
+        hidden_dim = vision_backbone.output.in_features
         self.projection_head = SimCLRProjectionHead(hidden_dim, hidden_dim, 128)
 
         # Enable gather_distributed to gather features from all gpus

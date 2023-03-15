@@ -43,6 +43,7 @@ dependencies = [
     "tensorboard",
     "h5py",
     "ipywidgets",
+    "pytorchcv", # For using prebuilt models.
 ]
 
 [project.urls]
