@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.0.1 (2023-03-15)
+### Fix
+* Update viz of untrained model ([`e32d9f5`](https://github.com/siemdejong/dpat/commit/e32d9f5a1bcacf45b3893c94ec3dddf6cd3682c2))
+
 ## v3.0.0 (2023-03-15)
 ### Feature
 * From torchvision.models to pytorchcv models ([`bb5732d`](https://github.com/siemdejong/dpat/commit/bb5732d3f8b9fc0434720077d37a448df80e8670))
