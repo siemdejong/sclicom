@@ -223,12 +223,12 @@ class Attention(pl.LightningModule):
             ) as f:
                 f.write(json.dumps(metrics_to_save))
 
-    def validation_epoch_end(self, validation_step_outputs) -> None:
+    def on_validation_epoch_end(self) -> None:
         """Procedure to run at the end of a validation epoch."""
         self.log_metrics(prefix="val", output=self.validation_output)
         self.validation_output = self._reset_output()
 
-    def test_epoch_end(self, test_step_outputs) -> None:
+    def on_test_epoch_end(self) -> None:
         """Procedure to run at the end of a test epoch."""
         self.log_metrics(prefix="test", output=self.test_output)
         self.test_output = self._reset_output()
