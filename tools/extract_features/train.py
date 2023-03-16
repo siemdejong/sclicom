@@ -2,6 +2,7 @@
 import pathlib
 
 import lightning.pytorch as pl
+import torch
 
 from dpat.cli import PreTrainCLI
 from dpat.extract_features.trainer import PreTrainer
@@ -33,10 +34,12 @@ def main():
         },
     )
 
+    compiled_model = torch.compile(cli.model)
+
     cli.datamodule.prepare_data()
     cli.datamodule.setup("fit")
     cli.trainer.fit(
-        model=cli.model, train_dataloaders=cli.datamodule.train_dataloader()
+        model=compiled_model, train_dataloaders=cli.datamodule.train_dataloader()
     )
     # cli.trainer.fit(model=cli.model, datamodule=cli.datamodule)
 
