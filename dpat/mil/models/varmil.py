@@ -185,21 +185,9 @@ class Attention(pl.LightningModule):
         # TODO Save the scores and cut-offs,
         # otherwise we can't do proper statistical testing.
         self.log(
-            f"{prefix}_auc",
-            auroc_score,
-            prog_bar=True,
-            logger=True,
-            batch_size=1,
-            sync_dist=True,
+            f"{prefix}_auc", auroc_score, logger=True, batch_size=1, sync_dist=True
         )
-        self.log(
-            f"{prefix}_f1",
-            f1_score,
-            prog_bar=True,
-            logger=True,
-            batch_size=1,
-            sync_dist=True,
-        )
+        self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1, sync_dist=True)
 
         if False:
             # if self.trainer.save_validation_output_to_disk:
