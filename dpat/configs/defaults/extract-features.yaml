@@ -51,7 +51,7 @@ trainer:
     init_args:
       find_unused_parameters: false
   sync_batchnorm: true
-  precision: bf16
+  precision: bf16-mixed
   enable_model_summary: true
   num_sanity_val_steps: 2
   profiler: null
