@@ -5,6 +5,7 @@ from io import BytesIO
 from typing import Any, Literal, Union
 
 import lightning.pytorch as pl
+import numpy as np
 import pandas as pd
 import torch
 import torchvision
@@ -13,12 +14,13 @@ from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageData
 from dlup.tiling import TilingMode
 from lightly.data import LightlyDataset, SimCLRCollateFunction, SwaVCollateFunction
 from lightning.pytorch.utilities.types import TRAIN_DATALOADERS
+from PIL import Image
 from torch import Tensor
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
 
 from dpat.data.transforms import AvailableTransforms, Dlup2DpatTransform
-from dpat.types import SizedDataset
+from dpat.types import MaskFactory, SizedDataset
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ class MaskGetter:
     """Set parameters required for getting a mask."""
 
     def __init__(
-        self, mask_factory: Literal["no_mask"], mask_root_dir: Union[str, None] = None
+        self, mask_factory: MaskFactory, mask_root_dir: Union[str, None] = None
     ):
         """Initialize MaskGetter.
 
@@ -38,20 +40,41 @@ class MaskGetter:
         mask_root_dir : str, None (default=None)
             Root dir where to place/find the masks.
         """
-        self.mask_options = {"no_mask": self.no_mask}
+        self.mask_options = {
+            "load_from_disk": self.load_from_disk,
+            "no_mask": self.no_mask,
+        }
         self.mask_factory = mask_factory
 
-        self.mask_root_dir = None
+        self.mask_root_dir: Union[pathlib.Path, None]
+        if self.mask_factory == "load_from_disk" and mask_root_dir is not None:
+            assert pathlib.Path(mask_root_dir).is_dir()
+            self.mask_root_dir = pathlib.Path(mask_root_dir)
+        else:
+            self.mask_root_dir = None
 
         self.current_slide_image = None
-        self.current_idx = None
+        self.current_idx: Union[int, None] = None
 
-    def return_mask_from_config(self, slide_image, idx, relative_wsi_path):
+    def return_mask_from_config(
+        self, img: pathlib.Path, idx: int, relative_img_path: pathlib.Path
+    ):
         """Return a mask with the given mask_factory."""
         self.current_idx = idx
         mask = self.mask_options[self.mask_factory](
-            slide_image=slide_image, relative_wsi_path=relative_wsi_path
+            img=img, relative_img_path=relative_img_path
         )
+        return mask
+
+    def load_from_disk(self, *args, **kwargs):
+        """Load mask from disk.
+
+        Read a .png saved by DLUP and converts into a npy object.
+        """
+        mask_file_path = self.mask_root_dir / (
+            kwargs["relative_img_path"].stem + "-mask.png"
+        )
+        mask = np.array(Image.open(mask_file_path)).astype(np.uint8)
         return mask
 
     def no_mask(self, *args, **kwargs):
@@ -80,7 +103,7 @@ class PMCHHGImageDataset(Dataset):
         tile_overlap_y: int = 0,
         tile_mode: str = "overflow",
         crop: bool = False,
-        mask_factory: Literal["no_mask"] = "no_mask",
+        mask_factory: MaskFactory = "no_mask",
         mask_foreground_threshold: Union[float, None] = None,
         mask_root_dir: Union[str, None] = None,
         transform: Union[torchvision.transforms.Compose, None] = None,
@@ -159,7 +182,7 @@ class PMCHHGImageDataset(Dataset):
                 continue
 
             mask = self.mask_getter.return_mask_from_config(
-                slide_image=img, idx=idx, relative_wsi_path=relative_img_path
+                img=img, idx=idx, relative_img_path=pathlib.Path(relative_img_path)
             )
 
             single_img_datasets.append(
@@ -322,7 +345,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         tile_overlap_y: int = 0,
         tile_mode: str = "overflow",
         crop: bool = False,
-        mask_factory: str = "no_mask",
+        mask_factory: MaskFactory = "no_mask",
         mask_foreground_threshold: Union[float, None] = None,
         mask_root_dir: Union[str, None] = None,
         num_workers: int = 4,
