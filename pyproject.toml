@@ -12,7 +12,7 @@ description = "Deep Learning for Pathology on Higher Harmonic Generation Microsc
 keywords = ["AI", "pathology", "HHG"]
 readme = "README.md"
 license = {file = "LICENSE"}
-requires-python = ">=3.9,<3.10"
+requires-python = ">=3.10,<3.11"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -34,7 +34,7 @@ classifiers = [
 dependencies = [
     # There is a bug with the jsonargparse that will otherwise be installed...
     "jsonargparse@git+https://github.com/omni-us/jsonargparse#egg=master",
-    "dlup == 0.3.20",
+    "dlup@git+https://github.com/siemdejong/dlup@entropy_masker",
     "scikit-learn >= 0.24",
     "click",
     "lightning[extra]>=2",
