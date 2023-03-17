@@ -1,9 +1,11 @@
 """Type stubs."""
 
-from typing import Any, Protocol, Sized
+from typing import Any, Literal, Protocol, Sized
 
 from torch import nn
 from torch.utils.data import Dataset
+
+MaskFactory = Literal["no_mask", "load_from_disk"]
 
 
 class SizedDataset(Sized, Dataset):
