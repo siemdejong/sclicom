@@ -2,6 +2,22 @@
 
 <!--next-version-placeholder-->
 
+## v3.2.0 (2023-03-17)
+### Feature
+* Automate masking with dlup entropy_masker ([`1066ea1`](https://github.com/siemdejong/dpat/commit/1066ea1264a7c56760b1fb4be10a7fced92336b6))
+* Compile the pytorch lightning models ([`c009004`](https://github.com/siemdejong/dpat/commit/c009004acb837a3026cb370b927b461996f8f51c))
+
+### Fix
+* Lightning 2.0 ignore missing type imports ([`08b3e85`](https://github.com/siemdejong/dpat/commit/08b3e85608f0cc3171812f1cd1f5fe6f5e9a3bfa))
+* Ddp default find_unused_parameters=False ([`3e2a15d`](https://github.com/siemdejong/dpat/commit/3e2a15dab7fd127b8f70c1439b2833a20b32ec4a))
+* Use recommended precision ([`6b654e2`](https://github.com/siemdejong/dpat/commit/6b654e2fc26c7c1223529d1a42cd177ea8c95ff8))
+* Rename *_epoch_end to on_*_epoch_end ([`37e0c52`](https://github.com/siemdejong/dpat/commit/37e0c52dc200bd72093c89aabc6016ec44cf7d60))
+* Add torch/lightning v2 deps ([`2afdf05`](https://github.com/siemdejong/dpat/commit/2afdf057726f40caae1cae1f7fae99aa464ae415))
+* Simclr-16-3 update ([`29fdf58`](https://github.com/siemdejong/dpat/commit/29fdf582a8c24a5475a605130c1903e1a5e30520))
+
+### Performance
+* Do not log to progress bar ([`da4e3b4`](https://github.com/siemdejong/dpat/commit/da4e3b487f24d1503fea17feb8280d486a5bdc36))
+
 ## v3.1.1 (2023-03-15)
 ### Fix
 * Pretrained config typo ([`e6a3778`](https://github.com/siemdejong/dpat/commit/e6a37785d9b9ef49bdbf40eb009d83f35edff82e))
