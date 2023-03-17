@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v3.2.1 (2023-03-17)
+### Fix
+* Remove pl2 removed trainer arguments ([`817beb8`](https://github.com/siemdejong/dpat/commit/817beb85c59ec8ae7bf3f0273f640c7086a12482))
+
 ## v3.2.0 (2023-03-17)
 ### Feature
 * Automate masking with dlup entropy_masker ([`1066ea1`](https://github.com/siemdejong/dpat/commit/1066ea1264a7c56760b1fb4be10a7fced92336b6))
