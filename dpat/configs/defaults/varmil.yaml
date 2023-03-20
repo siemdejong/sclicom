@@ -30,7 +30,6 @@ trainer:
   devices: 1
   enable_progress_bar: true
   overfit_batches: 0.0
-  track_grad_norm: -1
   check_val_every_n_epoch: 1
   fast_dev_run: false
   accumulate_grad_batches: null
@@ -55,19 +54,14 @@ trainer:
   benchmark: null
   deterministic: null
   reload_dataloaders_every_n_epochs: 0
-  auto_lr_find: false
-  replace_sampler_ddp: true
   detect_anomaly: false
-  auto_scale_batch_size: false
   plugins: null
-  move_metrics_to_cpu: false
-  multiple_trainloader_mode: max_size_cycle
   inference_mode: true
 model:
   class_path: dpat.mil.models.VarAttention
   init_args:
     in_features: 512  # Depends on output of the (pretrained) ResNet
-    hidden_features: 256
+    hidden_features: 32
     num_classes: ${data.init_args.num_classes}
     optimizer:
       class_path: torch.optim.Adam
