@@ -2,7 +2,6 @@
 import pathlib
 
 import lightning.pytorch as pl
-import torch
 
 from dpat.cli import MILTrainCLI
 from dpat.mil.trainer import MILTrainer
@@ -34,9 +33,7 @@ def main():
         },
     )
 
-    compiled_model = torch.compile(cli.model)
-
-    cli.trainer.fit(model=compiled_model, datamodule=cli.datamodule)
+    cli.trainer.fit(model=cli.model, datamodule=cli.datamodule)
 
 
 if __name__ == "__main__":
