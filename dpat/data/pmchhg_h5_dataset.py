@@ -1,8 +1,9 @@
 """Provide H5 dataset to read and compile features."""
 import logging
 import pathlib
+import signal
+import sys
 from collections import Counter
-from contextlib import contextmanager
 from pprint import pformat
 from typing import Generator, Type, TypeVar, Union
 
@@ -68,29 +69,53 @@ class _H5ls:
         return pformat(self.names)
 
 
-@contextmanager
-def careful_hdf5(*args, **kwargs) -> h5py.File:
+class CarefulHDF5:
     """Open an HDF5 file carefully.
 
-    If file already exists, note to give the overwrite keyword.
-    If interrupted while open, flush buffers and close the file.
-
-    Raises
-    ------
-    FileExistsError : if file exists and mode does not allow writing to it.
+    If file already exists, note to give the overwrite keyword. If
+    interrupted while open, flush buffers and close the file.
     """
-    try:
-        f = h5py.File(*args, **kwargs)
-        yield f
-    except FileExistsError:
-        raise FileExistsError(
-            "Preventing overwrite. Use the overwrite keyword to overwrite features."
-        )
-    except KeyboardInterrupt:
-        logger.info("Interrupted...")
-    finally:
-        f.flush()
-        f.close()
+
+    def __init__(self, *args, **kwargs):
+        """Save args and kwargs for the h5py File object initialization."""
+        self.killed = False
+        self.args = args
+        self.kwargs = kwargs
+
+    def _handler(self, *args, **kwargs):
+        """Kill switch."""
+        logging.error("Received SIGINT or SIGTERM! Finishing this block, then exiting.")
+        self.killed = True
+
+    def __enter__(self, *args, **kwargs):
+        """Start listening for SIGINT/SIGTERM and safely open h5 file file."""
+        self.old_sigint = signal.signal(signal.SIGINT, self._handler)
+        self.old_sigterm = signal.signal(signal.SIGTERM, self._handler)
+
+        try:
+            self.f = h5py.File(self.args, self.kwargs)
+            return self.f
+        except FileExistsError:
+            logger.error(
+                "Preventing overwrite. Use the overwrite keyword to overwrite features."
+            )
+            self.killed = True
+        except KeyboardInterrupt:
+            logger.info("Interrupted...")
+            self.killed = True
+        finally:
+            exit(self)
+
+    def __exit__(self, *args, **kwargs):
+        """Gracefully close the h5py file."""
+        self.f.flush()
+        self.f.close()
+
+        if self.killed:
+            sys.exit(0)
+
+        signal.signal(signal.SIGINT, self.old_sigint)
+        signal.signal(signal.SIGTERM, self.old_sigterm)
 
 
 def generate_embeddings(model, dataloader):
@@ -226,7 +251,7 @@ def compile_features(
 
     filepath = dir_name / filename
 
-    with careful_hdf5(name=filepath, mode=mode) as file:
+    with CarefulHDF5(name=filepath, mode=mode) as file:
         feature_batch_extract(
             file, model, dataset, batch_size, dsetname_format, skip_if_exists
         )
