@@ -4,11 +4,13 @@ import pathlib
 import signal
 import sys
 from collections import Counter
+from io import BytesIO
 from pprint import pformat
 from typing import Generator, Type, TypeVar, Union
 
 import h5py
 import lightning.pytorch as pl
+import pandas as pd
 import torch
 import torchvision
 from torch import nn
@@ -267,8 +269,9 @@ class PMCHHGH5Dataset(Dataset):
         path: pathlib.Path,
         num_classes: int,
         metadata_keys: Union[list[str], None] = None,
+        paths_and_targets: Union[pathlib.Path, str, BytesIO, None] = None,
         cache: bool = False,
-        transform: torchvision.transforms.Compose = None,
+        transform: Union[torchvision.transforms.Compose, None] = None,
         load_encoded: bool = False,
     ) -> None:
         """Initialize an H5 dataset.
@@ -279,6 +282,8 @@ class PMCHHGH5Dataset(Dataset):
             Location where the images are stored on disk.
         transform : `torchvision.transforms.Compose`, default=None
             Transform to apply.
+        paths_and_targets : Path|str|BytesIO
+            File to be read by pandas for the img paths/case_id/img_id/targets.
         load_encoded : bool, default=False
             Whether the images within the h5 file are encoded or saved as bytes
             directly.
@@ -289,9 +294,22 @@ class PMCHHGH5Dataset(Dataset):
         self.transform = transform
         self.load_encoded = load_encoded
 
+        self.df = pd.read_csv(paths_and_targets, header=None)
+        self.case_ids = self.df[1]
+        self.img_ids = self.df[2]
+        self.dataset_indices_filter = [
+            f"{case_id}/{img_id}"
+            for case_id, img_id in zip(self.case_ids, self.img_ids)
+        ]
+        self.df = self.df.set_index(0)
+
         self.hdf5: Union[h5py.File, None] = None
 
-        self.dataset_indices = _H5ls(self.file_path, h5py.Group, 2)
+        self._h5ls = _H5ls(self.file_path, h5py.Group, 2)
+        self.dataset_indices = [
+            path for path in self._h5ls if path in self.dataset_indices_filter
+        ]
+
         if metadata_keys is None:
             self.metadata_keys = ["target"]
         else:
@@ -381,6 +399,7 @@ class PMCHHGH5Dataset(Dataset):
             metadata_keys=[
                 "all_" + key for key in dataset.get_metadata(0)["meta"].keys()
             ],
+            paths_and_targets=dataset.image_paths_and_targets,
             cache=cache,
             transform=transform,
             load_encoded=False,
@@ -476,6 +495,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
 
     def __init__(
         self,
+        file_path: pathlib.Path,
         train_path: pathlib.Path,
         val_path: pathlib.Path,
         test_path: pathlib.Path,
@@ -489,12 +509,17 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
 
         Parameters
         ----------
+        file_path : pathlib.Path
+            Path to hdf5 file containing all needed tile embeddings.
         train_path : pathlib.Path
-            Path to train hdf5 file.
+            Path to paths and targets for the train fold
+            (see dpat.data.PMCHHGImageDataset).
         val_path : pathlib.Path
-            Path to validation hdf5 file.
+            Path to paths and targets for the val fold
+            (see dpat.data.PMCHHGImageDataset).
         test_path : pathlib.Path
-            Path to test hdf5 file.
+            Path to paths and targets for the test fold
+            (see dpat.data.PMCHHGImageDataset).
         num_workers : int, default=0
             Number of workers for the datalaoders.
         num_classes : int, default=2,
@@ -503,9 +528,10 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
             Balance the training set using minority oversampling.
         """
         super().__init__()
-        self.train_path = train_path
-        self.val_path = val_path
-        self.test_path = test_path
+        self.file_path = file_path
+        self.train_paths_and_targets = train_path
+        self.val_paths_and_targets = val_path
+        self.test_paths_and_targets = test_path
         self.num_workers = num_workers
         self.num_classes = num_classes
 
@@ -531,14 +557,23 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         ]
         if stage == "fit":
             self.train_dataset = PMCHHGH5Dataset(
-                self.train_path, self.num_classes, metadata_keys
+                self.file_path,
+                self.num_classes,
+                metadata_keys,
+                self.train_paths_and_targets,
             )
             self.val_dataset = PMCHHGH5Dataset(
-                self.val_path, self.num_classes, metadata_keys
+                self.file_path,
+                self.num_classes,
+                metadata_keys,
+                self.val_paths_and_targets,
             )
         elif stage == "test":
             self.test_dataset = PMCHHGH5Dataset(
-                self.test_path, self.num_classes, metadata_keys
+                self.file_path,
+                self.num_classes,
+                metadata_keys,
+                self.test_paths_and_targets,
             )
 
     def train_dataloader(self):
