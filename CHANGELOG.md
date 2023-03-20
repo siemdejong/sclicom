@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v4.0.0 (2023-03-20)
+### Fix
+* Update mil config to reflect new signature ([`c4dc0ed`](https://github.com/siemdejong/dpat/commit/c4dc0edce0acc9ad2453f874cde3b619e68ca559))
+* Filter h5 dataset by filenames ([`b3e1770`](https://github.com/siemdejong/dpat/commit/b3e177062d58840a69271f323f84fa67d9bf31cc))
+* Safely bypass sigint or sigterm ([`388d368`](https://github.com/siemdejong/dpat/commit/388d36824e27192a104b84f2a2629fea471b733e))
+* Remove trainer arguments for pl2 ([`99194e0`](https://github.com/siemdejong/dpat/commit/99194e09417bd38a1f2c52d61b870199f91ab7db))
+
+### Breaking
+* train|val|test_path keywords now do not refer to the the target train|val|test paths to output h5 files to, but to the files providing paths_and_targets. file_path is the new target file, containing all images. ([`b3e1770`](https://github.com/siemdejong/dpat/commit/b3e177062d58840a69271f323f84fa67d9bf31cc))
+
 ## v3.2.1 (2023-03-17)
 ### Fix
 * Remove pl2 removed trainer arguments ([`817beb8`](https://github.com/siemdejong/dpat/commit/817beb85c59ec8ae7bf3f0273f640c7086a12482))
