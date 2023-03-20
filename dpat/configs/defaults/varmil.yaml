@@ -78,9 +78,10 @@ model:
 data:
   class_path: dpat.data.PMCHHGH5DataModule
   init_args:
-    train_path: /scistor/guest/sjg203/projects/pmc-hhg/features/train.hdf5
-    val_path: /scistor/guest/sjg203/projects/pmc-hhg/features/val.hdf5
-    test_path: /scistor/guest/sjg203/projects/pmc-hhg/features/test.hdf5
+    file_path: /scistor/guest/sjg203/projects/pmc-hhg/features/simclr-17-3-2023.hdf5
+    train_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_train-subfold-0-fold-0.csv
+    val_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_val-subfold-0-fold-0.csv
+    test_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_test-subfold-0-fold-0.csv
     num_workers: 4
     num_classes: 2
     balance: true
