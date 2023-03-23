@@ -76,17 +76,17 @@ class Attention(pl.LightningModule):
         self.D = hidden_features
         self.K = 1
         if isinstance(self.D, list):
-            attention_layers: list[Union[nn.Linear, nn.Tanh]] = [
+            attention_layers: list[nn.Module] = [
                 nn.Linear(self.L, self.D[0]),
                 nn.Tanh(),
             ]
             for i, curr_D in enumerate(self.D[1:]):
-                prev_shape = attention_layers[i * 2].out_features
+                prev_shape = self.D[i]
                 attention_layers.extend(
                     [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout()]
                 )
             attention_layers.append(nn.Linear(curr_D, self.K))
-            self.attention = nn.Sequential(attention_layers)
+            self.attention = nn.Sequential(*attention_layers)
         else:
             self.attention = nn.Sequential(
                 nn.Linear(self.L, self.D), nn.Tanh(), nn.Linear(self.D, self.K)
@@ -109,7 +109,7 @@ class Attention(pl.LightningModule):
         self.pr_curve: Metric = PrecisionRecallCurve(  # type: ignore
             task=task, num_classes=num_classes
         )
-        self.pr_auc = AveragePrecision(task=task, num_classes=num_classes)
+        self.pr_auc = AveragePrecision(task=task, num_classes=num_classes)  # type: ignore # noqa: 501
 
     def forward(self, x):
         """Calculate prediction and attention vector."""
@@ -179,7 +179,7 @@ class Attention(pl.LightningModule):
 
         auroc_score = self.auroc(preds=prediction, target=target)
         f1_score = self.f1(preds=prediction, target=target)
-        pr_auc = self.pr_auc(preds=prediction, target=target)
+        pr_auc = self.pr_auc(preds=prediction, target=target)  # type: ignore # although it should work according to docs. # noqa: 501
 
         # TODO Save these or do this afterwards from the patient-level outputs?
         precision, recall, thresholds = self.pr_curve(preds=prediction, target=target)
