@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v4.3.0 (2023-03-23)
+### Feature
+* Add early stopping ([`7c4eb01`](https://github.com/siemdejong/dpat/commit/7c4eb01e240402c6033fa2b06d802e41b3e90c60))
+* Add dropout_p parameter to varmil ([`6b59e50`](https://github.com/siemdejong/dpat/commit/6b59e50d8b6c5c800ce0bdcadc09025159412dce))
+
 ## v4.2.0 (2023-03-23)
 ### Feature
 * Add hidden features and dropout ([`452082c`](https://github.com/siemdejong/dpat/commit/452082cbff5e2f584938b7de84b887c0a035d418))
