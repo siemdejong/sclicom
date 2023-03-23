@@ -94,10 +94,7 @@ class SimCLR(pl.LightningModule):
         return [optimizer], [scheduler]
 
     def optimizer_zero_grad(
-        self,
-        epoch: int,
-        batch_idx: int,
-        optimizer: torch.optim.Optimizer,
+        self, epoch: int, batch_idx: int, optimizer: torch.optim.Optimizer
     ) -> None:
         """Set gradients to None instead of zero.
 
