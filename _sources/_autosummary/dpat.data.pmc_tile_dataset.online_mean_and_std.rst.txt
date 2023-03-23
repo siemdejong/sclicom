@@ -1,0 +1,6 @@
+dpat.data.pmc\_tile\_dataset.online\_mean\_and\_std
+===================================================
+
+.. currentmodule:: dpat.data.pmc_tile_dataset
+
+.. autofunction:: online_mean_and_std

@@ -1,0 +1,30 @@
+dpat.utils.float32\_matmul\_precision
+=====================================
+
+.. automodule:: dpat.utils.float32_matmul_precision
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      set_float32_matmul_precision
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

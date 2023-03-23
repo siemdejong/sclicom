@@ -1,0 +1,36 @@
+dpat.cli.mil\_cli.MILTrainCLI
+=============================
+
+.. currentmodule:: dpat.cli.mil_cli
+
+.. autoclass:: MILTrainCLI
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MILTrainCLI.__init__
+      ~MILTrainCLI.add_arguments_to_parser
+      ~MILTrainCLI.add_core_arguments_to_parser
+      ~MILTrainCLI.add_default_arguments_to_parser
+      ~MILTrainCLI.before_instantiate_classes
+      ~MILTrainCLI.configure_optimizers
+      ~MILTrainCLI.init_parser
+      ~MILTrainCLI.instantiate_classes
+      ~MILTrainCLI.instantiate_trainer
+      ~MILTrainCLI.link_optimizers_and_lr_schedulers
+      ~MILTrainCLI.parse_arguments
+      ~MILTrainCLI.setup_parser
+      ~MILTrainCLI.subcommands
+   
+   
+
+   
+   
+   

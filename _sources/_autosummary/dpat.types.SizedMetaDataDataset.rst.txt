@@ -1,0 +1,25 @@
+dpat.types.SizedMetaDataDataset
+===============================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: SizedMetaDataDataset
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SizedMetaDataDataset.__init__
+      ~SizedMetaDataDataset.get_metadata
+   
+   
+
+   
+   
+   

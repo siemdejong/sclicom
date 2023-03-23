@@ -1,0 +1,36 @@
+dpat.types
+==========
+
+.. automodule:: dpat.types
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      MetaDataDataset
+      MetaDataProtocol
+      OutputProtocol
+      SizedDataset
+      SizedMetaDataDataset
+      VisionBackbone
+   
+   
+
+   
+   
+   
+
+
+

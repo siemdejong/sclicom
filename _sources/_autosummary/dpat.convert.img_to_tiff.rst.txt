@@ -1,0 +1,6 @@
+dpat.convert.img\_to\_tiff
+==========================
+
+.. currentmodule:: dpat.convert
+
+.. autofunction:: img_to_tiff

@@ -1,0 +1,6 @@
+dpat.convert.hhg.hhg\_batch\_convert
+====================================
+
+.. currentmodule:: dpat.convert.hhg
+
+.. autofunction:: hhg_batch_convert

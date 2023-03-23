@@ -1,0 +1,6 @@
+dpat.convert.filter\_existing
+=============================
+
+.. currentmodule:: dpat.convert
+
+.. autofunction:: filter_existing

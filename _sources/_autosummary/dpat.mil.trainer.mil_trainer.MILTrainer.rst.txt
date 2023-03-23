@@ -1,0 +1,92 @@
+dpat.mil.trainer.mil\_trainer.MILTrainer
+========================================
+
+.. currentmodule:: dpat.mil.trainer.mil_trainer
+
+.. autoclass:: MILTrainer
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MILTrainer.__init__
+      ~MILTrainer.add_arguments_to_parser
+      ~MILTrainer.fit
+      ~MILTrainer.predict
+      ~MILTrainer.save_checkpoint
+      ~MILTrainer.test
+      ~MILTrainer.validate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MILTrainer.accelerator
+      ~MILTrainer.callback_metrics
+      ~MILTrainer.checkpoint_callback
+      ~MILTrainer.checkpoint_callbacks
+      ~MILTrainer.ckpt_path
+      ~MILTrainer.current_epoch
+      ~MILTrainer.default_root_dir
+      ~MILTrainer.device_ids
+      ~MILTrainer.distributed_sampler_kwargs
+      ~MILTrainer.early_stopping_callback
+      ~MILTrainer.early_stopping_callbacks
+      ~MILTrainer.enable_validation
+      ~MILTrainer.estimated_stepping_batches
+      ~MILTrainer.evaluating
+      ~MILTrainer.global_rank
+      ~MILTrainer.global_step
+      ~MILTrainer.interrupted
+      ~MILTrainer.is_global_zero
+      ~MILTrainer.is_last_batch
+      ~MILTrainer.lightning_module
+      ~MILTrainer.local_rank
+      ~MILTrainer.log_dir
+      ~MILTrainer.logged_metrics
+      ~MILTrainer.logger
+      ~MILTrainer.loggers
+      ~MILTrainer.lr_scheduler_configs
+      ~MILTrainer.max_epochs
+      ~MILTrainer.max_steps
+      ~MILTrainer.min_epochs
+      ~MILTrainer.min_steps
+      ~MILTrainer.model
+      ~MILTrainer.node_rank
+      ~MILTrainer.num_devices
+      ~MILTrainer.num_nodes
+      ~MILTrainer.num_predict_batches
+      ~MILTrainer.num_sanity_val_batches
+      ~MILTrainer.num_test_batches
+      ~MILTrainer.num_training_batches
+      ~MILTrainer.num_val_batches
+      ~MILTrainer.optimizers
+      ~MILTrainer.precision
+      ~MILTrainer.precision_plugin
+      ~MILTrainer.predict_dataloaders
+      ~MILTrainer.predicting
+      ~MILTrainer.progress_bar_callback
+      ~MILTrainer.progress_bar_metrics
+      ~MILTrainer.received_sigterm
+      ~MILTrainer.sanity_checking
+      ~MILTrainer.scaler
+      ~MILTrainer.strategy
+      ~MILTrainer.test_dataloaders
+      ~MILTrainer.testing
+      ~MILTrainer.train_dataloader
+      ~MILTrainer.training
+      ~MILTrainer.val_dataloaders
+      ~MILTrainer.validating
+      ~MILTrainer.world_size
+   
+   

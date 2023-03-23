@@ -1,0 +1,33 @@
+dpat.utils
+==========
+
+.. automodule:: dpat.utils
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.utils.cudnn_auto_tuner
+   dpat.utils.float32_matmul_precision
+

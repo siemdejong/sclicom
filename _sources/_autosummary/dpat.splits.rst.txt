@@ -1,0 +1,32 @@
+dpat.splits
+===========
+
+.. automodule:: dpat.splits
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.splits.create_splits
+

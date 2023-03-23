@@ -1,0 +1,6 @@
+dpat.utils.cudnn\_auto\_tuner.enable\_cudnn\_auto\_tuner
+========================================================
+
+.. currentmodule:: dpat.utils.cudnn_auto_tuner
+
+.. autofunction:: enable_cudnn_auto_tuner

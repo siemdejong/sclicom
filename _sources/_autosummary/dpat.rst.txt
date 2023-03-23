@@ -1,0 +1,48 @@
+﻿dpat
+====
+
+.. automodule:: dpat
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      install_windows
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.cli
+   dpat.configs
+   dpat.convert
+   dpat.data
+   dpat.exceptions
+   dpat.extract_features
+   dpat.mil
+   dpat.splits
+   dpat.types
+   dpat.utils
+

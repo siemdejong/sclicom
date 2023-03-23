@@ -1,0 +1,30 @@
+dpat.utils.cudnn\_auto\_tuner
+=============================
+
+.. automodule:: dpat.utils.cudnn_auto_tuner
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      enable_cudnn_auto_tuner
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

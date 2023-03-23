@@ -1,0 +1,31 @@
+dpat.extract\_features.models.swav
+==================================
+
+.. automodule:: dpat.extract_features.models.swav
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      SwAV
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,25 @@
+dpat.types.MetaDataDataset
+==========================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: MetaDataDataset
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MetaDataDataset.__init__
+      ~MetaDataDataset.get_metadata
+   
+   
+
+   
+   
+   

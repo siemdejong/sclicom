@@ -1,0 +1,6 @@
+dpat.exceptions.DpatDecompressionBombError
+==========================================
+
+.. currentmodule:: dpat.exceptions
+
+.. autoexception:: DpatDecompressionBombError

@@ -1,0 +1,92 @@
+dpat.extract\_features.trainer.pre\_trainer.PreTrainer
+======================================================
+
+.. currentmodule:: dpat.extract_features.trainer.pre_trainer
+
+.. autoclass:: PreTrainer
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PreTrainer.__init__
+      ~PreTrainer.add_arguments_to_parser
+      ~PreTrainer.fit
+      ~PreTrainer.predict
+      ~PreTrainer.save_checkpoint
+      ~PreTrainer.test
+      ~PreTrainer.validate
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PreTrainer.accelerator
+      ~PreTrainer.callback_metrics
+      ~PreTrainer.checkpoint_callback
+      ~PreTrainer.checkpoint_callbacks
+      ~PreTrainer.ckpt_path
+      ~PreTrainer.current_epoch
+      ~PreTrainer.default_root_dir
+      ~PreTrainer.device_ids
+      ~PreTrainer.distributed_sampler_kwargs
+      ~PreTrainer.early_stopping_callback
+      ~PreTrainer.early_stopping_callbacks
+      ~PreTrainer.enable_validation
+      ~PreTrainer.estimated_stepping_batches
+      ~PreTrainer.evaluating
+      ~PreTrainer.global_rank
+      ~PreTrainer.global_step
+      ~PreTrainer.interrupted
+      ~PreTrainer.is_global_zero
+      ~PreTrainer.is_last_batch
+      ~PreTrainer.lightning_module
+      ~PreTrainer.local_rank
+      ~PreTrainer.log_dir
+      ~PreTrainer.logged_metrics
+      ~PreTrainer.logger
+      ~PreTrainer.loggers
+      ~PreTrainer.lr_scheduler_configs
+      ~PreTrainer.max_epochs
+      ~PreTrainer.max_steps
+      ~PreTrainer.min_epochs
+      ~PreTrainer.min_steps
+      ~PreTrainer.model
+      ~PreTrainer.node_rank
+      ~PreTrainer.num_devices
+      ~PreTrainer.num_nodes
+      ~PreTrainer.num_predict_batches
+      ~PreTrainer.num_sanity_val_batches
+      ~PreTrainer.num_test_batches
+      ~PreTrainer.num_training_batches
+      ~PreTrainer.num_val_batches
+      ~PreTrainer.optimizers
+      ~PreTrainer.precision
+      ~PreTrainer.precision_plugin
+      ~PreTrainer.predict_dataloaders
+      ~PreTrainer.predicting
+      ~PreTrainer.progress_bar_callback
+      ~PreTrainer.progress_bar_metrics
+      ~PreTrainer.received_sigterm
+      ~PreTrainer.sanity_checking
+      ~PreTrainer.scaler
+      ~PreTrainer.strategy
+      ~PreTrainer.test_dataloaders
+      ~PreTrainer.testing
+      ~PreTrainer.train_dataloader
+      ~PreTrainer.training
+      ~PreTrainer.val_dataloaders
+      ~PreTrainer.validating
+      ~PreTrainer.world_size
+   
+   

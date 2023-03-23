@@ -1,0 +1,6 @@
+dpat.convert.batch\_convert
+===========================
+
+.. currentmodule:: dpat.convert
+
+.. autofunction:: batch_convert

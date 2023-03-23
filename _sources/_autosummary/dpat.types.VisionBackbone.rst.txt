@@ -1,0 +1,79 @@
+dpat.types.VisionBackbone
+=========================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: VisionBackbone
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VisionBackbone.__init__
+      ~VisionBackbone.add_module
+      ~VisionBackbone.apply
+      ~VisionBackbone.bfloat16
+      ~VisionBackbone.buffers
+      ~VisionBackbone.children
+      ~VisionBackbone.cpu
+      ~VisionBackbone.cuda
+      ~VisionBackbone.double
+      ~VisionBackbone.eval
+      ~VisionBackbone.extra_repr
+      ~VisionBackbone.float
+      ~VisionBackbone.forward
+      ~VisionBackbone.get_buffer
+      ~VisionBackbone.get_extra_state
+      ~VisionBackbone.get_parameter
+      ~VisionBackbone.get_submodule
+      ~VisionBackbone.half
+      ~VisionBackbone.ipu
+      ~VisionBackbone.load_state_dict
+      ~VisionBackbone.modules
+      ~VisionBackbone.named_buffers
+      ~VisionBackbone.named_children
+      ~VisionBackbone.named_modules
+      ~VisionBackbone.named_parameters
+      ~VisionBackbone.parameters
+      ~VisionBackbone.register_backward_hook
+      ~VisionBackbone.register_buffer
+      ~VisionBackbone.register_forward_hook
+      ~VisionBackbone.register_forward_pre_hook
+      ~VisionBackbone.register_full_backward_hook
+      ~VisionBackbone.register_full_backward_pre_hook
+      ~VisionBackbone.register_load_state_dict_post_hook
+      ~VisionBackbone.register_module
+      ~VisionBackbone.register_parameter
+      ~VisionBackbone.register_state_dict_pre_hook
+      ~VisionBackbone.requires_grad_
+      ~VisionBackbone.set_extra_state
+      ~VisionBackbone.share_memory
+      ~VisionBackbone.state_dict
+      ~VisionBackbone.to
+      ~VisionBackbone.to_empty
+      ~VisionBackbone.train
+      ~VisionBackbone.type
+      ~VisionBackbone.xpu
+      ~VisionBackbone.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~VisionBackbone.T_destination
+      ~VisionBackbone.call_super_init
+      ~VisionBackbone.dump_patches
+      ~VisionBackbone.training
+      ~VisionBackbone.output
+   
+   

@@ -1,0 +1,24 @@
+dpat.data.transforms.Dlup2DpatTransform
+=======================================
+
+.. currentmodule:: dpat.data.transforms
+
+.. autoclass:: Dlup2DpatTransform
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~Dlup2DpatTransform.__init__
+   
+   
+
+   
+   
+   

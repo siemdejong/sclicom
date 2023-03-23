@@ -1,0 +1,6 @@
+dpat.configs.omegaconf.register\_conf\_resolvers
+================================================
+
+.. currentmodule:: dpat.configs.omegaconf
+
+.. autofunction:: register_conf_resolvers

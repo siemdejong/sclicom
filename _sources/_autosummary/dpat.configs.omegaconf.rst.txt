@@ -1,0 +1,30 @@
+dpat.configs.omegaconf
+======================
+
+.. automodule:: dpat.configs.omegaconf
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      register_conf_resolvers
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

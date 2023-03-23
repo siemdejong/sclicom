@@ -1,0 +1,6 @@
+dpat.exceptions.DpatOutputDirectoryExistsError
+==============================================
+
+.. currentmodule:: dpat.exceptions
+
+.. autoexception:: DpatOutputDirectoryExistsError

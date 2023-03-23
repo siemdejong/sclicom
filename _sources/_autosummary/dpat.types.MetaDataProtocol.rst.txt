@@ -1,0 +1,25 @@
+dpat.types.MetaDataProtocol
+===========================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: MetaDataProtocol
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~MetaDataProtocol.__init__
+      ~MetaDataProtocol.get_metadata
+   
+   
+
+   
+   
+   

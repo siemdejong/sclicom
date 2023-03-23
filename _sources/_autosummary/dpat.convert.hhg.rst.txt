@@ -1,0 +1,30 @@
+dpat.convert.hhg
+================
+
+.. automodule:: dpat.convert.hhg
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      hhg_batch_convert
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

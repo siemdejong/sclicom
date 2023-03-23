@@ -1,0 +1,35 @@
+dpat.cli
+========
+
+.. automodule:: dpat.cli
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.cli.dpat_trainer_cli
+   dpat.cli.logging
+   dpat.cli.mil_cli
+   dpat.cli.pretrain_cli
+

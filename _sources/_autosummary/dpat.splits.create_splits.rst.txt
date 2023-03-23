@@ -1,0 +1,23 @@
+dpat.splits.create\_splits
+==========================
+
+.. automodule:: dpat.splits.create_splits
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

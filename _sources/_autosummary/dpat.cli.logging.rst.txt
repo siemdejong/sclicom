@@ -1,0 +1,30 @@
+dpat.cli.logging
+================
+
+.. automodule:: dpat.cli.logging
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      config_logging
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

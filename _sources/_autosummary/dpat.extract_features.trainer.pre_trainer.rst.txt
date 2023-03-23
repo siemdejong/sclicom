@@ -1,0 +1,31 @@
+dpat.extract\_features.trainer.pre\_trainer
+===========================================
+
+.. automodule:: dpat.extract_features.trainer.pre_trainer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      PreTrainer
+   
+   
+
+   
+   
+   
+
+
+

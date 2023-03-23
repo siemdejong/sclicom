@@ -1,0 +1,32 @@
+dpat.configs
+============
+
+.. automodule:: dpat.configs
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.configs.omegaconf
+

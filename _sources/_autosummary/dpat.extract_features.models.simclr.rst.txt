@@ -1,0 +1,31 @@
+dpat.extract\_features.models.simclr
+====================================
+
+.. automodule:: dpat.extract_features.models.simclr
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      SimCLR
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,32 @@
+dpat.mil.trainer
+================
+
+.. automodule:: dpat.mil.trainer
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.mil.trainer.mil_trainer
+

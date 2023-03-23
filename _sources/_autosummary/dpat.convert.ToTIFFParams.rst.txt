@@ -1,0 +1,43 @@
+dpat.convert.ToTIFFParams
+=========================
+
+.. currentmodule:: dpat.convert
+
+.. autoclass:: ToTIFFParams
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ToTIFFParams.__init__
+      ~ToTIFFParams.clear
+      ~ToTIFFParams.copy
+      ~ToTIFFParams.fromkeys
+      ~ToTIFFParams.get
+      ~ToTIFFParams.items
+      ~ToTIFFParams.keys
+      ~ToTIFFParams.pop
+      ~ToTIFFParams.popitem
+      ~ToTIFFParams.setdefault
+      ~ToTIFFParams.update
+      ~ToTIFFParams.values
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ToTIFFParams.resolution_unit
+      ~ToTIFFParams.x_resolution
+      ~ToTIFFParams.y_resolution
+   
+   

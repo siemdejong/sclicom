@@ -1,0 +1,51 @@
+dpat.convert
+============
+
+.. automodule:: dpat.convert
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      batch_convert
+      filter_existing
+      img_to_tiff
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      AvailableImageFormats
+      ToOtherParams
+      ToTIFFParams
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.convert.hhg
+

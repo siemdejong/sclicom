@@ -1,0 +1,36 @@
+dpat.cli.dpat\_trainer\_cli.DpatTrainerCLI
+==========================================
+
+.. currentmodule:: dpat.cli.dpat_trainer_cli
+
+.. autoclass:: DpatTrainerCLI
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~DpatTrainerCLI.__init__
+      ~DpatTrainerCLI.add_arguments_to_parser
+      ~DpatTrainerCLI.add_core_arguments_to_parser
+      ~DpatTrainerCLI.add_default_arguments_to_parser
+      ~DpatTrainerCLI.before_instantiate_classes
+      ~DpatTrainerCLI.configure_optimizers
+      ~DpatTrainerCLI.init_parser
+      ~DpatTrainerCLI.instantiate_classes
+      ~DpatTrainerCLI.instantiate_trainer
+      ~DpatTrainerCLI.link_optimizers_and_lr_schedulers
+      ~DpatTrainerCLI.parse_arguments
+      ~DpatTrainerCLI.setup_parser
+      ~DpatTrainerCLI.subcommands
+   
+   
+
+   
+   
+   

@@ -1,0 +1,33 @@
+dpat.extract\_features
+======================
+
+.. automodule:: dpat.extract_features
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.extract_features.models
+   dpat.extract_features.trainer
+

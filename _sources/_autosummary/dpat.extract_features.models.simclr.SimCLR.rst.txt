@@ -1,0 +1,171 @@
+dpat.extract\_features.models.simclr.SimCLR
+===========================================
+
+.. currentmodule:: dpat.extract_features.models.simclr
+
+.. autoclass:: SimCLR
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SimCLR.__init__
+      ~SimCLR.add_module
+      ~SimCLR.all_gather
+      ~SimCLR.apply
+      ~SimCLR.backward
+      ~SimCLR.bfloat16
+      ~SimCLR.buffers
+      ~SimCLR.children
+      ~SimCLR.clip_gradients
+      ~SimCLR.configure_callbacks
+      ~SimCLR.configure_gradient_clipping
+      ~SimCLR.configure_optimizers
+      ~SimCLR.configure_sharded_model
+      ~SimCLR.cpu
+      ~SimCLR.cuda
+      ~SimCLR.double
+      ~SimCLR.eval
+      ~SimCLR.extra_repr
+      ~SimCLR.float
+      ~SimCLR.forward
+      ~SimCLR.freeze
+      ~SimCLR.get_buffer
+      ~SimCLR.get_extra_state
+      ~SimCLR.get_parameter
+      ~SimCLR.get_submodule
+      ~SimCLR.half
+      ~SimCLR.ipu
+      ~SimCLR.load_from_checkpoint
+      ~SimCLR.load_state_dict
+      ~SimCLR.log
+      ~SimCLR.log_dict
+      ~SimCLR.lr_scheduler_step
+      ~SimCLR.lr_schedulers
+      ~SimCLR.manual_backward
+      ~SimCLR.modules
+      ~SimCLR.named_buffers
+      ~SimCLR.named_children
+      ~SimCLR.named_modules
+      ~SimCLR.named_parameters
+      ~SimCLR.on_after_backward
+      ~SimCLR.on_after_batch_transfer
+      ~SimCLR.on_before_backward
+      ~SimCLR.on_before_batch_transfer
+      ~SimCLR.on_before_optimizer_step
+      ~SimCLR.on_before_zero_grad
+      ~SimCLR.on_fit_end
+      ~SimCLR.on_fit_start
+      ~SimCLR.on_load_checkpoint
+      ~SimCLR.on_predict_batch_end
+      ~SimCLR.on_predict_batch_start
+      ~SimCLR.on_predict_end
+      ~SimCLR.on_predict_epoch_end
+      ~SimCLR.on_predict_epoch_start
+      ~SimCLR.on_predict_model_eval
+      ~SimCLR.on_predict_start
+      ~SimCLR.on_save_checkpoint
+      ~SimCLR.on_test_batch_end
+      ~SimCLR.on_test_batch_start
+      ~SimCLR.on_test_end
+      ~SimCLR.on_test_epoch_end
+      ~SimCLR.on_test_epoch_start
+      ~SimCLR.on_test_model_eval
+      ~SimCLR.on_test_model_train
+      ~SimCLR.on_test_start
+      ~SimCLR.on_train_batch_end
+      ~SimCLR.on_train_batch_start
+      ~SimCLR.on_train_end
+      ~SimCLR.on_train_epoch_end
+      ~SimCLR.on_train_epoch_start
+      ~SimCLR.on_train_start
+      ~SimCLR.on_validation_batch_end
+      ~SimCLR.on_validation_batch_start
+      ~SimCLR.on_validation_end
+      ~SimCLR.on_validation_epoch_end
+      ~SimCLR.on_validation_epoch_start
+      ~SimCLR.on_validation_model_eval
+      ~SimCLR.on_validation_model_train
+      ~SimCLR.on_validation_start
+      ~SimCLR.optimizer_step
+      ~SimCLR.optimizer_zero_grad
+      ~SimCLR.optimizers
+      ~SimCLR.parameters
+      ~SimCLR.predict_dataloader
+      ~SimCLR.predict_step
+      ~SimCLR.prepare_data
+      ~SimCLR.print
+      ~SimCLR.register_backward_hook
+      ~SimCLR.register_buffer
+      ~SimCLR.register_forward_hook
+      ~SimCLR.register_forward_pre_hook
+      ~SimCLR.register_full_backward_hook
+      ~SimCLR.register_full_backward_pre_hook
+      ~SimCLR.register_load_state_dict_post_hook
+      ~SimCLR.register_module
+      ~SimCLR.register_parameter
+      ~SimCLR.register_state_dict_pre_hook
+      ~SimCLR.requires_grad_
+      ~SimCLR.save_hyperparameters
+      ~SimCLR.set_extra_state
+      ~SimCLR.setup
+      ~SimCLR.share_memory
+      ~SimCLR.state_dict
+      ~SimCLR.teardown
+      ~SimCLR.test_dataloader
+      ~SimCLR.test_step
+      ~SimCLR.to
+      ~SimCLR.to_empty
+      ~SimCLR.to_onnx
+      ~SimCLR.to_torchscript
+      ~SimCLR.toggle_optimizer
+      ~SimCLR.train
+      ~SimCLR.train_dataloader
+      ~SimCLR.training_step
+      ~SimCLR.transfer_batch_to_device
+      ~SimCLR.type
+      ~SimCLR.unfreeze
+      ~SimCLR.untoggle_optimizer
+      ~SimCLR.val_dataloader
+      ~SimCLR.validation_step
+      ~SimCLR.xpu
+      ~SimCLR.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SimCLR.CHECKPOINT_HYPER_PARAMS_KEY
+      ~SimCLR.CHECKPOINT_HYPER_PARAMS_NAME
+      ~SimCLR.CHECKPOINT_HYPER_PARAMS_TYPE
+      ~SimCLR.T_destination
+      ~SimCLR.automatic_optimization
+      ~SimCLR.call_super_init
+      ~SimCLR.current_epoch
+      ~SimCLR.device
+      ~SimCLR.dtype
+      ~SimCLR.dump_patches
+      ~SimCLR.example_input_array
+      ~SimCLR.fabric
+      ~SimCLR.global_rank
+      ~SimCLR.global_step
+      ~SimCLR.hparams
+      ~SimCLR.hparams_initial
+      ~SimCLR.local_rank
+      ~SimCLR.logger
+      ~SimCLR.loggers
+      ~SimCLR.on_gpu
+      ~SimCLR.trainer
+      ~SimCLR.training
+   
+   

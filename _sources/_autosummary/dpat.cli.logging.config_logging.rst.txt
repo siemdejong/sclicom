@@ -1,0 +1,6 @@
+dpat.cli.logging.config\_logging
+================================
+
+.. currentmodule:: dpat.cli.logging
+
+.. autofunction:: config_logging

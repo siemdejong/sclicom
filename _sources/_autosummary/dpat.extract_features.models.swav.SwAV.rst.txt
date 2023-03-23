@@ -1,0 +1,171 @@
+dpat.extract\_features.models.swav.SwAV
+=======================================
+
+.. currentmodule:: dpat.extract_features.models.swav
+
+.. autoclass:: SwAV
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~SwAV.__init__
+      ~SwAV.add_module
+      ~SwAV.all_gather
+      ~SwAV.apply
+      ~SwAV.backward
+      ~SwAV.bfloat16
+      ~SwAV.buffers
+      ~SwAV.children
+      ~SwAV.clip_gradients
+      ~SwAV.configure_callbacks
+      ~SwAV.configure_gradient_clipping
+      ~SwAV.configure_optimizers
+      ~SwAV.configure_sharded_model
+      ~SwAV.cpu
+      ~SwAV.cuda
+      ~SwAV.double
+      ~SwAV.eval
+      ~SwAV.extra_repr
+      ~SwAV.float
+      ~SwAV.forward
+      ~SwAV.freeze
+      ~SwAV.get_buffer
+      ~SwAV.get_extra_state
+      ~SwAV.get_parameter
+      ~SwAV.get_submodule
+      ~SwAV.half
+      ~SwAV.ipu
+      ~SwAV.load_from_checkpoint
+      ~SwAV.load_state_dict
+      ~SwAV.log
+      ~SwAV.log_dict
+      ~SwAV.lr_scheduler_step
+      ~SwAV.lr_schedulers
+      ~SwAV.manual_backward
+      ~SwAV.modules
+      ~SwAV.named_buffers
+      ~SwAV.named_children
+      ~SwAV.named_modules
+      ~SwAV.named_parameters
+      ~SwAV.on_after_backward
+      ~SwAV.on_after_batch_transfer
+      ~SwAV.on_before_backward
+      ~SwAV.on_before_batch_transfer
+      ~SwAV.on_before_optimizer_step
+      ~SwAV.on_before_zero_grad
+      ~SwAV.on_fit_end
+      ~SwAV.on_fit_start
+      ~SwAV.on_load_checkpoint
+      ~SwAV.on_predict_batch_end
+      ~SwAV.on_predict_batch_start
+      ~SwAV.on_predict_end
+      ~SwAV.on_predict_epoch_end
+      ~SwAV.on_predict_epoch_start
+      ~SwAV.on_predict_model_eval
+      ~SwAV.on_predict_start
+      ~SwAV.on_save_checkpoint
+      ~SwAV.on_test_batch_end
+      ~SwAV.on_test_batch_start
+      ~SwAV.on_test_end
+      ~SwAV.on_test_epoch_end
+      ~SwAV.on_test_epoch_start
+      ~SwAV.on_test_model_eval
+      ~SwAV.on_test_model_train
+      ~SwAV.on_test_start
+      ~SwAV.on_train_batch_end
+      ~SwAV.on_train_batch_start
+      ~SwAV.on_train_end
+      ~SwAV.on_train_epoch_end
+      ~SwAV.on_train_epoch_start
+      ~SwAV.on_train_start
+      ~SwAV.on_validation_batch_end
+      ~SwAV.on_validation_batch_start
+      ~SwAV.on_validation_end
+      ~SwAV.on_validation_epoch_end
+      ~SwAV.on_validation_epoch_start
+      ~SwAV.on_validation_model_eval
+      ~SwAV.on_validation_model_train
+      ~SwAV.on_validation_start
+      ~SwAV.optimizer_step
+      ~SwAV.optimizer_zero_grad
+      ~SwAV.optimizers
+      ~SwAV.parameters
+      ~SwAV.predict_dataloader
+      ~SwAV.predict_step
+      ~SwAV.prepare_data
+      ~SwAV.print
+      ~SwAV.register_backward_hook
+      ~SwAV.register_buffer
+      ~SwAV.register_forward_hook
+      ~SwAV.register_forward_pre_hook
+      ~SwAV.register_full_backward_hook
+      ~SwAV.register_full_backward_pre_hook
+      ~SwAV.register_load_state_dict_post_hook
+      ~SwAV.register_module
+      ~SwAV.register_parameter
+      ~SwAV.register_state_dict_pre_hook
+      ~SwAV.requires_grad_
+      ~SwAV.save_hyperparameters
+      ~SwAV.set_extra_state
+      ~SwAV.setup
+      ~SwAV.share_memory
+      ~SwAV.state_dict
+      ~SwAV.teardown
+      ~SwAV.test_dataloader
+      ~SwAV.test_step
+      ~SwAV.to
+      ~SwAV.to_empty
+      ~SwAV.to_onnx
+      ~SwAV.to_torchscript
+      ~SwAV.toggle_optimizer
+      ~SwAV.train
+      ~SwAV.train_dataloader
+      ~SwAV.training_step
+      ~SwAV.transfer_batch_to_device
+      ~SwAV.type
+      ~SwAV.unfreeze
+      ~SwAV.untoggle_optimizer
+      ~SwAV.val_dataloader
+      ~SwAV.validation_step
+      ~SwAV.xpu
+      ~SwAV.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SwAV.CHECKPOINT_HYPER_PARAMS_KEY
+      ~SwAV.CHECKPOINT_HYPER_PARAMS_NAME
+      ~SwAV.CHECKPOINT_HYPER_PARAMS_TYPE
+      ~SwAV.T_destination
+      ~SwAV.automatic_optimization
+      ~SwAV.call_super_init
+      ~SwAV.current_epoch
+      ~SwAV.device
+      ~SwAV.dtype
+      ~SwAV.dump_patches
+      ~SwAV.example_input_array
+      ~SwAV.fabric
+      ~SwAV.global_rank
+      ~SwAV.global_step
+      ~SwAV.hparams
+      ~SwAV.hparams_initial
+      ~SwAV.local_rank
+      ~SwAV.logger
+      ~SwAV.loggers
+      ~SwAV.on_gpu
+      ~SwAV.trainer
+      ~SwAV.training
+   
+   

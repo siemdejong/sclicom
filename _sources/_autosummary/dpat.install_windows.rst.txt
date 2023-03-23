@@ -1,0 +1,6 @@
+dpat.install\_windows
+=====================
+
+.. currentmodule:: dpat
+
+.. autofunction:: install_windows

@@ -1,0 +1,35 @@
+dpat.convert.ToOtherParams
+==========================
+
+.. currentmodule:: dpat.convert
+
+.. autoclass:: ToOtherParams
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~ToOtherParams.__init__
+      ~ToOtherParams.clear
+      ~ToOtherParams.copy
+      ~ToOtherParams.fromkeys
+      ~ToOtherParams.get
+      ~ToOtherParams.items
+      ~ToOtherParams.keys
+      ~ToOtherParams.pop
+      ~ToOtherParams.popitem
+      ~ToOtherParams.setdefault
+      ~ToOtherParams.update
+      ~ToOtherParams.values
+   
+   
+
+   
+   
+   

@@ -1,0 +1,30 @@
+dpat.types.OutputProtocol
+=========================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: OutputProtocol
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~OutputProtocol.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~OutputProtocol.output
+   
+   
