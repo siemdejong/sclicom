@@ -26,7 +26,7 @@ trainer:
     - class_path: lightning.pytorch.callbacks.early_stopping.EarlyStopping
       init_args:
         monitor: loss/val
-        patience: 50
+        patience: 100
   default_root_dir: null
   gradient_clip_val: null
   gradient_clip_algorithm: null
