@@ -72,7 +72,7 @@ class Attention(pl.LightningModule):
         """
         super(Attention, self).__init__()
 
-        self.example_input_array = torch.Tensor(1, 1000, 512)
+        self.example_input_array = torch.Tensor(1, 1000, in_features)
 
         self.optimizer = optimizer
         self.scheduler = scheduler
@@ -284,7 +284,6 @@ class Attention(pl.LightningModule):
         epoch: int,
         batch_idx: int,
         optimizer: torch.optim.Optimizer,
-        optimizer_idx: int,
     ) -> None:
         """Set gradients to None instead of zero.
 

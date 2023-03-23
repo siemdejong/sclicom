@@ -116,7 +116,6 @@ class SwAV(pl.LightningModule):
         epoch: int,
         batch_idx: int,
         optimizer: torch.optim.Optimizer,
-        optimizer_idx: int,
     ) -> None:
         """Set gradients to None instead of zero.
 

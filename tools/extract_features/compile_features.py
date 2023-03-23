@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 def main():
     """Compile features using a trained model and a datamodule."""
     model = SimCLR.load_from_checkpoint(
-        "/scistor/guest/sjg203/projects/pmc-hhg/snellius-simclr.ckpt"
+        "/gpfs/home2/sdejong/pmchhg/dpat/lightning_logs/version_2460498/checkpoints/last.ckpt"
     )
     compiled_model = torch.compile(model)
 
@@ -48,17 +48,17 @@ def main():
         tile_size_y=224,
         tile_overlap_x=0,
         tile_overlap_y=0,
-        tile_mode="overflow",
+        tile_mode="skip",
         crop=False,
-        mask_factory="no_mask",
-        mask_foreground_threshold=None,
-        mask_root_dir=None,
+        mask_factory="load_from_disk",
+        mask_foreground_threshold=1,
+        mask_root_dir="/gpfs/home2/sdejong/pmchhg/masks/",
         transform=Compose([ToTensor()]),
     )
 
     _ = PMCHHGH5Dataset.from_pmchhg_data_and_model(
-        filename="simclr-13-3-2023.hdf5",
-        dir_name=pathlib.Path("/scistor/guest/sjg203/projects/pmc-hhg/features"),
+        filename="simclr-20-3-2023.hdf5",
+        dir_name=pathlib.Path("/gpfs/home2/sdejong/pmchhg/features/"),
         dataset=dataset,
         model=compiled_model,
         num_classes=2,

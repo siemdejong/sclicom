@@ -32,7 +32,7 @@ trainer:
   overfit_batches: 0.0
   check_val_every_n_epoch: 1
   fast_dev_run: false
-  accumulate_grad_batches: null
+  accumulate_grad_batches: 1
   max_epochs: 10000
   min_epochs: null
   max_steps: -1
@@ -60,7 +60,7 @@ trainer:
 model:
   class_path: dpat.mil.models.VarAttention
   init_args:
-    in_features: 512  # Depends on output of the (pretrained) ResNet
+    in_features: 1024  # Depends on output of the (pretrained) ResNet/ShuffleNetv2/etc.
     hidden_features: 32
     num_classes: ${data.init_args.num_classes}
     optimizer:
