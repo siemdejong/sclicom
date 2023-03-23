@@ -47,7 +47,7 @@ class Attention(pl.LightningModule):
     def __init__(
         self,
         in_features: int,
-        hidden_features: int,
+        hidden_features: Union[int, list[int]],
         num_classes: int,
         optimizer: OptimizerCallable = torch.optim.Adam,
         scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
@@ -58,8 +58,10 @@ class Attention(pl.LightningModule):
         ----------
         in_features : int
             Length of the ingoing feature vectors.
-        hidden_features : int
+        hidden_features : int, list[int]
             Length of the hidden feature vectors.
+            If list of integers, make multiple hidden feature vectors
+            and add 0.5 dropout in between.
         num_clases : int
             Number of classes the output should be.
         optimizer : OptimizerCallable, default=Adam
@@ -82,9 +84,22 @@ class Attention(pl.LightningModule):
         self.L = in_features
         self.D = hidden_features
         self.K = 1
-        self.attention = nn.Sequential(
-            nn.Linear(self.L, self.D), nn.Tanh(), nn.Linear(self.D, self.K)
-        )
+        if isinstance(self.D, list):
+            attention_layers: list[Union[nn.Linear, nn.Tanh]] = [
+                nn.Linear(self.L, self.D[0]),
+                nn.Tanh(),
+            ]
+            for i, curr_D in enumerate(self.D[1:]):
+                prev_shape = attention_layers[i * 2].out_features
+                attention_layers.extend(
+                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout()]
+                )
+            attention_layers.append(nn.Linear(curr_D, self.K))
+            self.attention = nn.Sequential(attention_layers)
+        else:
+            self.attention = nn.Sequential(
+                nn.Linear(self.L, self.D), nn.Tanh(), nn.Linear(self.D, self.K)
+            )
         self.classifier = nn.Sequential(nn.Linear(self.L * self.K, self.num_classes))
 
         self.loss_fn = nn.CrossEntropyLoss()
@@ -136,7 +151,7 @@ class Attention(pl.LightningModule):
     def training_step(self, batch, batch_idx):
         """Perform a training step."""
         loss, _, _, _ = self._common_step(batch)
-        self.log("loss/train", loss, batch_size=1, sync_dist=True)
+        self.log("loss/train", loss, batch_size=1)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -147,7 +162,7 @@ class Attention(pl.LightningModule):
         self.validation_output["prediction"].append(self.softmax(y_hat)[:, 1])
         self.validation_output["loss"].append(loss)
 
-        self.log("loss/val", loss, batch_size=1, sync_dist=True)
+        self.log("loss/val", loss, batch_size=1)
 
         return loss
 
@@ -184,13 +199,10 @@ class Attention(pl.LightningModule):
 
         # TODO Save the scores and cut-offs,
         # otherwise we can't do proper statistical testing.
-        self.log(
-            f"{prefix}_auc", auroc_score, logger=True, batch_size=1, sync_dist=True
-        )
-        self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1, sync_dist=True)
+        self.log(f"{prefix}_auc", auroc_score, logger=True, batch_size=1)
+        self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1)
 
-        if False:
-            # if self.trainer.save_validation_output_to_disk:
+        if prefix == "test":
             if not (Path(self.trainer.log_dir) / f"output/{prefix}").is_dir():
                 Path.mkdir(
                     Path(self.trainer.log_dir) / f"output/{prefix}", parents=True
@@ -280,10 +292,7 @@ class Attention(pl.LightningModule):
             hf.close()
 
     def optimizer_zero_grad(
-        self,
-        epoch: int,
-        batch_idx: int,
-        optimizer: torch.optim.Optimizer,
+        self, epoch: int, batch_idx: int, optimizer: torch.optim.Optimizer
     ) -> None:
         """Set gradients to None instead of zero.
 

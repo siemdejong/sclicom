@@ -47,7 +47,7 @@ trainer:
   accelerator: gpu
   strategy: ddp
   sync_batchnorm: false
-  precision: bf16-mixed
+  precision: 32-true
   enable_model_summary: true
   num_sanity_val_steps: 2
   profiler: null
@@ -60,8 +60,8 @@ trainer:
 model:
   class_path: dpat.mil.models.VarAttention
   init_args:
-    in_features: 1024  # Depends on output of the (pretrained) ResNet/ShuffleNetv2/etc.
-    hidden_features: 32
+    in_features: 1024  # Depends on output of the (pretrained) ResNet
+    hidden_features: [512, 128, 32, 8]
     num_classes: ${data.init_args.num_classes}
     optimizer:
       class_path: torch.optim.Adam

@@ -3,8 +3,6 @@ import logging
 import pathlib
 import tempfile
 
-import torch
-
 # The pyvips import from dlup (dpat dependency) conflicts with torchvision.
 # Import dpat first.
 from dpat.data import PMCHHGH5Dataset, PMCHHGImageDataset  # isort: skip
@@ -18,9 +16,8 @@ logger = logging.getLogger(__name__)
 def main():
     """Compile features using a trained model and a datamodule."""
     model = SimCLR.load_from_checkpoint(
-        "/gpfs/home2/sdejong/pmchhg/dpat/lightning_logs/version_2460498/checkpoints/last.ckpt"
+        "/gpfs/home2/sdejong/pmchhg/dpat/lightning_logs/version_2460498/checkpoints/last.ckpt"  # noqa: E501
     )
-    compiled_model = torch.compile(model)
 
     # Make a temporary file make the dataset read from.
     concatenated_file = tempfile.TemporaryFile()
@@ -60,13 +57,13 @@ def main():
         filename="simclr-20-3-2023.hdf5",
         dir_name=pathlib.Path("/gpfs/home2/sdejong/pmchhg/features/"),
         dataset=dataset,
-        model=compiled_model,
+        model=model,
         num_classes=2,
         dsetname_format=["case_id", "img_id"],
         transform=None,
         cache=False,
         mode="a",
-        skip_if_exists=True,
+        skip_if_exists=False,
         skip_feature_compilation=False,
         batch_size=256,
     )
