@@ -63,6 +63,7 @@ model:
     in_features: 1024  # Depends on output of the (pretrained) ResNet
     hidden_features: [512, 128, 32, 8]
     num_classes: ${data.init_args.num_classes}
+    dropout_p: 0.5
 data:
   class_path: dpat.data.PMCHHGH5DataModule
   init_args:

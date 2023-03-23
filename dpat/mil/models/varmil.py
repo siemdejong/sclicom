@@ -44,7 +44,11 @@ class Attention(pl.LightningModule):
         return output
 
     def __init__(
-        self, in_features: int, hidden_features: Union[int, list[int]], num_classes: int
+        self,
+        in_features: int,
+        hidden_features: Union[int, list[int]],
+        num_classes: int,
+        dropout_p: Union[float, None] = None,
     ):
         """Initialize the Attention module following [1].
 
@@ -58,10 +62,9 @@ class Attention(pl.LightningModule):
             and add 0.5 dropout in between.
         num_clases : int
             Number of classes the output should be.
-        optimizer : OptimizerCallable, default=Adam
-            Optimizer to use.
-        scheduler : LRSchedulerCallable, default=CosineAnnealingLR
-            Scheduler to use.
+        dropout_p : float, optional, default=0.5
+            Probability of applying dropout to a parameter. Only applicable if
+            `hidden_features` is a list.
 
         References
         [1] https://arxiv.org/abs/1802.04712
@@ -76,6 +79,8 @@ class Attention(pl.LightningModule):
         self.D = hidden_features
         self.K = 1
         if isinstance(self.D, list):
+            if dropout_p is None:
+                dropout_p = 0.5
             attention_layers: list[nn.Module] = [
                 nn.Linear(self.L, self.D[0]),
                 nn.Tanh(),
@@ -83,7 +88,7 @@ class Attention(pl.LightningModule):
             for i, curr_D in enumerate(self.D[1:]):
                 prev_shape = self.D[i]
                 attention_layers.extend(
-                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout()]
+                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout_p)]
                 )
             attention_layers.append(nn.Linear(curr_D, self.K))
             self.attention = nn.Sequential(*attention_layers)
