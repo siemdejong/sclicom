@@ -47,6 +47,12 @@ dependencies = [
     "pytorchcv", # For using prebuilt models.
 ]
 
+[project.optional-dependencies]
+masking-nb = [
+    "geojson",
+    "rasterio",
+]
+
 [project.urls]
 "Homepage" = "https://github.com/siemdejong/dpat"
 "Bug Tracker" = "https://github.com/siemdejong/dpat/issues"
