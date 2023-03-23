@@ -14,9 +14,8 @@ import h5py
 import lightning.pytorch as pl
 import torch
 import torch.nn.functional as F
-from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
 from torch import nn
-from torchmetrics import AUROC, F1Score, Metric, PrecisionRecallCurve
+from torchmetrics import AUROC, AveragePrecision, F1Score, Metric, PrecisionRecallCurve
 
 # Of course the targets are equal per batch all the time, because of MIL.
 # Suppress this warning.
@@ -45,10 +44,7 @@ class Attention(pl.LightningModule):
         return output
 
     def __init__(
-        self,
-        in_features: int,
-        hidden_features: Union[int, list[int]],
-        num_classes: int,
+        self, in_features: int, hidden_features: Union[int, list[int]], num_classes: int
     ):
         """Initialize the Attention module following [1].
 
@@ -73,7 +69,6 @@ class Attention(pl.LightningModule):
         super(Attention, self).__init__()
 
         self.example_input_array = torch.Tensor(1, 1000, in_features)
-
 
         # DeepMIL specific initialization
         self.num_classes = num_classes
@@ -114,6 +109,7 @@ class Attention(pl.LightningModule):
         self.pr_curve: Metric = PrecisionRecallCurve(  # type: ignore
             task=task, num_classes=num_classes
         )
+        self.pr_auc = AveragePrecision(task=task, num_classes=num_classes)
 
     def forward(self, x):
         """Calculate prediction and attention vector."""
@@ -130,7 +126,6 @@ class Attention(pl.LightningModule):
         Y_hat = self.classifier(M)
 
         return Y_hat, A
-
 
     def _common_step(self, batch):
         """Perform a common step that is used in train/val/test."""
@@ -184,6 +179,7 @@ class Attention(pl.LightningModule):
 
         auroc_score = self.auroc(preds=prediction, target=target)
         f1_score = self.f1(preds=prediction, target=target)
+        pr_auc = self.pr_auc(preds=prediction, target=target)
 
         # TODO Save these or do this afterwards from the patient-level outputs?
         precision, recall, thresholds = self.pr_curve(preds=prediction, target=target)
@@ -192,6 +188,7 @@ class Attention(pl.LightningModule):
         # otherwise we can't do proper statistical testing.
         self.log(f"{prefix}_auc", auroc_score, logger=True, batch_size=1)
         self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1)
+        self.log(f"{prefix}_pr_auc", pr_auc, logger=True, batch_size=1)
 
         if prefix == "test":
             if not (Path(self.trainer.log_dir) / f"output/{prefix}").is_dir():
