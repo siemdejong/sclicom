@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.3.1 (2023-03-23)
+### Fix
+* Up default patience to 100 ([`289d7f9`](https://github.com/siemdejong/dpat/commit/289d7f9b3b97702836f34a6f4815324cbad09247))
+
 ## v4.3.0 (2023-03-23)
 ### Feature
 * Add early stopping ([`7c4eb01`](https://github.com/siemdejong/dpat/commit/7c4eb01e240402c6033fa2b06d802e41b3e90c60))
