@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dpat"
-version = "4.0.0"
+version = "4.1.0"
 authors = [
   {name="Siem de Jong", email="siem.dejong@hotmail.nl"},
 ]
@@ -45,6 +45,12 @@ dependencies = [
     "h5py",
     "ipywidgets",
     "pytorchcv", # For using prebuilt models.
+]
+
+[project.optional-dependencies]
+masking-nb = [
+    "geojson",
+    "rasterio",
 ]
 
 [project.urls]
