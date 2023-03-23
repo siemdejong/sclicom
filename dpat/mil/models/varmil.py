@@ -49,8 +49,6 @@ class Attention(pl.LightningModule):
         in_features: int,
         hidden_features: Union[int, list[int]],
         num_classes: int,
-        optimizer: OptimizerCallable = torch.optim.Adam,
-        scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
     ):
         """Initialize the Attention module following [1].
 
@@ -76,8 +74,6 @@ class Attention(pl.LightningModule):
 
         self.example_input_array = torch.Tensor(1, 1000, in_features)
 
-        self.optimizer = optimizer
-        self.scheduler = scheduler
 
         # DeepMIL specific initialization
         self.num_classes = num_classes
@@ -135,11 +131,6 @@ class Attention(pl.LightningModule):
 
         return Y_hat, A
 
-    def configure_optimizers(self):
-        """Configure optimizers."""
-        optimizer = self.optimizer(self.parameters())
-        scheduler = self.scheduler(optimizer)
-        return [optimizer], [scheduler]
 
     def _common_step(self, batch):
         """Perform a common step that is used in train/val/test."""
