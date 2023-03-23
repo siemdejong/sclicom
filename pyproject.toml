@@ -52,6 +52,12 @@ masking-nb = [
     "geojson",
     "rasterio",
 ]
+dev = [
+    "pre-commit",
+    "sphinx",
+    "furo",
+    "numpydoc",
+]
 
 [project.urls]
 "Homepage" = "https://github.com/siemdejong/dpat"

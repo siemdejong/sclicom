@@ -1,4 +1,4 @@
-"""DLP-HHG.
+"""dpat.
 
 Deep Learning for Pathology on Higher Harmonic Generation Microscopy
 Images.
