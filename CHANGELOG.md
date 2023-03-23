@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.0.1 (2023-03-20)
+### Fix
+* Compiling model doesn't work, rollback ([`e733a24`](https://github.com/siemdejong/dpat/commit/e733a243879b26ebcf87b35a28d56b098db705b4))
+
 ## v4.0.0 (2023-03-20)
 ### Fix
 * Update mil config to reflect new signature ([`c4dc0ed`](https://github.com/siemdejong/dpat/commit/c4dc0edce0acc9ad2453f874cde3b619e68ca559))
