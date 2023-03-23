@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v4.2.0 (2023-03-23)
+### Feature
+* Add hidden features and dropout ([`452082c`](https://github.com/siemdejong/dpat/commit/452082cbff5e2f584938b7de84b887c0a035d418))
+
+### Fix
+* Typing ([`5dce7a4`](https://github.com/siemdejong/dpat/commit/5dce7a4bd174fa9e4411e506d11962b1eb495850))
+* Add area under precision recall curve ([`1a2648f`](https://github.com/siemdejong/dpat/commit/1a2648faed30be99050f9d4877530070dffb238b))
+* Remove optimizer/scheduler defaults ([`d2b62e1`](https://github.com/siemdejong/dpat/commit/d2b62e1631c88db8914497a55baf8a45d04a1f3a))
+* Link max_epochs to scheduler T_max ([`1a05932`](https://github.com/siemdejong/dpat/commit/1a059322768140f33668e4481940bc9a94a6d582))
+* Run black ([`db24156`](https://github.com/siemdejong/dpat/commit/db2415632a81eefd91db152848172511e381a4e1))
+* Support lightning 2 ([`b4a822c`](https://github.com/siemdejong/dpat/commit/b4a822c166edf2ac2ff5d5557f3a8e09b8f68588))
+
 ## v4.1.0 (2023-03-23)
 ### Feature
 * Entropymasker experiment ([`ec70eef`](https://github.com/siemdejong/dpat/commit/ec70eef917c2128d7e34ef50188b422bc262b732))
