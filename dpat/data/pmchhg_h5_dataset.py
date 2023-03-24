@@ -136,8 +136,8 @@ def generate_embeddings(model, dataloader, desc: str = "Extracting features"):
             emb = model.backbone(img).flatten(start_dim=1)
             embeddings.append(emb)
 
-    embeddings = torch.cat(embeddings, 0)
-    return embeddings
+    embeddings_concatenated = torch.cat(embeddings, 0)
+    return embeddings_concatenated
 
 
 def feature_batch_extract(
