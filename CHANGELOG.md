@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v4.3.2 (2023-03-24)
+### Fix
+* Type error ([`e2af84a`](https://github.com/siemdejong/dpat/commit/e2af84a6474303aec2e2b8d25fdf47468a9cfb3b))
+* Bug with reading from bytes ([`ba1c58e`](https://github.com/siemdejong/dpat/commit/ba1c58e5290c985877f99526936a7465c9244f4b))
+* Give units to fraction logs ([`416749a`](https://github.com/siemdejong/dpat/commit/416749aa03e1c6d9fbee0ca350e9154033d0fc0e))
+
+### Documentation
+* Fix indent ([`2e7ebf1`](https://github.com/siemdejong/dpat/commit/2e7ebf1c03ac3fa04962cc694e6716070b31f0cc))
+* Ignore autosummary ([`e63a009`](https://github.com/siemdejong/dpat/commit/e63a0094dd431241684169aebd858c1a3b92e350))
+* Move docs from readme to gh pages ([`6012ebc`](https://github.com/siemdejong/dpat/commit/6012ebcadbe1315fcb0e010393290f6c1dc99215))
+* Add docs to github pages ([`1f85ef8`](https://github.com/siemdejong/dpat/commit/1f85ef882464c87d89ee7109cb58ede34dccad5d))
+
 ## v4.3.1 (2023-03-23)
 ### Fix
 * Up default patience to 100 ([`289d7f9`](https://github.com/siemdejong/dpat/commit/289d7f9b3b97702836f34a6f4815324cbad09247))
