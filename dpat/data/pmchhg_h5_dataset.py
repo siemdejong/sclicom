@@ -84,34 +84,17 @@ class CarefulHDF5:
         self.args = args
         self.kwargs = kwargs
 
-    def _handler(self, *args, **kwargs):
-        """Kill switch."""
-        logging.error("Received SIGINT or SIGTERM! Finishing this block, then exiting.")
-        self.killed = True
-
-    def __enter__(self, *args, **kwargs):
-        """Start listening for SIGINT/SIGTERM and safely open h5 file file."""
-        self.old_sigint = signal.signal(signal.SIGINT, self._handler)
-        self.old_sigterm = signal.signal(signal.SIGTERM, self._handler)
-
-        try:
-            self.f = h5py.File(self.args, self.kwargs)
-            return self.f
-        except FileExistsError:
-            logger.error(
-                "Preventing overwrite. Use the overwrite keyword to overwrite features."
-            )
-            self.killed = True
-        except KeyboardInterrupt:
-            logger.info("Interrupted...")
-            self.killed = True
-        finally:
-            exit(self)
-
     def __exit__(self, *args, **kwargs):
         """Gracefully close the h5py file."""
-        self.f.flush()
-        self.f.close()
+        try:
+            self.f.flush()
+            self.f.close()
+        except ValueError:
+            logger.error(
+                "Something went wrong with closing the file. "
+                "Please inspect the file and delete if broken."
+            )
+            exit()
 
         if self.killed:
             sys.exit(0)
@@ -119,14 +102,35 @@ class CarefulHDF5:
         signal.signal(signal.SIGINT, self.old_sigint)
         signal.signal(signal.SIGTERM, self.old_sigterm)
 
+    def _handler(self, *args, **kwargs):
+        """Kill switch."""
+        logging.error("Received SIGINT or SIGTERM! Finishing this block, then exiting.")
+        self.killed = True
+        self.__exit__()
 
-def generate_embeddings(model, dataloader):
+    def __enter__(self, *args, **kwargs):
+        """Start listening for SIGINT/SIGTERM and safely open h5 file file."""
+        self.old_sigint = signal.signal(signal.SIGINT, self._handler)
+        self.old_sigterm = signal.signal(signal.SIGTERM, self._handler)
+
+        try:
+            self.f = h5py.File(*self.args, **self.kwargs)
+            return self.f
+        except FileExistsError:
+            logger.error(
+                "Preventing overwrite. Use the overwrite keyword to overwrite features."
+            )
+            exit()
+        except KeyboardInterrupt:
+            logger.info("Interrupted...")
+            exit()
+
+
+def generate_embeddings(model, dataloader, desc: str = "Extracting features"):
     """Generate vector reps of tiles."""
     embeddings = []
     with torch.no_grad():
-        for img in tqdm(
-            dataloader, total=len(dataloader), desc="Extracting features", leave=False
-        ):
+        for img in tqdm(dataloader, total=len(dataloader), desc=desc, leave=False):
             img = img["image"]
             img = img.to(model.device)
             emb = model.backbone(img).flatten(start_dim=1)
@@ -173,19 +177,26 @@ def feature_batch_extract(
     all_img_dataset = dataset.dlup_dataset.datasets
 
     length_all_img_datasets = len(all_img_dataset)
-    for img_dataset in tqdm(all_img_dataset, total=length_all_img_datasets):
+    for img_dataset in tqdm(
+        all_img_dataset, total=length_all_img_datasets, desc="Image."
+    ):
+        # Check if we can skip this image, because it is already in the dataset.
+        if skip_if_exists:
+            metadata = dataset.get_metadata(0, img_dataset)
+            dsetname = "".join(
+                [f"/{metadata[dsetname]}" for dsetname in dsetname_format]
+            )
+
+            if dsetname in f:
+                continue
+
         tile_metadata = []
         for i in range(len(img_dataset)):
             metadata = dataset.get_metadata(i, img_dataset)
             tile_metadata.append(metadata)
 
-        dsetname = "".join([f"/{metadata[dsetname]}" for dsetname in dsetname_format])
-
-        if dsetname in f and skip_if_exists:
-            continue
-
         dataloader = DataLoader(img_dataset, batch_size=batch_size)
-        embeddings = generate_embeddings(model, dataloader)
+        embeddings = generate_embeddings(model, dataloader, desc="Tile batches")
 
         img_group_h5 = f.create_group(dsetname)
         img_group_h5.create_dataset("data", data=embeddings)
@@ -293,6 +304,7 @@ class PMCHHGH5Dataset(Dataset):
         self.cache = cache
         self.transform = transform
         self.load_encoded = load_encoded
+        self.paths_and_targets = paths_and_targets
 
         self.df = pd.read_csv(paths_and_targets, header=None)
         self.case_ids = self.df[1]
@@ -302,6 +314,11 @@ class PMCHHGH5Dataset(Dataset):
             for case_id, img_id in zip(self.case_ids, self.img_ids)
         ]
         self.df = self.df.set_index(0)
+
+        # Reset for if it needs to be reused somewhere else, e.g. in PMCHHGH5Dataset.
+        # TODO: isinstance(..., BytesIO), but it doesn't recognize it as bytes.
+        if not isinstance(self.paths_and_targets, (pathlib.Path, str)):
+            self.paths_and_targets.seek(0)  # type: ignore
 
         self.hdf5: Union[h5py.File, None] = None
 

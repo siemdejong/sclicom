@@ -150,8 +150,12 @@ class PMCHHGImageDataset(Dataset):
         if isinstance(image_paths_and_targets, str):
             image_paths_and_targets = pathlib.Path(image_paths_and_targets)
         self.image_paths_and_targets = image_paths_and_targets
-        self.df = pd.read_csv(self.image_paths_and_targets, header=None)
+        self.df = pd.read_csv(image_paths_and_targets, header=None)
         self.relative_img_paths = self.df[0]
+
+        # Reset for if it needs to be reused somewhere else, e.g. in PMCHHGH5Dataset.
+        if not isinstance(self.image_paths_and_targets, (pathlib.Path, str)):
+            self.image_paths_and_targets.seek(0)
 
         self.df = self.df.set_index(0)
 
