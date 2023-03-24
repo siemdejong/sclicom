@@ -8,6 +8,16 @@ For example, it is used to distinguish pediatric brain tumours such as medullobl
 
    This project is under active development.
 
+.. toctree::
+
+   getting_started
+   convert_images
+   making_splits
+   notebooks
+   logging
+   adding_new_data
+   contributing
+
 .. autosummary::
    :toctree: _autosummary
    :template: custom-module-template.rst

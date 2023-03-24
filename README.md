@@ -58,36 +58,6 @@
   </p>
 </div>
 
-
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <!-- <li><a href="#roadmap">Roadmap</a></li> -->
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
-
-
-
 <!-- ABOUT THE PROJECT -->
 # About The Project
 
@@ -99,9 +69,9 @@ The project aims to do deep learning classification on higher harmonic generatio
 
 
 
-## Built With
+<!-- ## Built With -->
 
-[![Python][Python]][Python-url]
+<!-- [![Python][Python]][Python-url] -->
 <!-- [![PyTorch][PyTorch]][Pytorch-url]
 [![TensorFlow][TensorFlow]][TensorFlow-url]
 [![Optuna][Optuna]][Optuna-url]
@@ -116,152 +86,7 @@ The project aims to do deep learning classification on higher harmonic generatio
 [![pyimq][pyimq]][pyimq-url] -->
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-# Getting Started
-
-This section includes instructions on setting up the project locally.
-
-## Prerequisites
-
-### Conda
-For package management, it is advised to use a conda package manager.
-The author recommends [Miniforge](https://github.com/conda-forge/miniforge) or [Mambaforge](https://github.com/conda-forge/miniforge).
-
-### vips
-This project depends on [dlup](https://github.com/NKI-AI/dlup) (automatically installed), which depends on vips.
-On Windows, vips needs to be installed locally.
-Download the latest [libvips](https://github.com/libvips/libvips/releases) Windows binary and unzip somewhere.
-On Linux/macOS, vips is included with the installation steps below.
-
-### OpenSlide
-Vips comes with OpenSlide.
-It is not needed to install OpenSlide separately.
-
-### CUDA
-To do deep learning on CUDA enabled accelerators, follow installation instructions on [pytorch.org](https://pytorch.org/get-started).
-Run `nvidia-smi` to see if CUDA is available.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-## Installation
-Run the following commands from a conda enabled shell (such as Miniforge Prompt, if Miniforge/Mambaforge is installed).
-
-1.  Clone this repository and change directories
-    ```
-    git clone https://github.com/siemdejong/dpat.git dpat && cd dpat
-    ```
-1.  Create a new conda environment and activate it.
-    ```
-    conda create -n <env_name>
-    conda activate <env_name>
-    ```
-1.  Install dependencies from `environment.yml`.
-    ```
-    conda env update -f environment.yml
-    ```
-1.  If you use this library for deep learning and want to use CUDA-enabled Pytorch,
-    follow instructions on [pytorch.org](https://pytorch.org/get-started).
-    Make sure CUDA is available, see <a href="#cuda">Prerequisites#CUDA</a>.
-1.  Install dpat in editable mode with
-    ```
-    pip install -e .
-    ```
-1.  Verify installation
-    ```
-    python -c "import dpat"
-    ```
-1.  Windows only: if you use this library for use in scripts, make sure libvips is available, see <a href="#libvips">Prerequisites#libvips</a>.
-    If using this library in a script, make sure to properly install the package with
-    ```python
-    import dpat
-    dpat.install_windows("path/to/vips/bin")
-    ```
-    every time the package is used.
-<!-- 1.  Check if CUDA is available for the installed Pytorch distribution.
-    In a Python shell, execute
-    ```python
-    import torch
-    torch.cuda.is_available()
-    ```
-    If `false`, install Pytorch following its documentation. -->
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-### Converting images
-To convert all images from directory INPUT_DIR, and output the images as TIFF in OUTPUT_DIR, run
-```
-dpat convert batch -i INPUT_DIR -o OUTPUT_DIR -e tiff
-```
-Large images need to be trusted against decompression bomb DOS attack.
-Use the `--trust` flag.
-To skip images that were already converted to the target extension, use `--skip-existing`.
-
-NOTE: If converting to tiff, the input images are assumed to contain the reference to the scanning program, which must be in {200slow, 300slow, 300fast}.
-
-```
-Usage: dpat convert batch [OPTIONS]
-
-Options:
-  -i, --input-dir TEXT         Input directory where to find the images to be
-                               converted.  [default: .]
-  -o, --output-dir TEXT        Output directory where place converted files.
-                               [default: ./converted]
-  -e, --output-ext [tiff|tif]  Extension to convert to.  [required]
-  -w, --num-workers INTEGER    Number of workers that convert the images in
-                               parallel.  [default: 4]
-  -c, --chunks INTEGER         Number of chunks distributed to every worker.
-                               [default: 30]
-  --trust                      Trust the source of the images.
-  --skip-existing              Skip existing output files.
-  --help                       Show this message and exit.
-```
-
-### Creating splits
-To create train-val-test splits linking paths of images to splits with IMAGE_DIR, output the splits to OUTPUT_DIR, with labels PATH_TO_LABELS_FILE, and dataset name NAME run
-```
-dpat splits create -i IMAGE_DIR -o OUTPUT_DIR -l PATH_TO_LABELS_FILE -n NAME
-```
-
-To filter diagnoses that exactly match diseases, use e.g. `-f medulloblastoma -f "pilocytic astrocytoma"`.
-To filter filenames that match certain values, use a glob pattern.
-E.g. `-y *slow.tiff` to only include images ending with `slow.tiff`.
-To exclude filenames that match certaine values, use a glob pattern with `-x`.
-Exclusion is performed on the set specified by inclusion.
-
-```
-Usage: dpat splits create [OPTIONS]
-
-Options:
-  -i, --input-dir TEXT   Input directory where to find the images.  [required]
-  -l, --labels TEXT      Path to labels file.  [required]
-  -n, --name TEXT        Name of dataset.  [required]
-  -o, --output-dir TEXT  Directory where to put the splits.  [default: splits]
-  --overwrite            Overwrite folds in output dir, if available.
-  -y, --include TEXT     Glob pattern to include files from `input-dir`
-                         [default: *.*]
-  -x, --exclude TEXT     Glob pattern to exclue files from `input-dir`,
-                         included with `--include`
-  -f, --filter TEXT      Filter a diagnosis. For multiple diagnoses, use `-f 1
-                         -f 2`.
-  --help                 Show this message and exit.
-```
-
-### Logging
-When using the package as a library, if needed, logging can be turned off with
-```python
-logging.getLogger('dpat').propagate = False
-```
-
-<!-- _For more examples, please refer to the [documentation](https://siemdejong.github.io/shg-strain-stress)._ -->
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
 
 <!-- ## Documentation
 Documentation is hosted by Github Pages.
@@ -286,25 +111,6 @@ to update the documentation. -->
 See the [open issues](https://github.com/siemdejong/shg-strain-stress/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
-
-<!-- Notebooks -->
-## Notebooks
-This project includes notebooks for various experiments.
-
-5. masking experiment.
-Requires `pip install dpat[masking-nb]` for geojson to binary mask conversion.
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-Contribute using the following steps.
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ETYMOLOGY -->
 <!-- ## Etymology
