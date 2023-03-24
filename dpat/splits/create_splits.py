@@ -268,8 +268,8 @@ def create_splits(
     len_before_nan_drop = len(df)
     df = df.dropna(subset=DROP).reset_index()
     logger.info(
-        f"{len_before_nan_drop - len(df)}/{len_before_nan_drop} NaNs of {DROP} are"
-        " dropped."
+        f"{len_before_nan_drop - len(df)}/{len_before_nan_drop} cases with NaNs of "
+        f"{DROP} are dropped."
     )
 
     # Filter dataframe by diagnosis
@@ -277,13 +277,16 @@ def create_splits(
         len_before_filter_drop = len(df)
         df = df[df["diagnosis"].isin(filter_diagnosis)].reset_index()
         logger.info(
-            f"{len_before_filter_drop - len(df)}/{len_before_filter_drop} of {DROP} not"
-            f" in {filter_diagnosis} are dropped."
+            f"{len_before_filter_drop - len(df)}/{len_before_filter_drop} cases of "
+            f"{DROP} not in {filter_diagnosis} are dropped."
         )
     else:
         filter_diagnosis = df["diagnosis"].unique()
 
-    logger.info(f"This gives a total of {len(df)} images.")
+    logger.info(
+        f"This gives a total of {len(df)} cases with {len(paths)} images. "
+        "Note: not all the images are used due to fractional validation set size."
+    )
 
     df["diagnosis_num"] = df["diagnosis"].astype("category").cat.codes
 
