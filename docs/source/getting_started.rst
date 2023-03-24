@@ -38,7 +38,7 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
 
     .. code::
 
-    git clone https://github.com/siemdejong/dpat.git dpat && cd dpat
+        git clone https://github.com/siemdejong/dpat.git dpat && cd dpat
 
 #.  Create a new conda environment and activate it.
 
