@@ -20,6 +20,16 @@ warnings.filterwarnings(
 
 
 class _TuneReportCallback(TuneReportCallback, pl.Callback):
+    """Workaround for issue [1].
+
+    Ray is still using legacy pytorch_lightning imports. [2] provides a workaround.
+
+    References
+    ----------
+    [1] https://github.com/ray-project/ray/issues/33426
+    [2] https://github.com/ray-project/ray/issues/33426#issuecomment-1481951889
+    """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
