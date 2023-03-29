@@ -1,5 +1,7 @@
 """Perform hyperparameter optimization."""
 
+import math
+import os
 import warnings
 from itertools import chain, product
 from pathlib import Path
@@ -9,11 +11,9 @@ import numpy as np
 import optuna
 from lightning.fabric.plugins.precision.precision import _PRECISION_INPUT
 from ray import air, tune
-from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray.tune.schedulers import ASHAScheduler
 from ray.tune.search.optuna import OptunaSearch
-from ray_lightning import RayStrategy
-from ray_lightning.tune import get_tune_resources
+from ray.tune.integration.pytorch_lightning import TuneReportCallback
 
 from dpat.data.pmchhg_h5_dataset import PMCHHGH5DataModule
 from dpat.mil.models import VarAttention
@@ -41,10 +41,11 @@ class _TuneReportCallback(TuneReportCallback, pl.Callback):
 def train_tune(
     config: dict,
     datamodule: pl.LightningDataModule,
+    num_classes: int,
+    in_features: int,
     num_epochs: int,
     num_gpus_per_trial: float,
-    num_workers: int,
-    num_cpus_per_worker: int,
+    num_cpus_per_trial: int,
     precision: _PRECISION_INPUT,
 ) -> None:
     """Train the model and report back to Ray.
@@ -55,11 +56,15 @@ def train_tune(
         (Hyper)parameter config with sampled parameters by Ray/Optuna.
     datamodule : pl.LightningDataModule
         Datamodule with data to feed the model.
+    num_classes : int
+        Number of classes to train on.
+    in_features : int
+        Number of input features per tile.
     num_epochs : int
         Maximum number of epochs per trial.
     num_gpus_per_trial : float
         Number of gpus per trial. Can be fractional to share resources between trials.
-    num_workers : int
+    num_workers_per_trial : int
         Number of workers that are running this function.
     num_cpus_per_worker : int
         Number of cpus available per worker.
@@ -68,9 +73,9 @@ def train_tune(
     """
     model = VarAttention(
         # Fixed by combination of tile size and feature extractor.
-        in_features=config["in_features"],
+        in_features=in_features,
         hidden_features=config["hidden_features"],
-        num_classes=config["num_classes"],
+        num_classes=num_classes,
         dropout_p=config["dropout_p"],
         lr=config["lr"],
         T_max=num_epochs,
@@ -81,16 +86,11 @@ def train_tune(
     trainer = pl.Trainer(
         max_epochs=num_epochs,
         enable_checkpointing=False,
-        devices=np.ceil(num_gpus_per_trial)
+        devices=math.ceil(num_gpus_per_trial)
         if num_gpus_per_trial
-        else num_cpus_per_worker,
+        else math.ceil(num_cpus_per_trial),
         accelerator="gpu" if num_gpus_per_trial else "cpu",
         callbacks=[callback],
-        strategy=RayStrategy(
-            num_workers=num_workers,
-            num_cpus_per_worker=num_cpus_per_worker,
-            use_gpu=bool(num_gpus_per_trial),
-        ),
         precision=precision,
         enable_progress_bar=False,
     )
@@ -103,30 +103,36 @@ def train_tune(
 
 if __name__ == "__main__":
     name = "tune_29-3-2023"
-    num_trials = 10
-    num_epochs = 10
-    num_gpus_per_trial = 0.2
-    num_workers = 2
-    num_dataloader_workers = 8
-    precision = "16-mixed"
+    num_trials = 50
+    num_epochs = 600
+    num_gpus_per_trial = 0.1
+    num_cpus_per_trial = 5
+    num_dataloader_workers = num_cpus_per_trial
+    precision = "bf16-mixed"
+
+    num_classes=2
+    in_features=1024
+
+    tmpdir = Path(os.environ["TMPDIR"])
+    fold=0
+    subfold=0
+    diagnosis="medulloblastoma+pilocytic-astrocytoma"
+    dataset="pmchhg"
+    h5="simclr-17-3-2023.hdf5"
 
     datamodule = PMCHHGH5DataModule(
-        file_path=Path(
-            "/scistor/guest/sjg203/projects/pmc-hhg/features/simclr-17-3-2023.hdf5"
-        ),
-        train_path="/scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/pilocytic-astrocytoma+medulloblastoma_pmchhg_train-subfold-0-fold-0.csv",  # noqa: E501
-        val_path="/scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/pilocytic-astrocytoma+medulloblastoma_pmchhg_val-subfold-0-fold-0.csv",  # noqa: E501
-        test_path="/scistor/guest/sjg203/projects/pmc-hhg/images-tif/splits/pilocytic-astrocytoma+medulloblastoma_pmchhg_test-subfold-0-fold-0.csv",  # noqa: E501
+        file_path=tmpdir / Path(f"features/{h5}"),
+        train_path= tmpdir / Path(f"images-tif/splits/{diagnosis}_{dataset}_train-subfold-{subfold}-fold-{fold}.csv"),  # noqa: E501
+        val_path=tmpdir / Path(f"images-tif/splits/{diagnosis}_{dataset}_val-subfold-{subfold}-fold-{fold}.csv"),  # noqa: E501
         num_workers=num_dataloader_workers,
-        num_classes=2,
+        num_classes=num_classes,
         balance=True,
     )
 
     _n_layers = np.arange(2)
     _powers = np.arange(9)
     config_space = {
-        # Tunable
-        "dropout_p": optuna.distributions.UniformDistribution(0.5, 0.95),
+        "dropout_p": optuna.distributions.FloatDistribution(0.5, 0.95),
         "hidden_features": optuna.distributions.CategoricalDistribution(
             # This right here, is a fine art of spaghetti
             # to get a semi-flat array, with sorted powers of 2,
@@ -144,10 +150,7 @@ if __name__ == "__main__":
                 )
             ]
         ),
-        "lr": optuna.distributions.LogUniformDistribution(1e-5, 1e-2),
-        # Constants
-        "in_features": 1024,
-        "num_classes": 2,
+        "lr": optuna.distributions.FloatDistribution(1e-5, 1e-2, log=True),
     }
 
     seed_configs_space = [
@@ -158,7 +161,7 @@ if __name__ == "__main__":
     scheduler = ASHAScheduler(time_attr="training_iteration", max_t=num_epochs)
     search_alg = OptunaSearch(
         space=config_space,
-        metric="val/loss",
+        metric="loss/val",
         mode="min",
         points_to_evaluate=seed_configs_space,
     )
@@ -167,11 +170,18 @@ if __name__ == "__main__":
         tune.with_parameters(
             tune.with_resources(
                 trainable=train_tune,
-                resources=get_tune_resources(
-                    num_workers=num_workers, use_gpu=bool(num_gpus_per_trial)
-                ),
+                resources={
+                    "cpu": num_cpus_per_trial,
+                    "gpu": num_gpus_per_trial,
+                },
             ),
             datamodule=datamodule,
+            num_classes=num_classes,
+            in_features=in_features,
+            num_epochs=num_epochs,
+            num_gpus_per_trial=num_gpus_per_trial,
+            num_cpus_per_trial=num_cpus_per_trial,
+            precision=precision,
         ),
         tune_config=tune.TuneConfig(
             metric="loss/val",
@@ -184,3 +194,8 @@ if __name__ == "__main__":
     )
 
     results = tuner.fit()
+
+    print("Best hyperparameters found were: ", results.get_best_result().config)
+    print("Best trial final loss: ", results.get_best_result().metrics["loss/val"])
+    print("Best trial final f1 score: ", results.get_best_result().metrics["val_f1"])
+    print("Best trial final PR-AUC: ", results.get_best_result().metrics["val_pr_auc"])

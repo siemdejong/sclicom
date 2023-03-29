@@ -47,7 +47,6 @@ dependencies = [
     "pytorchcv", # For using prebuilt models.
     "optuna", # For hyperparameter search.
     "ray[tune]", # For (distributed) hyperparameter search/training.
-    "ray_lightning", # To pair Ray with Pytorch Lightning.
 ]
 
 [project.optional-dependencies]
