@@ -99,7 +99,9 @@ class Attention(pl.LightningModule):
                 attention_layers.extend(
                     [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout_p)]
                 )
-            attention_layers.append(nn.Linear(curr_D, self.K))
+            attention_layers.append(
+                nn.Linear(self.D[-1] if isinstance(self.D, list) else self.D, self.K)
+            )
             self.attention = nn.Sequential(*attention_layers)
         else:
             self.attention = nn.Sequential(
