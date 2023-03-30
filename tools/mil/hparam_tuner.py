@@ -81,7 +81,14 @@ def train_tune(
         T_max=num_epochs,
     )
 
-    callback: pl.Callback = _TuneReportCallback(metrics="loss/val")
+    callback: pl.Callback = _TuneReportCallback(
+        metrics=[
+            "loss/val",
+            "val_f1",
+            "val_pr_auc",
+            "val_auc",
+        ]
+    )
 
     trainer = pl.Trainer(
         max_epochs=num_epochs,
@@ -102,8 +109,9 @@ def train_tune(
 
 
 if __name__ == "__main__":
-    name = "tune_29-3-2023"
-    num_trials = 50
+    name = "tune_29-3-2023_2"
+    num_trials = 200
+    min_epochs = 50
     num_epochs = 600
     num_gpus_per_trial = 0.1
     num_cpus_per_trial = 5
