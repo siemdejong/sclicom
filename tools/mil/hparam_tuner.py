@@ -86,6 +86,7 @@ def train_tune(
 
     callback: pl.Callback = _TuneReportCallback(
         metrics=["loss/val", "val_f1", "val_pr_auc", "val_auc"]
+
     )
 
     trainer = pl.Trainer(
