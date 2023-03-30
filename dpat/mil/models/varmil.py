@@ -49,6 +49,8 @@ class Attention(pl.LightningModule):
         hidden_features: Union[int, list[int]],
         num_classes: int,
         dropout_p: Union[float, None] = None,
+        lr: float = 0.0003,
+        T_max: int = 1000,
     ):
         """Initialize the Attention module following [1].
 
@@ -65,6 +67,10 @@ class Attention(pl.LightningModule):
         dropout_p : float, optional, default=0.5
             Probability of applying dropout to a parameter. Only applicable if
             `hidden_features` is a list.
+        lr : float, default=0.0003
+            Learning rate for AdamW optimizer.
+        T_max : int, default=1000
+            Number of epochs. Used for the CosineAnnealingLR scheduler.
 
         References
         [1] https://arxiv.org/abs/1802.04712
@@ -72,6 +78,9 @@ class Attention(pl.LightningModule):
         super(Attention, self).__init__()
 
         self.example_input_array = torch.Tensor(1, 1000, in_features)
+
+        self.lr = lr
+        self.T_max = T_max
 
         # DeepMIL specific initialization
         self.num_classes = num_classes
@@ -90,7 +99,9 @@ class Attention(pl.LightningModule):
                 attention_layers.extend(
                     [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout_p)]
                 )
-            attention_layers.append(nn.Linear(curr_D, self.K))
+            attention_layers.append(
+                nn.Linear(self.D[-1] if isinstance(self.D, list) else self.D, self.K)
+            )
             self.attention = nn.Sequential(*attention_layers)
         else:
             self.attention = nn.Sequential(
@@ -292,6 +303,14 @@ class Attention(pl.LightningModule):
         This improves performance.
         """
         optimizer.zero_grad(set_to_none=True)
+
+    def configure_optimizers(self):
+        """Configure optimizer and learning rate scheduler."""
+        optimizer = torch.optim.AdamW(self.parameters(), self.lr)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
+            optimizer, T_max=self.T_max
+        )
+        return [optimizer], [scheduler]
 
 
 class VarAttention(Attention):

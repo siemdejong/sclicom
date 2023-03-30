@@ -33,30 +33,33 @@ classifiers = [
 ]
 dependencies = [
     # There is a bug with the jsonargparse that will otherwise be installed...
-    "jsonargparse@git+https://github.com/omni-us/jsonargparse#egg=master",
-    "dlup@git+https://github.com/siemdejong/dlup@entropy_masker",
-    "scikit-learn >= 0.24",
-    "click",
-    "lightning[extra]>=2",
-    "torch>=2",
-    "lightly",
-    "pandas",
-    "tensorboard",
-    "h5py",
-    "ipywidgets",
+    "jsonargparse@git+https://github.com/omni-us/jsonargparse#egg=master", # For parsing jsonlike config files.
+    # The siemdejong fork of dlup includes the entropy_masker.
+    "dlup@git+https://github.com/siemdejong/dlup@entropy_masker", # For tiling input images.
+    "scikit-learn >= 0.24", # For creating stratified splits.
+    "click", # For creating a CLI.
+    "lightning[extra]>=2", # For structuring Pytorch.
+    "torch>=2", # For autodifferentiation.
+    "lightly", # For self supervised learning.
+    "pandas", # For storing data at runtime and
+    "tensorboard", # For training monitoring.
+    "h5py", # For storing intermediate features and output.
     "pytorchcv", # For using prebuilt models.
+    "optuna", # For hyperparameter search.
+    "ray[tune]", # For (distributed) hyperparameter search/training.
 ]
 
 [project.optional-dependencies]
-masking-nb = [
-    "geojson",
-    "rasterio",
+nb = [
+    "ipywidgets", # For using widgets in ipython notebooks.
+    "geojson", # For reading in GeoJSON files.
+    "rasterio", # For rasterizing shapes.
 ]
 dev = [
-    "pre-commit",
-    "sphinx",
-    "furo",
-    "numpydoc",
+    "pre-commit", # For ensuring commits are of equal style.
+    "sphinx", # For creating docs.
+    "furo", # For styling docs.
+    "numpydoc", # For handling Numpy-style docstrings.
 ]
 
 [project.urls]

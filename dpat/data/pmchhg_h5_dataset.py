@@ -515,7 +515,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         file_path: pathlib.Path,
         train_path: pathlib.Path,
         val_path: pathlib.Path,
-        test_path: pathlib.Path,
+        test_path: pathlib.Path = None,
         num_workers: int = 0,
         num_classes: int = 2,
         balance: bool = True,
@@ -586,6 +586,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
                 self.val_paths_and_targets,
             )
         elif stage == "test":
+            if self.test_paths_and_targets is None:
+                raise ValueError("Please provide a path to the test paths and targets.")
             self.test_dataset = PMCHHGH5Dataset(
                 self.file_path,
                 self.num_classes,
