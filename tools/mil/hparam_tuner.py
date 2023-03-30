@@ -1,5 +1,6 @@
 """Perform hyperparameter optimization."""
 
+import logging
 import math
 import os
 import warnings
@@ -11,12 +12,14 @@ import numpy as np
 import optuna
 from lightning.fabric.plugins.precision.precision import _PRECISION_INPUT
 from ray import air, tune
+from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray.tune.schedulers import ASHAScheduler
 from ray.tune.search.optuna import OptunaSearch
-from ray.tune.integration.pytorch_lightning import TuneReportCallback
 
 from dpat.data.pmchhg_h5_dataset import PMCHHGH5DataModule
 from dpat.mil.models import VarAttention
+
+logger = logging.getLogger(__name__)
 
 warnings.filterwarnings(
     "ignore", "Choices for a categorical distribution should be a tuple of", UserWarning
@@ -82,12 +85,7 @@ def train_tune(
     )
 
     callback: pl.Callback = _TuneReportCallback(
-        metrics=[
-            "loss/val",
-            "val_f1",
-            "val_pr_auc",
-            "val_auc",
-        ]
+        metrics=["loss/val", "val_f1", "val_pr_auc", "val_auc"]
     )
 
     trainer = pl.Trainer(
@@ -118,20 +116,28 @@ if __name__ == "__main__":
     num_dataloader_workers = num_cpus_per_trial
     precision = "bf16-mixed"
 
-    num_classes=2
-    in_features=1024
+    num_classes = 2
+    in_features = 1024
 
     tmpdir = Path(os.environ["TMPDIR"])
-    fold=0
-    subfold=0
-    diagnosis="medulloblastoma+pilocytic-astrocytoma"
-    dataset="pmchhg"
-    h5="simclr-17-3-2023.hdf5"
+    fold = 0
+    subfold = 0
+    diagnosis = "medulloblastoma+pilocytic-astrocytoma"
+    dataset = "pmchhg"
+    h5 = "simclr-17-3-2023.hdf5"
 
     datamodule = PMCHHGH5DataModule(
         file_path=tmpdir / Path(f"features/{h5}"),
-        train_path= tmpdir / Path(f"images-tif/splits/{diagnosis}_{dataset}_train-subfold-{subfold}-fold-{fold}.csv"),  # noqa: E501
-        val_path=tmpdir / Path(f"images-tif/splits/{diagnosis}_{dataset}_val-subfold-{subfold}-fold-{fold}.csv"),  # noqa: E501
+        train_path=tmpdir
+        / Path(
+            f"images-tif/splits/{diagnosis}_"
+            f"{dataset}_train-subfold-{subfold}-fold-{fold}.csv"
+        ),
+        val_path=tmpdir
+        / Path(
+            f"images-tif/splits/{diagnosis}_"
+            f"{dataset}_val-subfold-{subfold}-fold-{fold}.csv"
+        ),
         num_workers=num_dataloader_workers,
         num_classes=num_classes,
         balance=True,
@@ -166,12 +172,15 @@ if __name__ == "__main__":
         config_space | {"dropout_p": 0.7, "hidden_features": [8], "lr": 1e-4},
     ]
 
-    scheduler = ASHAScheduler(time_attr="training_iteration", grace_period=min_epochs, max_t=num_epochs)
+    scheduler = ASHAScheduler(
+        time_attr="training_iteration", grace_period=min_epochs, max_t=num_epochs
+    )
     search_alg = OptunaSearch(
         space=config_space,
         metric="loss/val",
         sampler=optuna.samplers.TPESampler(
-            # Sample from a multivariate distribution, not independent gaussian distributions.
+            # Sample from a multivariate distribution,
+            # not independent gaussian distributions.
             # Dropout and the layer structure are expected to be correlated tightly.
             multivariate=True,
             # To not run similar trials with distributed.
@@ -186,10 +195,7 @@ if __name__ == "__main__":
         tune.with_parameters(
             tune.with_resources(
                 trainable=train_tune,
-                resources={
-                    "cpu": num_cpus_per_trial,
-                    "gpu": num_gpus_per_trial,
-                },
+                resources={"cpu": num_cpus_per_trial, "gpu": num_gpus_per_trial},
             ),
             datamodule=datamodule,
             num_classes=num_classes,
@@ -211,7 +217,13 @@ if __name__ == "__main__":
 
     results = tuner.fit()
 
-    print("Best hyperparameters found were: ", results.get_best_result().config)
-    print("Best trial final loss: ", results.get_best_result().metrics["loss/val"])
-    print("Best trial final f1 score: ", results.get_best_result().metrics["val_f1"])
-    print("Best trial final PR-AUC: ", results.get_best_result().metrics["val_pr_auc"])
+    logger.info(f"Best hyperparameters found were: {results.get_best_result().config}")
+    logger.info(
+        f"Best trial final loss: {results.get_best_result().metrics['loss/val']}"
+    )
+    logger.info(
+        f"Best trial final f1 score: {results.get_best_result().metrics['val_f1']}"
+    )
+    logger.info(
+        f"Best trial final PR-AUC: {results.get_best_result().metrics['val_pr_auc']}"
+    )

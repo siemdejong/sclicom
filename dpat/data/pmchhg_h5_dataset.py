@@ -515,7 +515,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         file_path: pathlib.Path,
         train_path: pathlib.Path,
         val_path: pathlib.Path,
-        test_path: pathlib.Path = None,
+        test_path: Union[pathlib.Path, None] = None,
         num_workers: int = 0,
         num_classes: int = 2,
         balance: bool = True,
