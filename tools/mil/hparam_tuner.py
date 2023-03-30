@@ -158,7 +158,7 @@ if __name__ == "__main__":
         config_space | {"dropout_p": 0.7, "hidden_features": [8], "lr": 1e-4},
     ]
 
-    scheduler = ASHAScheduler(time_attr="training_iteration", max_t=num_epochs)
+    scheduler = ASHAScheduler(time_attr="training_iteration", grace_period=min_epochs, max_t=num_epochs)
     search_alg = OptunaSearch(
         space=config_space,
         metric="loss/val",
