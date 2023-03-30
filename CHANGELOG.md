@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v4.4.0 (2023-03-30)
+### Feature
+* Add hparam tuner ([#31](https://github.com/siemdejong/dpat/issues/31)) ([`b2e4094`](https://github.com/siemdejong/dpat/commit/b2e40942abc3dad0b72499480fe024f56872b6ee))
+
+### Fix
+* Run black ([`619679f`](https://github.com/siemdejong/dpat/commit/619679fa3c808b699b16d79bd915d00bbcabca6b))
+
 ## v4.3.2 (2023-03-24)
 ### Fix
 * Type error ([`e2af84a`](https://github.com/siemdejong/dpat/commit/e2af84a6474303aec2e2b8d25fdf47468a9cfb3b))
