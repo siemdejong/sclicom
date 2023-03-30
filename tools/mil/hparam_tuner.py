@@ -171,7 +171,11 @@ if __name__ == "__main__":
         space=config_space,
         metric="loss/val",
         sampler=optuna.samplers.TPESampler(
+            # Sample from a multivariate distribution, not independent gaussian distributions.
+            # Dropout and the layer structure are expected to be correlated tightly.
             multivariate=True,
+            # To not run similar trials with distributed.
+            # Penalties running configs around trials.
             constant_liar=True,
         ),
         mode="min",
