@@ -162,6 +162,10 @@ if __name__ == "__main__":
     search_alg = OptunaSearch(
         space=config_space,
         metric="loss/val",
+        sampler=optuna.samplers.TPESampler(
+            multivariate=True,
+            constant_liar=True,
+        ),
         mode="min",
         points_to_evaluate=seed_configs_space,
     )
