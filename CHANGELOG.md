@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.6.0 (2023-04-04)
+### Feature
+* Make trials reproducible ([`6fb64c4`](https://github.com/siemdejong/dpat/commit/6fb64c493dba130ab64e4b44ece9a85d62846dd8))
+
 ## v4.5.0 (2023-04-04)
 ### Feature
 * Test model ([`857d2cd`](https://github.com/siemdejong/dpat/commit/857d2cd7e6b11269a73c83a10625250f4229f61d))
