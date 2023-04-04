@@ -30,4 +30,5 @@ dpat.utils
 
    dpat.utils.cudnn_auto_tuner
    dpat.utils.float32_matmul_precision
+   dpat.utils.seed_all
 

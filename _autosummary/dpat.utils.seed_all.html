@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dpat.utils.float32_matmul_precision" href="dpat.utils.float32_matmul_precision.html" /><link rel="prev" title="dpat.utils.cudnn_auto_tuner" href="dpat.utils.cudnn_auto_tuner.html" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="dpat.utils.float32_matmul_precision.set_float32_matmul_precision" href="dpat.utils.float32_matmul_precision.set_float32_matmul_precision.html" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
-        <title>dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner - dpat 4.6.0 documentation</title>
+        <title>dpat.utils.seed_all - dpat 4.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -134,7 +134,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -287,15 +287,15 @@
 </ul>
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="dpat.utils.html">dpat.utils</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-29" name="toctree-checkbox-29" role="switch" type="checkbox"/><label for="toctree-checkbox-29"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l3 current has-children"><a class="reference internal" href="dpat.utils.cudnn_auto_tuner.html">dpat.utils.cudnn_auto_tuner</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="dpat.utils.cudnn_auto_tuner.html">dpat.utils.cudnn_auto_tuner</a><input class="toctree-checkbox" id="toctree-checkbox-30" name="toctree-checkbox-30" role="switch" type="checkbox"/><label for="toctree-checkbox-30"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner.html">dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner</a></li>
 </ul>
 </li>
 <li class="toctree-l3 has-children"><a class="reference internal" href="dpat.utils.float32_matmul_precision.html">dpat.utils.float32_matmul_precision</a><input class="toctree-checkbox" id="toctree-checkbox-31" name="toctree-checkbox-31" role="switch" type="checkbox"/><label for="toctree-checkbox-31"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="dpat.utils.float32_matmul_precision.set_float32_matmul_precision.html">dpat.utils.float32_matmul_precision.set_float32_matmul_precision</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="dpat.utils.seed_all.html">dpat.utils.seed_all</a></li>
+<li class="toctree-l3 current current-page"><a class="current reference internal" href="#">dpat.utils.seed_all</a></li>
 </ul>
 </li>
 </ul>
@@ -328,21 +328,15 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main">
-          <section id="dpat-utils-cudnn-auto-tuner-enable-cudnn-auto-tuner">
-<h1>dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner<a class="headerlink" href="#dpat-utils-cudnn-auto-tuner-enable-cudnn-auto-tuner" title="Permalink to this heading">#</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner">
-<span class="sig-prename descclassname"><span class="pre">dpat.utils.cudnn_auto_tuner.</span></span><span class="sig-name descname"><span class="pre">enable_cudnn_auto_tuner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner" title="Permalink to this definition">#</a></dt>
-<dd><p>Run short benchmark and select kernel with best performance.</p>
-<p>NOTE: Auto-tuner decisions may be non-deterministic.</p>
-</dd></dl>
-
+          <section id="module-dpat.utils.seed_all">
+<span id="dpat-utils-seed-all"></span><h1>dpat.utils.seed_all<a class="headerlink" href="#module-dpat.utils.seed_all" title="Permalink to this heading">#</a></h1>
+<p>Seed all RNGs.</p>
 </section>
 
         </article>
@@ -350,23 +344,15 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="dpat.utils.float32_matmul_precision.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">dpat.utils.float32_matmul_precision</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="dpat.utils.cudnn_auto_tuner.html">
+          
+          <a class="prev-page" href="dpat.utils.float32_matmul_precision.set_float32_matmul_precision.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">dpat.utils.cudnn_auto_tuner</div>
+                <div class="title">dpat.utils.float32_matmul_precision.set_float32_matmul_precision</div>
                 
               </div>
             </a>
@@ -388,27 +374,8 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner</a><ul>
-<li><a class="reference internal" href="#dpat.utils.cudnn_auto_tuner.enable_cudnn_auto_tuner"><code class="docutils literal notranslate"><span class="pre">enable_cudnn_auto_tuner()</span></code></a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
