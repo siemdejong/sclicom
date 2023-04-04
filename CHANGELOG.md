@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.5.0 (2023-04-04)
+### Feature
+* Test model ([`857d2cd`](https://github.com/siemdejong/dpat/commit/857d2cd7e6b11269a73c83a10625250f4229f61d))
+
 ## v4.4.0 (2023-03-30)
 ### Feature
 * Add hparam tuner ([#31](https://github.com/siemdejong/dpat/issues/31)) ([`b2e4094`](https://github.com/siemdejong/dpat/commit/b2e40942abc3dad0b72499480fe024f56872b6ee))
