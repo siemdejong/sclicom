@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dpat.data.transforms" href="dpat.data.transforms.html" /><link rel="prev" title="dpat.data.pmchhg_h5_dataset.PMCHHGH5DataModule" href="dpat.data.pmchhg_h5_dataset.PMCHHGH5DataModule.html" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
-        <title>dpat.data.pmchhg_h5_dataset.PMCHHGH5Dataset - dpat 4.4.0 documentation</title>
+        <title>dpat.data.pmchhg_h5_dataset.PMCHHGH5Dataset - dpat 4.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dpat 4.4.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dpat 4.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dpat 4.4.0 documentation</span>
+  <span class="sidebar-brand-text">dpat 4.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -389,7 +389,7 @@ sample to give probabilities of every sample being drawn.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="dpat.data.pmchhg_h5_dataset.PMCHHGH5Dataset.from_pmchhg_data_and_model">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pmchhg_data_and_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filename:</span> <span class="pre">str,</span> <span class="pre">dir_name:</span> <span class="pre">~pathlib.Path,</span> <span class="pre">dataset:</span> <span class="pre">~dpat.data.pmc_tile_dataset.PMCHHGImageDataset,</span> <span class="pre">model:</span> <span class="pre">~torch.nn.modules.module.Module,</span> <span class="pre">num_classes:</span> <span class="pre">int,</span> <span class="pre">dsetname_format:</span> <span class="pre">list[str],</span> <span class="pre">transform:</span> <span class="pre">&lt;module</span> <span class="pre">'torchvision.transforms'</span> <span class="pre">from</span> <span class="pre">'/usr/share/miniconda3/envs/dpat/lib/python3.10/site-packages/torchvision/transforms/__init__.py'&gt;</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">cache:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">mode:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7f49d0c2c2c0&gt;</span> <span class="pre">=</span> <span class="pre">'a',</span> <span class="pre">skip_if_exists:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">skip_feature_compilation:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">batch_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">32</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#dpat.data.pmchhg_h5_dataset.PMCHHGH5Dataset.from_pmchhg_data_and_model" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pmchhg_data_and_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">filename:</span> <span class="pre">str,</span> <span class="pre">dir_name:</span> <span class="pre">~pathlib.Path,</span> <span class="pre">dataset:</span> <span class="pre">~dpat.data.pmc_tile_dataset.PMCHHGImageDataset,</span> <span class="pre">model:</span> <span class="pre">~torch.nn.modules.module.Module,</span> <span class="pre">num_classes:</span> <span class="pre">int,</span> <span class="pre">dsetname_format:</span> <span class="pre">list[str],</span> <span class="pre">transform:</span> <span class="pre">&lt;module</span> <span class="pre">'torchvision.transforms'</span> <span class="pre">from</span> <span class="pre">'/usr/share/miniconda3/envs/dpat/lib/python3.10/site-packages/torchvision/transforms/__init__.py'&gt;</span> <span class="pre">=</span> <span class="pre">None,</span> <span class="pre">cache:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">mode:</span> <span class="pre">&lt;property</span> <span class="pre">object</span> <span class="pre">at</span> <span class="pre">0x7fb0b2244590&gt;</span> <span class="pre">=</span> <span class="pre">'a',</span> <span class="pre">skip_if_exists:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">True,</span> <span class="pre">skip_feature_compilation:</span> <span class="pre">bool</span> <span class="pre">=</span> <span class="pre">False,</span> <span class="pre">batch_size:</span> <span class="pre">int</span> <span class="pre">=</span> <span class="pre">32</span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T</span></span></span><a class="headerlink" href="#dpat.data.pmchhg_h5_dataset.PMCHHGH5Dataset.from_pmchhg_data_and_model" title="Permalink to this definition">#</a></dt>
 <dd><p>Build an H5 dataset from PMCHHG dataset with a pretrained model.</p>
 <section id="example-structure">
 <h2>Example structure<a class="headerlink" href="#example-structure" title="Permalink to this heading">#</a></h2>
