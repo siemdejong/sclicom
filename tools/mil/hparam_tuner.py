@@ -4,11 +4,10 @@ import logging
 import math
 import os
 import warnings
-from itertools import chain, product
+from functools import partial
 from pathlib import Path
 
 import lightning.pytorch as pl
-import numpy as np
 import optuna
 from lightning.fabric.plugins.precision.precision import _PRECISION_INPUT
 from ray import air, tune
@@ -18,6 +17,7 @@ from ray.tune.search.optuna import OptunaSearch
 
 from dpat.data.pmchhg_h5_dataset import PMCHHGH5DataModule
 from dpat.mil.models import VarAttention
+from dpat.utils import seed_all
 
 logger = logging.getLogger(__name__)
 
@@ -50,6 +50,7 @@ def train_tune(
     num_gpus_per_trial: float,
     num_cpus_per_trial: int,
     precision: _PRECISION_INPUT,
+    seed: int = 42,
 ) -> None:
     """Train the model and report back to Ray.
 
@@ -73,19 +74,31 @@ def train_tune(
         Number of cpus available per worker.
     precision : str
         Precision for Lightning Fabric to work with.
+    seed : int
+        Seed for randomness.
     """
+    seed_all(seed)
+
+    layers = []
+    for layer in range(config["_n_layers"]):
+        _pow = config[f"_pow_nodes_layer_{layer}"]
+        _pow_of_2 = 2**_pow
+        layers.append(_pow_of_2)
+
     model = VarAttention(
         # Fixed by combination of tile size and feature extractor.
         in_features=in_features,
-        hidden_features=config["hidden_features"],
+        layers=layers,
         num_classes=num_classes,
-        dropout_p=config["dropout_p"],
+        dropout=config["dropout"],
         lr=config["lr"],
+        momentum=config["momentum"],
+        wd=config["wd"],
         T_max=num_epochs,
     )
 
     callback: pl.Callback = _TuneReportCallback(
-        metrics=["loss/val", "val_f1", "val_pr_auc", "val_auc"]
+        metrics=["loss/train", "loss/val", "val_f1", "val_pr_auc", "val_auc"]
     )
 
     trainer = pl.Trainer(
@@ -98,6 +111,7 @@ def train_tune(
         callbacks=[callback],
         precision=precision,
         enable_progress_bar=False,
+        deterministic=True,
     )
 
     trainer.logger.log_hyperparams(config)
@@ -106,25 +120,53 @@ def train_tune(
     return trainer.callback_metrics["loss/val"].item()
 
 
+def define_by_run_func(
+    trial: optuna.Trial,
+    bounds_n_layers: tuple[int, int],
+    bounds_pow: tuple[int, int],
+    bounds_dropout: tuple[int, int],
+    bounds_lr: tuple[int, int],
+    bounds_momentum: tuple[int, int],
+    bounds_wd: tuple[int, int],
+) -> None:
+    """Define-by-run function to create the search space."""
+    _n_layers = trial.suggest_int("_n_layers", *bounds_n_layers)
+    for _layer in range(_n_layers):
+        trial.suggest_int(f"_pow_nodes_layer_{_layer}", *bounds_pow)
+
+    trial.suggest_float("dropout", *bounds_dropout)
+
+    trial.suggest_float("lr", *bounds_lr, log=True)
+    trial.suggest_float("momentum", *bounds_momentum)
+    trial.suggest_float("wd", *bounds_wd, log=True)
+
+
 if __name__ == "__main__":
-    name = "tune_29-3-2023_2"
-    num_trials = 200
-    min_epochs = 50
+    restore_path = None  # "/home/sdejong/ray_results/tune_3-4-2023_1"
+
+    name = "tune_4-4-2023_1"
+    num_trials = 10
+    min_epochs = 30
     num_epochs = 600
+    num_gpus = 1
     num_gpus_per_trial = 0.1
     num_cpus_per_trial = 5
     num_dataloader_workers = num_cpus_per_trial
     precision = "bf16-mixed"
 
+    seed = 42
+
     num_classes = 2
     in_features = 1024
+
+    seed_all(seed)
 
     tmpdir = Path(os.environ["TMPDIR"])
     fold = 0
     subfold = 0
     diagnosis = "medulloblastoma+pilocytic-astrocytoma"
     dataset = "pmchhg"
-    h5 = "simclr-17-3-2023.hdf5"
+    h5 = f"imagenet-1-4-2023-fold-{fold}.hdf5"
 
     datamodule = PMCHHGH5DataModule(
         file_path=tmpdir / Path(f"features/{h5}"),
@@ -143,40 +185,36 @@ if __name__ == "__main__":
         balance=True,
     )
 
-    _n_layers = np.arange(2)
-    _powers = np.arange(9)
-    config_space = {
-        "dropout_p": optuna.distributions.FloatDistribution(0.5, 0.95),
-        "hidden_features": optuna.distributions.CategoricalDistribution(
-            # This right here, is a fine art of spaghetti
-            # to get a semi-flat array, with sorted powers of 2,
-            # with length depending on number of layers.
-            [
-                sorted(np.unique(item), reverse=True)
-                for item in chain(
-                    *[
-                        [
-                            sorted([2**a for a in prod], reverse=True)
-                            for prod in product(_powers + 1, repeat=n)
-                        ]
-                        for n in _n_layers + 1
-                    ]
-                )
-            ]
-        ),
-        "lr": optuna.distributions.FloatDistribution(1e-5, 1e-2, log=True),
-    }
+    # Interesting discussion on wide+shallow vs narrow+deep:
+    # https://stats.stackexchange.com/a/223637/384534
+    # Deep and narrow can aid in generalizing.
+    bounds_n_layers = (1, 3)
+    bounds_pow = (1, 5)
+    bounds_dropout = (0, 1)
+    bounds_lr = (1e-5, 1e-2)
+    bounds_momentum = (0, 1)
+    bounds_wd = (1e-4, 1)
+    define_by_run_space = partial(
+        define_by_run_func,
+        bounds_n_layers=bounds_n_layers,
+        bounds_pow=bounds_pow,
+        bounds_dropout=bounds_dropout,
+        bounds_lr=bounds_lr,
+        bounds_momentum=bounds_momentum,
+        bounds_wd=bounds_wd,
+    )
 
     seed_configs_space = [
-        config_space | {"dropout_p": 0.8, "hidden_features": [256, 8], "lr": 1e-4},
-        config_space | {"dropout_p": 0.7, "hidden_features": [8], "lr": 1e-4},
+        {"dropout": 0.7, "layers": [8], "lr": 1e-4},
+        {"dropout": 0.75, "layers": [8, 4], "lr": 1e-4},
+        {"dropout": 0.8, "layers": [8, 4, 2], "lr": 1e-4},
     ]
 
     scheduler = ASHAScheduler(
         time_attr="training_iteration", grace_period=min_epochs, max_t=num_epochs
     )
     search_alg = OptunaSearch(
-        space=config_space,
+        space=define_by_run_space,
         metric="loss/val",
         sampler=optuna.samplers.TPESampler(
             # Sample from a multivariate distribution,
@@ -186,6 +224,11 @@ if __name__ == "__main__":
             # To not run similar trials with distributed.
             # Penalties running configs around trials.
             constant_liar=True,
+            # Because nodes per layer are depending on number of layers.
+            group=True,
+            # Because the search space is quite big
+            n_startup_trials=num_trials / 5,
+            seed=seed,
         ),
         mode="min",
         points_to_evaluate=seed_configs_space,
@@ -211,9 +254,29 @@ if __name__ == "__main__":
             num_samples=num_trials,
             scheduler=scheduler,
             search_alg=search_alg,
+            max_concurrent_trials=int(num_gpus / num_gpus_per_trial),
         ),
         run_config=air.RunConfig(name=name),
     )
+
+    if restore_path:
+        tuner = tune.Tuner.restore(
+            path="/home/sdejong/ray_results/tune_3-4-2023_1",
+            trainable=tune.with_parameters(
+                tune.with_resources(
+                    trainable=train_tune,
+                    resources={"cpu": num_cpus_per_trial, "gpu": num_gpus_per_trial},
+                ),
+                datamodule=datamodule,
+                num_classes=num_classes,
+                in_features=in_features,
+                num_epochs=num_epochs,
+                num_gpus_per_trial=num_gpus_per_trial,
+                num_cpus_per_trial=num_cpus_per_trial,
+                precision=precision,
+            ),
+            resume_unfinished=False,
+        )
 
     results = tuner.fit()
 
