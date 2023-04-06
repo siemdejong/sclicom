@@ -101,10 +101,10 @@ class PMCHHGImageDataset(Dataset):
         tile_size_y: int = 224,
         tile_overlap_x: int = 0,
         tile_overlap_y: int = 0,
-        tile_mode: str = "overflow",
+        tile_mode: str = "skip",
         crop: bool = False,
-        mask_factory: MaskFactory = "no_mask",
-        mask_foreground_threshold: Union[float, None] = None,
+        mask_factory: MaskFactory = "entropy_masker",
+        mask_foreground_threshold: Union[float, None] = 1,
         mask_root_dir: Union[str, None] = None,
         transform: Union[torchvision.transforms.Compose, None] = None,
     ):
