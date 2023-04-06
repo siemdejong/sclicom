@@ -93,7 +93,15 @@ class Attention(pl.LightningModule):
         # DeepMIL specific initialization
         self.num_classes = num_classes
         self.L = in_features
-        self.D = layers if len(layers) > 1 else layers[0]
+
+        self.D: Union[int, list[int]]
+        if isinstance(layers, list):
+            if len(layers) > 1:
+                self.D = layers
+            else:
+                self.D = layers[0]
+        else:
+            self.D = layers
         self.K = 1
         if isinstance(self.D, list):
             if dropout is None:
@@ -286,7 +294,8 @@ class Attention(pl.LightningModule):
 
             # This data is shared among BC and CRC dataset
             hf = h5py.File(
-                f"{self.trainer.log_dir}/output/{fold}/{img_id}_output.hdf5", "a"
+                f"{self.trainer.log_dir}/output/{fold}/{case_id}_{img_id}_output.hdf5",
+                "a",
             )
             hf["img_id"] = img_id
             hf["case_id"] = case_id
@@ -314,7 +323,9 @@ class Attention(pl.LightningModule):
 
     def configure_optimizers(self):
         """Configure optimizer and learning rate scheduler."""
-        optimizer = torch.optim.SGD(self.parameters(), self.lr, momentum=self.momentum, weight_decay=self.wd)
+        optimizer = torch.optim.SGD(
+            self.parameters(), self.lr, momentum=self.momentum, weight_decay=self.wd
+        )
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer, T_max=self.T_max
         )

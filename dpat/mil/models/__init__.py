@@ -1,4 +1,4 @@
 """Provide attention models."""
-from .varmil import VarAttention
+from .varmil import Attention, VarAttention
 
-__all__ = ["VarAttention"]
+__all__ = ["VarAttention", "Attention"]
