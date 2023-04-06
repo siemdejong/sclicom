@@ -2,6 +2,16 @@
 
 <!--next-version-placeholder-->
 
+## v4.7.0 (2023-04-06)
+### Feature
+* Attention tiles viz ([`df9f90f`](https://github.com/siemdejong/dpat/commit/df9f90fc734fddc4a6f269d02ca63b1a7422ba55))
+* Change hparam search vars ([`fbd5847`](https://github.com/siemdejong/dpat/commit/fbd584767cee5a0d0bd6f22093df8b85e22db2d0))
+
+### Fix
+* Explicitly export attention model ([`7aa356d`](https://github.com/siemdejong/dpat/commit/7aa356d98842a681aba398ccecc1ee7e47332b81))
+* Remove argument linking ([`d0d28e6`](https://github.com/siemdejong/dpat/commit/d0d28e6a3a04d9f76d155a226c6b1ff91d8380e1))
+* Change defaults ([`dcdfea6`](https://github.com/siemdejong/dpat/commit/dcdfea6212b251c18bfbe5d4c8bbe06259c2a3ce))
+
 ## v4.6.0 (2023-04-04)
 ### Feature
 * Make trials reproducible ([`6fb64c4`](https://github.com/siemdejong/dpat/commit/6fb64c493dba130ab64e4b44ece9a85d62846dd8))
