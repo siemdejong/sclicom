@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="dpat.data.pmchhg_h5_dataset.generate_embeddings" href="dpat.data.pmchhg_h5_dataset.generate_embeddings.html" /><link rel="prev" title="dpat.data.pmchhg_h5_dataset.compile_features" href="dpat.data.pmchhg_h5_dataset.compile_features.html" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
-        <title>dpat.data.pmchhg_h5_dataset.feature_batch_extract - dpat 4.7.0 documentation</title>
+        <title>dpat.data.pmchhg_h5_dataset.feature_batch_extract - dpat 4.8.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">dpat 4.7.0 documentation</div></a>
+      <a href="../index.html"><div class="brand">dpat 4.8.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">dpat 4.7.0 documentation</span>
+  <span class="sidebar-brand-text">dpat 4.8.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -338,7 +338,7 @@
 <h1>dpat.data.pmchhg_h5_dataset.feature_batch_extract<a class="headerlink" href="#dpat-data-pmchhg-h5-dataset-feature-batch-extract" title="Permalink to this heading">#</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="dpat.data.pmchhg_h5_dataset.feature_batch_extract">
-<span class="sig-prename descclassname"><span class="pre">dpat.data.pmchhg_h5_dataset.</span></span><span class="sig-name descname"><span class="pre">feature_batch_extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">File</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="dpat.data.pmc_tile_dataset.PMCHHGImageDataset.html#dpat.data.pmc_tile_dataset.PMCHHGImageDataset" title="dpat.data.pmc_tile_dataset.PMCHHGImageDataset"><span class="pre">PMCHHGImageDataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsetname_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dpat.data.pmchhg_h5_dataset.feature_batch_extract" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">dpat.data.pmchhg_h5_dataset.</span></span><span class="sig-name descname"><span class="pre">feature_batch_extract</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">File</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Module</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="dpat.data.pmc_tile_dataset.PMCHHGImageDataset.html#dpat.data.pmc_tile_dataset.PMCHHGImageDataset" title="dpat.data.pmc_tile_dataset.PMCHHGImageDataset"><span class="pre">PMCHHGImageDataset</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dsetname_format</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_workers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_if_exists</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#dpat.data.pmchhg_h5_dataset.feature_batch_extract" title="Permalink to this definition">#</a></dt>
 <dd><p>Extract features and store them in a H5 dataset.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this heading">#</a></h2>
@@ -357,6 +357,8 @@ The <a href="#id1"><span class="problematic" id="id2">*</span></a>i*th H5 datase
 computed like <cite>dataset.get_metadata(i)[dsetname_format…]</cite> where
 <cite>dsetname_format</cite> is a list of strings choosing the metadata to be used to
 name the hierarchical groups and datasets.</p>
+</dd>
+<dt>num_workers<span class="classifier">int, default=0</span></dt><dd><p>Number of workers preparing the data for the GPU.</p>
 </dd>
 <dt>skip_if_exists<span class="classifier">bool, default=True</span></dt><dd><p>Skip if dataset objects in hdf5 file already exist.</p>
 </dd>
