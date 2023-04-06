@@ -3,6 +3,7 @@ recipes
 lightning_logs
 checkpoints
 docs/source/_autosummary
+notebooks/outputs
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
