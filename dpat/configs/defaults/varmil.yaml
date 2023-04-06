@@ -23,10 +23,6 @@ trainer:
       init_args:
         logging_interval: epoch
         log_momentum: true
-    - class_path: lightning.pytorch.callbacks.early_stopping.EarlyStopping
-      init_args:
-        monitor: loss/val
-        patience: 100
   default_root_dir: null
   gradient_clip_val: null
   gradient_clip_algorithm: null
@@ -48,8 +44,8 @@ trainer:
   limit_predict_batches: null
   val_check_interval: null
   log_every_n_steps: 50
-  accelerator: gpu
-  strategy: ddp
+  accelerator: cpu
+  # strategy: ddp
   sync_batchnorm: false
   precision: 32-true
   enable_model_summary: true
@@ -65,16 +61,20 @@ model:
   class_path: dpat.mil.models.VarAttention
   init_args:
     in_features: 1024  # Depends on output of the (pretrained) ResNet
-    hidden_features: [512, 128, 32, 8]
+    layers: [2, 2, 2]
     num_classes: ${data.init_args.num_classes}
-    dropout_p: 0.5
+    dropout: 0.32533033076326434
+    lr: 0.00014656553886225324
+    momentum: 0.2713490317738959
+    wd: 0.20651425578959234
+    T_max: ${trainer.max_epochs}
 data:
   class_path: dpat.data.PMCHHGH5DataModule
   init_args:
-    file_path: /scistor/guest/sjg203/projects/pmc-hhg/features/simclr-17-3-2023.hdf5
-    train_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_train-subfold-0-fold-0.csv
-    val_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_val-subfold-0-fold-0.csv
-    test_path: /scistor/guest/sjg203/projects/pmc-hhg/medulloblastoma+pilocytic-astrocytoma_pmchhg_test-subfold-0-fold-0.csv
+    file_path: /home/sdejong/pmchhg/features/imagenet-1-4-2023-fold-0.hdf5
+    train_path: /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_train-subfold-0-fold-4.csv
+    val_path:  /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_val-subfold-0-fold-4.csv
+    test_path: /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_test-subfold-0-fold-4.csv
     num_workers: 4
     num_classes: 2
     balance: true

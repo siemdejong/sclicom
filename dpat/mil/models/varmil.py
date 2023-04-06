@@ -46,11 +46,13 @@ class Attention(pl.LightningModule):
     def __init__(
         self,
         in_features: int,
-        hidden_features: Union[int, list[int]],
+        layers: Union[int, list[int]],
         num_classes: int,
-        dropout_p: Union[float, None] = None,
+        T_max: int,
+        dropout: Union[float, None] = None,
         lr: float = 0.0003,
-        T_max: int = 1000,
+        momentum: float = 0.01,
+        wd: float = 0.01,
     ):
         """Initialize the Attention module following [1].
 
@@ -58,19 +60,23 @@ class Attention(pl.LightningModule):
         ----------
         in_features : int
             Length of the ingoing feature vectors.
-        hidden_features : int, list[int]
+        layers : int, list[int]
             Length of the hidden feature vectors.
-            If list of integers, make multiple hidden feature vectors
-            and add 0.5 dropout in between.
+            If list of integers, make multiple hidden feature vectors and
+            add dropout=0.5 in between by default.
         num_clases : int
             Number of classes the output should be.
         dropout_p : float, optional, default=0.5
             Probability of applying dropout to a parameter. Only applicable if
-            `hidden_features` is a list.
+            `layers` is a list with length > 1.
         lr : float, default=0.0003
-            Learning rate for AdamW optimizer.
+            Learning rate for optimizer.
+        momentum : float, default=0.01
+            Momentum for optimizer.
         T_max : int, default=1000
             Number of epochs. Used for the CosineAnnealingLR scheduler.
+        wd : float, default=0.01
+            Weight decay for optimizer.
 
         References
         [1] https://arxiv.org/abs/1802.04712
@@ -80,16 +86,18 @@ class Attention(pl.LightningModule):
         self.example_input_array = torch.Tensor(1, 1000, in_features)
 
         self.lr = lr
+        self.momentum = momentum
+        self.wd = wd
         self.T_max = T_max
 
         # DeepMIL specific initialization
         self.num_classes = num_classes
         self.L = in_features
-        self.D = hidden_features
+        self.D = layers if len(layers) > 1 else layers[0]
         self.K = 1
         if isinstance(self.D, list):
-            if dropout_p is None:
-                dropout_p = 0.5
+            if dropout is None:
+                dropout = 0.5
             attention_layers: list[nn.Module] = [
                 nn.Linear(self.L, self.D[0]),
                 nn.Tanh(),
@@ -97,7 +105,7 @@ class Attention(pl.LightningModule):
             for i, curr_D in enumerate(self.D[1:]):
                 prev_shape = self.D[i]
                 attention_layers.extend(
-                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout_p)]
+                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout)]
                 )
             attention_layers.append(
                 nn.Linear(self.D[-1] if isinstance(self.D, list) else self.D, self.K)
@@ -306,7 +314,7 @@ class Attention(pl.LightningModule):
 
     def configure_optimizers(self):
         """Configure optimizer and learning rate scheduler."""
-        optimizer = torch.optim.AdamW(self.parameters(), self.lr)
+        optimizer = torch.optim.SGD(self.parameters(), self.lr, momentum=self.momentum, weight_decay=self.wd)
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
             optimizer, T_max=self.T_max
         )
