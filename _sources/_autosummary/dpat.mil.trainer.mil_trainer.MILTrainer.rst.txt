@@ -16,7 +16,6 @@ dpat.mil.trainer.mil\_trainer.MILTrainer
    .. autosummary::
    
       ~MILTrainer.__init__
-      ~MILTrainer.add_arguments_to_parser
       ~MILTrainer.fit
       ~MILTrainer.predict
       ~MILTrainer.save_checkpoint
