@@ -146,6 +146,7 @@ def feature_batch_extract(
     dataset: PMCHHGImageDataset,
     batch_size: int,
     dsetname_format: list[str],
+    num_workers: int = 0,
     skip_if_exists: bool = True,
 ) -> None:
     """Extract features and store them in a H5 dataset.
@@ -167,6 +168,8 @@ def feature_batch_extract(
         computed like `dataset.get_metadata(i)[dsetname_format...]` where
         `dsetname_format` is a list of strings choosing the metadata to be used to
         name the hierarchical groups and datasets.
+    num_workers : int, default=0
+        Number of workers preparing the data for the GPU.
     skip_if_exists : bool, default=True
         Skip if dataset objects in hdf5 file already exist.
     """
@@ -195,11 +198,15 @@ def feature_batch_extract(
             metadata = dataset.get_metadata(i, img_dataset)
             tile_metadata.append(metadata)
 
-        dataloader = DataLoader(img_dataset, batch_size=batch_size)
+        dsetname = "".join([f"/{metadata[dsetname]}" for dsetname in dsetname_format])
+
+        dataloader = DataLoader(
+            img_dataset, batch_size=batch_size, num_workers=num_workers
+        )
         embeddings = generate_embeddings(model, dataloader, desc="Tile batches")
 
         img_group_h5 = f.create_group(dsetname)
-        img_group_h5.create_dataset("data", data=embeddings)
+        img_group_h5.create_dataset("data", data=embeddings.cpu())
         img_group_h5.create_dataset(
             "all_tile_mpp", data=[tile["meta"]["tile_mpp"] for tile in tile_metadata]
         )
@@ -227,6 +234,7 @@ def compile_features(
     mode: h5py.File.mode = "a",
     skip_if_exists: bool = True,
     batch_size: int = 32,
+    num_workers: int = 0,
 ) -> pathlib.Path:
     """Compile features vectors to H5 format with metadata.
 
@@ -254,6 +262,8 @@ def compile_features(
         See `h5py.File` for possible modes.
     skip_if_exists : bool, default=True
         Return filename if overwrite
+    num_workers : int, default=0
+        Number of workers for the dataloader.
 
     Returns
     -------
@@ -266,7 +276,13 @@ def compile_features(
 
     with CarefulHDF5(name=filepath, mode=mode) as file:
         feature_batch_extract(
-            file, model, dataset, batch_size, dsetname_format, skip_if_exists
+            file,
+            model,
+            dataset,
+            batch_size,
+            dsetname_format,
+            num_workers,
+            skip_if_exists,
         )
 
     return filepath
@@ -361,6 +377,7 @@ class PMCHHGH5Dataset(Dataset):
         skip_if_exists: bool = True,
         skip_feature_compilation: bool = False,
         batch_size: int = 32,
+        num_workers: int = 0,
     ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
 
@@ -393,6 +410,8 @@ class PMCHHGH5Dataset(Dataset):
             but returns file path.
         skip_feature_compilation : bool, default=False
             Skip feature compilation. Asserts a file at hdf5 exists.
+        num_workers : int, default=0
+            Number of workers for the dataloader.
         """
         if not skip_feature_compilation:
             filepath = compile_features(
@@ -404,6 +423,7 @@ class PMCHHGH5Dataset(Dataset):
                 mode=mode,
                 skip_if_exists=skip_if_exists,
                 batch_size=batch_size,
+                num_workers=num_workers,
             )
         else:
             filepath = dir_name / filename
