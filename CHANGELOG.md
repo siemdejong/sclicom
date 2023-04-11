@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.8.0 (2023-04-06)
+### Feature
+* Add num_workers to feature compiling ([`0f4ef30`](https://github.com/siemdejong/dpat/commit/0f4ef30378edc9397b74934674f6debd40552078))
+
 ## v4.7.0 (2023-04-06)
 ### Feature
 * Attention tiles viz ([`df9f90f`](https://github.com/siemdejong/dpat/commit/df9f90fc734fddc4a6f269d02ca63b1a7422ba55))
