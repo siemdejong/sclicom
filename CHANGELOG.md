@@ -2,6 +2,19 @@
 
 <!--next-version-placeholder-->
 
+## v4.9.0 (2023-04-12)
+### Feature
+* Add location to splits output ([`4440a53`](https://github.com/siemdejong/dpat/commit/4440a53921d2182f0eed0a7de5ffd0a324795a44))
+* Add CCMIL ([`b0294ce`](https://github.com/siemdejong/dpat/commit/b0294ceb96a52757eebf53566f72b527e9978294))
+* Add clinical context to h5 dataset ([`3197f81`](https://github.com/siemdejong/dpat/commit/3197f8126dc74ba052a005c44fc4bc3b5e661a50))
+* Add clinical context to image dataset ([`e229d1e`](https://github.com/siemdejong/dpat/commit/e229d1ef89d7216f406c94445f3ea7ea73df0e55))
+
+### Fix
+* Add typehints ([`486b392`](https://github.com/siemdejong/dpat/commit/486b392c6e4005e80c683a1d9bc057ee6ef0bd5e))
+* Add LLM output last_hidden_state protocol ([`81e5e74`](https://github.com/siemdejong/dpat/commit/81e5e7445957409c1349b64c05cd2be1287b4de5))
+* Ignore transformers missing import ([`5c6806d`](https://github.com/siemdejong/dpat/commit/5c6806d45f620d92db5971409410209dd426c49e))
+* Add transformers dependency ([`8145723`](https://github.com/siemdejong/dpat/commit/8145723ea89f15199985be59a14f316561b1866b))
+
 ## v4.8.0 (2023-04-06)
 ### Feature
 * Add num_workers to feature compiling ([`0f4ef30`](https://github.com/siemdejong/dpat/commit/0f4ef30378edc9397b74934674f6debd40552078))
