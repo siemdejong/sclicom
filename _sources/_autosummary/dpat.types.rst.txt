@@ -19,6 +19,8 @@ dpat.types
       :toctree:
       :template: custom-class-template.rst
    
+      LLMOutput
+      LLMOutputProtocol
       MetaDataDataset
       MetaDataProtocol
       OutputProtocol

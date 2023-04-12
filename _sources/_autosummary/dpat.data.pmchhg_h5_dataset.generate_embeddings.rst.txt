@@ -1,6 +1,0 @@
-dpat.data.pmchhg\_h5\_dataset.generate\_embeddings
-==================================================
-
-.. currentmodule:: dpat.data.pmchhg_h5_dataset
-
-.. autofunction:: generate_embeddings

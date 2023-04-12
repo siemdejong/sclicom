@@ -1,0 +1,79 @@
+dpat.types.LLMOutput
+====================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: LLMOutput
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LLMOutput.__init__
+      ~LLMOutput.add_module
+      ~LLMOutput.apply
+      ~LLMOutput.bfloat16
+      ~LLMOutput.buffers
+      ~LLMOutput.children
+      ~LLMOutput.cpu
+      ~LLMOutput.cuda
+      ~LLMOutput.double
+      ~LLMOutput.eval
+      ~LLMOutput.extra_repr
+      ~LLMOutput.float
+      ~LLMOutput.forward
+      ~LLMOutput.get_buffer
+      ~LLMOutput.get_extra_state
+      ~LLMOutput.get_parameter
+      ~LLMOutput.get_submodule
+      ~LLMOutput.half
+      ~LLMOutput.ipu
+      ~LLMOutput.load_state_dict
+      ~LLMOutput.modules
+      ~LLMOutput.named_buffers
+      ~LLMOutput.named_children
+      ~LLMOutput.named_modules
+      ~LLMOutput.named_parameters
+      ~LLMOutput.parameters
+      ~LLMOutput.register_backward_hook
+      ~LLMOutput.register_buffer
+      ~LLMOutput.register_forward_hook
+      ~LLMOutput.register_forward_pre_hook
+      ~LLMOutput.register_full_backward_hook
+      ~LLMOutput.register_full_backward_pre_hook
+      ~LLMOutput.register_load_state_dict_post_hook
+      ~LLMOutput.register_module
+      ~LLMOutput.register_parameter
+      ~LLMOutput.register_state_dict_pre_hook
+      ~LLMOutput.requires_grad_
+      ~LLMOutput.set_extra_state
+      ~LLMOutput.share_memory
+      ~LLMOutput.state_dict
+      ~LLMOutput.to
+      ~LLMOutput.to_empty
+      ~LLMOutput.train
+      ~LLMOutput.type
+      ~LLMOutput.xpu
+      ~LLMOutput.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LLMOutput.T_destination
+      ~LLMOutput.call_super_init
+      ~LLMOutput.dump_patches
+      ~LLMOutput.training
+      ~LLMOutput.last_hidden_state
+   
+   

@@ -1,0 +1,30 @@
+dpat.types.LLMOutputProtocol
+============================
+
+.. currentmodule:: dpat.types
+
+.. autoclass:: LLMOutputProtocol
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~LLMOutputProtocol.__init__
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~LLMOutputProtocol.last_hidden_state
+   
+   
