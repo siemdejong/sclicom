@@ -353,7 +353,7 @@ def create_splits(
         for subset in ["train", "val", "test"]:
             # Save splits with paths, caseid, imageid, and diagnosis number.
             paths[paths[f"{subset}-subfold-{subfold}-fold-{fold}"] == 1][
-                ["paths", "case_id", "image_id", "diagnosis_num"]
+                ["paths", "case_id", "image_id", "diagnosis_num", "location"]
             ].to_csv(
                 f"{save_to_dir}/{diagnoses_fn}_{dataset_name}_"
                 f"{subset}-subfold-{subfold}-fold-{fold}.csv",
