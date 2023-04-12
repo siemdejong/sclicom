@@ -32,8 +32,16 @@ class CCMIL(VarAttention):
         sentence = preprocess_text(sentence)
 
         input = self.tokenizer(sentence, padding=True, return_tensors="pt")
-        with torch.no_grad():
-            output: LLMOutput = self.llm(**input)
+
+        # Dis-/enable requires_grad and dis-/enable dropout etc. on layers depending
+        # on self.trainable_llm.
+        output: LLMOutput
+        self.llm.train(self.trainable_llm)
+        if self.trainable_llm:
+            output = self.llm(**input)
+        else:
+            with torch.no_grad():
+                output = self.llm(**input)
 
         # 0 holds the [CLS] token, which attempts to classify the sentence.
         features = output.last_hidden_state[:, 0, :]
@@ -67,7 +75,9 @@ class CCMIL(VarAttention):
         self.tokenizer = AutoTokenizer.from_pretrained(
             "emilyalsentzer/Bio_ClinicalBERT"
         )
-        self.llm = AutoModel.from_pretrained("emilyalsentzer/Bio_ClinicalBERT")
+        self.llm: nn.Module = AutoModel.from_pretrained(
+            "emilyalsentzer/Bio_ClinicalBERT"
+        )
         self.classifier = nn.Sequential(
             nn.Linear(
                 768 + 2 * self.L * self.K, self.num_classes
@@ -76,20 +86,16 @@ class CCMIL(VarAttention):
 
         self.trainable_llm = trainable_llm
         self.compute_cc_embedding: Callable[[str], torch.Tensor]
-        if not trainable_llm:
-            # Cache the text embeddings if the LLM is not trained.
+        if trainable_llm:
+            self.compute_cc_embedding = self._compute_cc_embedding
+        else:
             if text_embedding_cache_maxsize is not None:
+                # Cache the text embeddings if the LLM is not trained.
                 cache_fn = lru_cache(text_embedding_cache_maxsize)
             else:
                 # Use the faster cache function.
                 cache_fn = cache
             self.compute_cc_embedding = cache_fn(self._compute_cc_embedding)
-
-            # Freeze the parameters, so they are not updated.
-            for param in self.llm.parameters():
-                param.requires_grad = False
-        else:
-            self.compute_cc_embedding = self._compute_cc_embedding
 
     def _common_step(self, batch):
         """Perform a common step that is used in train/val/test.
