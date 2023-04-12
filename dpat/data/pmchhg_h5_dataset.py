@@ -43,7 +43,7 @@ class _H5ls:
         self.h5type = h5type
         self.depth = depth
 
-        with h5py.File(self.file_path, "r") as file:
+        with h5py.File(self.file_path) as file:
             file.visititems(self.get_datasets)
         logger.info("Indexing complete.")
 
@@ -224,6 +224,10 @@ def feature_batch_extract(
             "all_target", data=[tile["meta"]["target"] for tile in tile_metadata]
         )
 
+        img_group_h5.create_dataset(
+            "all_location", data=[tile["meta"]["location"] for tile in tile_metadata]
+        )
+
 
 def compile_features(
     model: nn.Module,
@@ -300,6 +304,7 @@ class PMCHHGH5Dataset(Dataset):
         cache: bool = False,
         transform: Union[torchvision.transforms.Compose, None] = None,
         load_encoded: bool = False,
+        clinical_context: bool = False,
     ) -> None:
         """Initialize an H5 dataset.
 
@@ -314,6 +319,8 @@ class PMCHHGH5Dataset(Dataset):
         load_encoded : bool, default=False
             Whether the images within the h5 file are encoded or saved as bytes
             directly.
+        clinical_context : bool, default=False
+            Export clinical context when fetching items.
         """
         self.file_path = path
         self.num_classes = num_classes
@@ -321,6 +328,8 @@ class PMCHHGH5Dataset(Dataset):
         self.transform = transform
         self.load_encoded = load_encoded
         self.paths_and_targets = paths_and_targets
+
+        self.clinical_context = clinical_context
 
         self.df = pd.read_csv(paths_and_targets, header=None)
         self.case_ids = self.df[1]
@@ -378,6 +387,7 @@ class PMCHHGH5Dataset(Dataset):
         skip_feature_compilation: bool = False,
         batch_size: int = 32,
         num_workers: int = 0,
+        clinical_context: bool = False,
     ) -> T:
         """Build an H5 dataset from PMCHHG dataset with a pretrained model.
 
@@ -412,6 +422,8 @@ class PMCHHGH5Dataset(Dataset):
             Skip feature compilation. Asserts a file at hdf5 exists.
         num_workers : int, default=0
             Number of workers for the dataloader.
+        clinical_context : bool, default=False
+            Export clinical context when fetching items.
         """
         if not skip_feature_compilation:
             filepath = compile_features(
@@ -440,6 +452,7 @@ class PMCHHGH5Dataset(Dataset):
             cache=cache,
             transform=transform,
             load_encoded=False,
+            clinical_context=clinical_context,
         )
 
         return h5_dataset
@@ -450,6 +463,7 @@ class PMCHHGH5Dataset(Dataset):
         Pytorch's WeightedRandomSampler requires weights for every
         sample to give probabilities of every sample being drawn.
         """
+        # TODO: Make weights depend on location?
         all_targets = list(map(lambda tile: self[tile]["target"], range(len(self))))
         counts = Counter(all_targets)
         weights = [1 / counts[i] for i in all_targets]
@@ -483,6 +497,12 @@ class PMCHHGH5Dataset(Dataset):
                 X-coordinate of the tile in the broader picture.
             tile_y : int
                 Y-coordinate of the tile in the broader picture.
+            case_id : str
+                Case identifier. E.g. "PMG_HHG_1".
+            img_id : str
+                Image identifier.
+            cc : str
+                Location. E.g. "frontal lobe".
 
         References
         ----------
@@ -518,6 +538,7 @@ class PMCHHGH5Dataset(Dataset):
             tile_y=metadata["all_tile_y"],
             case_id=case_id,
             img_id=img_id,
+            cc=metadata["all_location"].astype(str)[0],
         )
 
         return data_obj
@@ -536,6 +557,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         train_path: pathlib.Path,
         val_path: pathlib.Path,
         test_path: Union[pathlib.Path, None] = None,
+        clinical_context: bool = False,
         num_workers: int = 0,
         num_classes: int = 2,
         balance: bool = True,
@@ -557,6 +579,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         test_path : pathlib.Path
             Path to paths and targets for the test fold
             (see dpat.data.PMCHHGImageDataset).
+        clinical_context : bool, default=False
+            Export clinical context with tiles.
         num_workers : int, default=0
             Number of workers for the datalaoders.
         num_classes : int, default=2,
@@ -569,6 +593,7 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         self.train_paths_and_targets = train_path
         self.val_paths_and_targets = val_path
         self.test_paths_and_targets = test_path
+        self.clinical_context = clinical_context
         self.num_workers = num_workers
         self.num_classes = num_classes
 
@@ -591,28 +616,26 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
             "all_tile_region_index",
             "all_tile_x",
             "all_tile_y",
+            "all_location",
         ]
+        dataset_kwargs = dict(
+            path=self.file_path,
+            num_classes=self.num_classes,
+            metadata_keys=metadata_keys,
+            clinical_context=self.clinical_context,
+        )
         if stage == "fit":
             self.train_dataset = PMCHHGH5Dataset(
-                self.file_path,
-                self.num_classes,
-                metadata_keys,
-                self.train_paths_and_targets,
+                paths_and_targets=self.train_paths_and_targets, **dataset_kwargs
             )
             self.val_dataset = PMCHHGH5Dataset(
-                self.file_path,
-                self.num_classes,
-                metadata_keys,
-                self.val_paths_and_targets,
+                paths_and_targets=self.val_paths_and_targets, **dataset_kwargs
             )
         elif stage == "test":
             if self.test_paths_and_targets is None:
                 raise ValueError("Please provide a path to the test paths and targets.")
             self.test_dataset = PMCHHGH5Dataset(
-                self.file_path,
-                self.num_classes,
-                metadata_keys,
-                self.test_paths_and_targets,
+                paths_and_targets=self.test_paths_and_targets, **dataset_kwargs
             )
 
     def train_dataloader(self):
