@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v4.9.1 (2023-04-12)
+### Fix
+* Set llm to eval mode and disable gradient cal ([`1303353`](https://github.com/siemdejong/dpat/commit/1303353b0a59e9e6de9d3d1dc6ff9766c58ef082))
+
+### Documentation
+* Remove _static rom html_static_path ([`d1a1da8`](https://github.com/siemdejong/dpat/commit/d1a1da8fe8bdf79e0fe48e6426e004b45325f80c))
+
 ## v4.9.0 (2023-04-12)
 ### Feature
 * Add location to splits output ([`4440a53`](https://github.com/siemdejong/dpat/commit/4440a53921d2182f0eed0a7de5ffd0a324795a44))
