@@ -6,6 +6,9 @@ on:
     types:
       - completed
 
+env:
+  HDF5_DISABLE_VERSION_CHECK: 1
+
 jobs:
   build:
     runs-on: ubuntu-latest
