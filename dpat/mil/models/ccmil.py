@@ -1,6 +1,6 @@
 """Provide Clinical Context Attention MIL."""
 from functools import cache, lru_cache
-from typing import Callable, Union
+from typing import Callable, Literal, Union
 
 import torch
 import torch.nn.functional as F
@@ -48,8 +48,21 @@ class CCMIL(VarAttention):
 
         return features
 
+    @cache
+    def _calculate_llm_hidden_dim_size(self):
+        """Calculate the LLM hidden dimension size."""
+        example = "test"
+        inputs = self.tokenizer(example, padding=True, return_tensors="pt")
+        outputs: LLMOutput = self.llm(**inputs)
+        features = outputs.last_hidden_state[:, 0, :]
+        return features.numel()
+
     def __init__(
         self,
+        llm_model: Literal[
+            "emilyalsentzer/Bio_ClinicalBERT", "nlpie/tiny-clinicalbert"
+        ] = "nlpie/tiny-clinicalbert",
+        llm_tokenizer: Union[str, None] = None,
         trainable_llm: bool = False,
         text_embedding_cache_maxsize: Union[int, None] = None,
         *args,
@@ -63,6 +76,11 @@ class CCMIL(VarAttention):
 
         Parameters
         ----------
+        llm_model : str, default=nlpie/tiny-clinicalbert
+            Large language model from HuggingFace to use.
+        llm_tokenizer : str, default=`llm_model`
+            Tokenizer from HuggingFace to use. Defaults to 'llm_model' corresponding
+            tokenizer.
         trainable_llm : bool, default=False
             If the large language model should be trainable, do not cache the output.
         text_embedding_cache_maxsize : int, optional, default=None
@@ -72,16 +90,17 @@ class CCMIL(VarAttention):
         """
         super(VarAttention, self).__init__(*args, **kwargs)
 
-        self.tokenizer = AutoTokenizer.from_pretrained(
-            "emilyalsentzer/Bio_ClinicalBERT"
-        )
-        self.llm: nn.Module = AutoModel.from_pretrained(
-            "emilyalsentzer/Bio_ClinicalBERT"
-        )
+        self.llm: nn.Module = AutoModel.from_pretrained(llm_model)
+
+        if llm_tokenizer is None:
+            llm_tokenizer = llm_model
+        self.tokenizer = AutoTokenizer.from_pretrained(llm_model)
+
         self.classifier = nn.Sequential(
             nn.Linear(
-                768 + 2 * self.L * self.K, self.num_classes
-            )  # +768, because that is what BERT outputs.
+                self._calculate_llm_hidden_dim_size() + 2 * self.L * self.K,
+                self.num_classes,
+            )  # + llm_hidden_dim, because that is what BERT outputs.
         )
 
         self.trainable_llm = trainable_llm
