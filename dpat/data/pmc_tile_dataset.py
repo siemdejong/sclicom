@@ -96,6 +96,7 @@ class PMCHHGImageDataset(Dataset):
         self,
         root_dir: str,
         image_paths_and_targets: Union[pathlib.Path, str, BytesIO],
+        clinical_context: bool = False,
         mpp: float = 0.2,
         tile_size_x: int = 224,
         tile_size_y: int = 224,
@@ -142,10 +143,14 @@ class PMCHHGImageDataset(Dataset):
             the region must be at least 50% foreground.
         transform : `torchvision.transforms.Compose, default=None
             Transform to be applied to the sample.
+        clinical context : bool, default=False
+            Fetch the clinical context from the labels file.
         """
         super().__init__()
 
         self.root_dir = pathlib.Path(root_dir)
+
+        self.clinical_context = clinical_context
 
         if isinstance(image_paths_and_targets, str):
             image_paths_and_targets = pathlib.Path(image_paths_and_targets)
@@ -249,7 +254,10 @@ class PMCHHGImageDataset(Dataset):
             sample = self.dlup_dataset[index]
 
         relative_path = str(pathlib.Path(sample["path"]).relative_to(self.root_dir))
-        (case_id, img_id, target) = self.df.loc[relative_path, [1, 2, 3]]
+        case_id, img_id, target = self.df.loc[relative_path, [1, 2, 3]]
+
+        if self.clinical_context:
+            location = self.df.loc[relative_path, [4]]
 
         metadata = {
             "img_id": img_id,
@@ -260,6 +268,7 @@ class PMCHHGImageDataset(Dataset):
                 "tile_mpp": sample["mpp"],
                 "tile_x": sample["coordinates"][0],
                 "tile_y": sample["coordinates"][1],
+                "location": location,
                 # 'tile_w': sample["region_size"][0],
                 # 'tile_h': sample["region_size"][1],
             },
@@ -343,6 +352,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         train_img_paths_and_targets: str,
         val_img_paths_and_targets: str,
         test_img_paths_and_targets: str,
+        clinical_context: bool = False,
         mpp: float = 0.2,
         tile_size_x: int = 224,
         tile_size_y: int = 224,
@@ -377,6 +387,8 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         test_img_paths_and_targets : str
             Path to file containing testing image paths and targets,
             created by `dpat splits create`.
+        clinical_context : bool, default=False
+            Export clinical context with tiles.
         mpp : float
             float stating the microns per pixel that you wish the tiles to be.
         tile_size_x : int
@@ -414,6 +426,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         self.train_path = pathlib.Path(train_img_paths_and_targets)
         self.val_path = pathlib.Path(val_img_paths_and_targets)
         self.test_path = pathlib.Path(test_img_paths_and_targets)
+        self.clinical_context = clinical_context
         self.mpp = mpp
         self.tile_size_x = tile_size_x
         self.tile_size_y = tile_size_y
@@ -474,6 +487,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         """
         dataset_kwargs = dict(
             root_dir=self.root_dir,
+            clinical_context=self.clinical_context,
             mpp=self.mpp,
             tile_size_x=self.tile_size_x,
             tile_size_y=self.tile_size_y,
