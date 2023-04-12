@@ -143,7 +143,7 @@ class Attention(pl.LightningModule):
         )
         self.pr_auc = AveragePrecision(task=task, num_classes=num_classes)  # type: ignore # noqa: 501
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Calculate prediction and attention vector."""
         # Since we have batch_size = 1,
         # squeezes from (1,num,features) to (num, features).
@@ -410,7 +410,7 @@ class VarAttention(Attention):
 
         return S
 
-    def forward(self, x: torch.Tensor):
+    def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Calculate prediction and attention.
 
         Parameters
