@@ -2,6 +2,7 @@
 
 from typing import Any, Literal, Protocol, Sized
 
+import torch
 from torch import nn
 from torch.utils.data import Dataset
 
@@ -42,5 +43,17 @@ class OutputProtocol(Protocol):
 
 class VisionBackbone(nn.Module, OutputProtocol):
     """Type stub for a vision model with the fc.in_features attribute."""
+
+    pass
+
+
+class LLMOutputProtocol(Protocol):
+    """Protocol for Large Language Model outputs."""
+
+    last_hidden_state: torch.Tensor
+
+
+class LLMOutput(nn.Module, LLMOutputProtocol):
+    """Type stub for a LLM output with last_hidden_states attribute."""
 
     pass
