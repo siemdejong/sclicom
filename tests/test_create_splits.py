@@ -29,14 +29,17 @@ def path_to_labels_file(tmp_path_factory, image_files) -> pathlib.Path:
     """
     diagnoses = []
     case_ids = []
+    locations = []
     for i, _ in enumerate(image_files):
         # Force both diagnoses to occur.
         diagnosis = "a" if i < 0.5 * len(image_files) else "b"
         diagnoses.append(diagnosis)
         case_ids.append(f"PMC_HHG_{i}")
+        location = "x" if i < 0.5 * len(image_files) else "y"
+        locations.append(location)
 
-    data = np.array([case_ids, diagnoses]).T
-    df = pd.DataFrame(data, columns=["case_id", "diagnosis"])
+    data = np.array([case_ids, diagnoses, locations]).T
+    df = pd.DataFrame(data, columns=["case_id", "diagnosis", "location"])
 
     fn = tmp_path_factory.mktemp("data") / f"labels.csv"
     df.to_csv(fn, index=False)
