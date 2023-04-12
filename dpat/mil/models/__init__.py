@@ -1,4 +1,5 @@
 """Provide attention models."""
-from .varmil import Attention, VarAttention
+from dpat.mil.models.ccmil import CCMIL
+from dpat.mil.models.varmil import Attention, VarAttention
 
-__all__ = ["VarAttention", "Attention"]
+__all__ = ["VarAttention", "Attention", "CCMIL"]
