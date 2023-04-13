@@ -1,0 +1,30 @@
+dpat.configs.config
+===================
+
+.. automodule:: dpat.configs.config
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      get_default_config_by_name
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

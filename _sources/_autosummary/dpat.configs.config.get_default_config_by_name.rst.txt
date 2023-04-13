@@ -1,0 +1,6 @@
+dpat.configs.config.get\_default\_config\_by\_name
+==================================================
+
+.. currentmodule:: dpat.configs.config
+
+.. autofunction:: get_default_config_by_name

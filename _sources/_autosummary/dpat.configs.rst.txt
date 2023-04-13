@@ -28,5 +28,6 @@ dpat.configs
    :template: custom-module-template.rst
    :recursive:
 
+   dpat.configs.config
    dpat.configs.omegaconf
 
