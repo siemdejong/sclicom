@@ -1,4 +1,4 @@
-class_path: dpat.mil.models.VarAttention
+class_path: dpat.mil.models.CCMIL
 init_args:
   in_features: 1024  # Depends on output of the (pretrained) ResNet
   layers: [2, 2, 2]

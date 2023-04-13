@@ -1,9 +1,8 @@
 """Train a feature extractor using self-supervised learning."""
-import pathlib
-
 import lightning.pytorch as pl
 
 from dpat.cli import MILTrainCLI
+from dpat.configs import get_default_config_by_name
 from dpat.mil.trainer import MILTrainer
 
 
@@ -23,12 +22,8 @@ def main():
         parser_kwargs={
             "parser_mode": "omegaconf",
             "default_config_files": [
-                str(
-                    (
-                        pathlib.Path(__file__).parent
-                        / "../../dpat/configs/defaults/varmil.yaml"
-                    ).resolve()
-                )
+                get_default_config_by_name("mil"),
+                get_default_config_by_name("ccmil"),
             ],
         },
     )
