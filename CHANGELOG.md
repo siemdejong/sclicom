@@ -2,6 +2,11 @@
 
 <!--next-version-placeholder-->
 
+## v4.9.3 (2023-04-13)
+### Fix
+* Restructure config files ([`35c24a9`](https://github.com/siemdejong/dpat/commit/35c24a965cba5b34c920727bc5f6149f46a32c9a))
+* Revert switch to cpu ([`0bb86e7`](https://github.com/siemdejong/dpat/commit/0bb86e783f67ad25765aa07aabdbd80a38f2f92d))
+
 ## v4.9.2 (2023-04-12)
 ### Fix
 * Switch to clinical tiny BERT ([`ac199c1`](https://github.com/siemdejong/dpat/commit/ac199c152c25761eae3f1755e3c5b599cdde4502))
