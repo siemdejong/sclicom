@@ -6,6 +6,7 @@ import os
 import warnings
 from functools import partial
 from pathlib import Path
+from typing import Any, Literal, Union
 
 import lightning.pytorch as pl
 import optuna
@@ -15,8 +16,8 @@ from ray.tune.integration.pytorch_lightning import TuneReportCallback
 from ray.tune.schedulers import ASHAScheduler
 from ray.tune.search.optuna import OptunaSearch
 
+import dpat.mil.models
 from dpat.data.pmchhg_h5_dataset import PMCHHGH5DataModule
-from dpat.mil.models import VarAttention
 from dpat.utils import seed_all
 
 logger = logging.getLogger(__name__)
@@ -24,6 +25,9 @@ logger = logging.getLogger(__name__)
 warnings.filterwarnings(
     "ignore", "Choices for a categorical distribution should be a tuple of", UserWarning
 )
+os.environ[
+    "TOKENIZERS_PARALLELISM"
+] = "false"  # To disable tokenizer parallelism warnings.
 
 
 class _TuneReportCallback(TuneReportCallback, pl.Callback):
@@ -43,6 +47,7 @@ class _TuneReportCallback(TuneReportCallback, pl.Callback):
 
 def train_tune(
     config: dict,
+    model_name: Literal["Attention", "VarAttention", "CCMIL"],
     datamodule: pl.LightningDataModule,
     num_classes: int,
     in_features: int,
@@ -51,6 +56,7 @@ def train_tune(
     num_cpus_per_trial: int,
     precision: _PRECISION_INPUT,
     seed: int = 42,
+    model_kwargs: Union[dict[str, Any], None] = None,
 ) -> None:
     """Train the model and report back to Ray.
 
@@ -58,6 +64,9 @@ def train_tune(
     ----------
     config : dict
         (Hyper)parameter config with sampled parameters by Ray/Optuna.
+    model_name : str
+        The name of the model to tune. Can be one of "Attention", "VarAttention', or
+        "CCMIL".
     datamodule : pl.LightningDataModule
         Datamodule with data to feed the model.
     num_classes : int
@@ -76,6 +85,9 @@ def train_tune(
         Precision for Lightning Fabric to work with.
     seed : int
         Seed for randomness.
+    model_kwargs : dict[str, ...], default=None
+        Will be passed to the model initializer.
+        E.g. `llm_model` or `trainable_llm` for `CCMIL`.
     """
     seed_all(seed)
 
@@ -85,7 +97,7 @@ def train_tune(
         _pow_of_2 = 2**_pow
         layers.append(_pow_of_2)
 
-    model = VarAttention(
+    model = getattr(dpat.mil.models, model_name)(
         # Fixed by combination of tile size and feature extractor.
         in_features=in_features,
         layers=layers,
@@ -96,6 +108,9 @@ def train_tune(
         wd=config["wd"],
         T_max=num_epochs,
     )
+
+    if model_kwargs is not None:
+        model = partial(model, **model_kwargs)
 
     callback: pl.Callback = _TuneReportCallback(
         metrics=["loss/train", "loss/val", "val_f1", "val_pr_auc", "val_auc"]
@@ -144,7 +159,7 @@ def define_by_run_func(
 if __name__ == "__main__":
     restore_path = None  # "/home/sdejong/ray_results/tune_3-4-2023_1"
 
-    name = "tune_4-4-2023_1"
+    name = "tune_13-4-2023_2"
     num_trials = 10
     min_epochs = 30
     num_epochs = 600
@@ -161,12 +176,14 @@ if __name__ == "__main__":
 
     seed_all(seed)
 
+    model_name = "CCMIL"
+
     tmpdir = Path(os.environ["TMPDIR"])
     fold = 0
     subfold = 0
     diagnosis = "medulloblastoma+pilocytic-astrocytoma"
     dataset = "pmchhg"
-    h5 = f"imagenet-1-4-2023-fold-{fold}.hdf5"
+    h5 = f"imagenet-11-4-2023-fold-{fold}.hdf5"
 
     datamodule = PMCHHGH5DataModule(
         file_path=tmpdir / Path(f"features/{h5}"),
@@ -188,7 +205,7 @@ if __name__ == "__main__":
     # Interesting discussion on wide+shallow vs narrow+deep:
     # https://stats.stackexchange.com/a/223637/384534
     # Deep and narrow can aid in generalizing.
-    bounds_n_layers = (1, 3)
+    bounds_n_layers = (1, 4)
     bounds_pow = (1, 5)
     bounds_dropout = (0, 1)
     bounds_lr = (1e-5, 1e-2)
@@ -240,6 +257,7 @@ if __name__ == "__main__":
                 trainable=train_tune,
                 resources={"cpu": num_cpus_per_trial, "gpu": num_gpus_per_trial},
             ),
+            model_name=model_name,
             datamodule=datamodule,
             num_classes=num_classes,
             in_features=in_features,
@@ -259,14 +277,15 @@ if __name__ == "__main__":
         run_config=air.RunConfig(name=name),
     )
 
-    if restore_path:
+    if restore_path is not None:
         tuner = tune.Tuner.restore(
-            path="/home/sdejong/ray_results/tune_3-4-2023_1",
+            path=restore_path,
             trainable=tune.with_parameters(
                 tune.with_resources(
                     trainable=train_tune,
                     resources={"cpu": num_cpus_per_trial, "gpu": num_gpus_per_trial},
                 ),
+                model_name=model_name,
                 datamodule=datamodule,
                 num_classes=num_classes,
                 in_features=in_features,
