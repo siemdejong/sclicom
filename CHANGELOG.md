@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.9.2 (2023-04-12)
+### Fix
+* Switch to clinical tiny BERT ([`ac199c1`](https://github.com/siemdejong/dpat/commit/ac199c152c25761eae3f1755e3c5b599cdde4502))
+
 ## v4.9.1 (2023-04-12)
 ### Fix
 * Set llm to eval mode and disable gradient cal ([`1303353`](https://github.com/siemdejong/dpat/commit/1303353b0a59e9e6de9d3d1dc6ff9766c58ef082))
