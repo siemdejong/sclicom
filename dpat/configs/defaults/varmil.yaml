@@ -44,8 +44,8 @@ trainer:
   limit_predict_batches: null
   val_check_interval: null
   log_every_n_steps: 50
-  accelerator: cpu
-  # strategy: ddp
+  accelerator: gpu
+  strategy: ddp
   sync_batchnorm: false
   precision: 32-true
   enable_model_summary: true
