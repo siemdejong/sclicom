@@ -65,6 +65,7 @@ class CCMIL(VarAttention):
         llm_tokenizer: Union[str, None] = None,
         trainable_llm: bool = False,
         text_embedding_cache_maxsize: Union[int, None] = None,
+        in_features: int = 1024,
         *args,
         **kwargs,
     ) -> None:
@@ -88,7 +89,9 @@ class CCMIL(VarAttention):
             `trainable_llm=True`.
         See `Attention`.
         """
-        super(VarAttention, self).__init__(*args, **kwargs)
+        super(CCMIL, self).__init__(in_features=in_features, *args, **kwargs)
+
+        self.example_input_array = (torch.randn((1, 1000, in_features)), "test")
 
         self.llm: nn.Module = AutoModel.from_pretrained(llm_model)
 
