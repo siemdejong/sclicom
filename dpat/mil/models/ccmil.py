@@ -31,17 +31,19 @@ class CCMIL(VarAttention):
         """
         sentence = preprocess_text(sentence)
 
-        input = self.tokenizer(sentence, padding=True, return_tensors="pt")
+        inputs = self.tokenizer(sentence, padding=True, return_tensors="pt").to(
+            self.device
+        )
 
         # Dis-/enable requires_grad and dis-/enable dropout etc. on layers depending
         # on self.trainable_llm.
         output: LLMOutput
         self.llm.train(self.trainable_llm)
         if self.trainable_llm:
-            output = self.llm(**input)
+            output = self.llm(**inputs)
         else:
             with torch.no_grad():
-                output = self.llm(**input)
+                output = self.llm(**inputs)
 
         # 0 holds the [CLS] token, which attempts to classify the sentence.
         features = output.last_hidden_state[:, 0, :]
@@ -52,7 +54,9 @@ class CCMIL(VarAttention):
     def _calculate_llm_hidden_dim_size(self):
         """Calculate the LLM hidden dimension size."""
         example = "test"
-        inputs = self.tokenizer(example, padding=True, return_tensors="pt")
+        inputs = self.tokenizer(example, padding=True, return_tensors="pt").to(
+            self.device
+        )
         outputs: LLMOutput = self.llm(**inputs)
         features = outputs.last_hidden_state[:, 0, :]
         return features.numel()
