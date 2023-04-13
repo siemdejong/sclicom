@@ -83,7 +83,7 @@ class Attention(pl.LightningModule):
         """
         super(Attention, self).__init__()
 
-        self.example_input_array = torch.Tensor(1, 1000, in_features)
+        self.example_input_array = torch.randn((1, 1000, in_features))
 
         self.lr = lr
         self.momentum = momentum
