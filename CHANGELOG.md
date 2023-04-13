@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v4.10.0 (2023-04-13)
+### Feature
+* Allow for CCMIL hparam tuning ([`9e587f8`](https://github.com/siemdejong/dpat/commit/9e587f8765a36bc5e68525c567436ba922eeda31))
+
+### Fix
+* Typing of example array ([`cb98f39`](https://github.com/siemdejong/dpat/commit/cb98f397736e6860e3427cc0ad92bbca303b0387))
+* Make random tensor as example ([`a8d21f0`](https://github.com/siemdejong/dpat/commit/a8d21f0440708b20894a659864a582f82328e072))
+* Move tokenized inputs to device ([`2b75731`](https://github.com/siemdejong/dpat/commit/2b75731c7e4dc5ac8e93ab322c7a8f0d039da54e))
+* Make new example input for lightning ([`a431ab2`](https://github.com/siemdejong/dpat/commit/a431ab2f82f2977900612bcbddbd4acc27ea5c51))
+* Only use one clinical context of the bag ([`82a71df`](https://github.com/siemdejong/dpat/commit/82a71dfd2f25dfa12bebd26755c67e44c8feef75))
+
 ## v4.9.3 (2023-04-13)
 ### Fix
 * Restructure config files ([`35c24a9`](https://github.com/siemdejong/dpat/commit/35c24a965cba5b34c920727bc5f6149f46a32c9a))
