@@ -1,12 +1,14 @@
 """Type stubs."""
 
-from typing import Any, Literal, Protocol, Sized
+from typing import Any, Literal, Protocol, Sized, Union
 
 import torch
 from torch import nn
 from torch.utils.data import Dataset
 
 MaskFactory = Literal["no_mask", "load_from_disk", "entropy_masker"]
+
+ExampleInputArray = Union[Union[torch.Tensor, tuple, dict], None]
 
 
 class SizedDataset(Sized, Dataset):

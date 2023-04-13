@@ -17,6 +17,8 @@ import torch.nn.functional as F
 from torch import nn
 from torchmetrics import AUROC, AveragePrecision, F1Score, Metric, PrecisionRecallCurve
 
+from dpat.types import ExampleInputArray
+
 # Of course the targets are equal per batch all the time, because of MIL.
 # Suppress this warning.
 warnings.filterwarnings(
@@ -83,7 +85,9 @@ class Attention(pl.LightningModule):
         """
         super(Attention, self).__init__()
 
-        self.example_input_array = torch.randn((1, 1000, in_features))
+        self.example_input_array: ExampleInputArray = torch.randn(
+            (1, 1000, in_features)
+        )
 
         self.lr = lr
         self.momentum = momentum
