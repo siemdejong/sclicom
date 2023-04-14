@@ -85,9 +85,9 @@ data:
     tile_size_y: 224
     tile_overlap_x: 0
     tile_overlap_y: 0
-    tile_mode: overflow
+    tile_mode: skip
     crop: false
-    mask_factory: no_mask
+    mask_factory: load_from_disk
     mask_foreground_threshold: null
     mask_root_dir: null
     num_workers: 4
