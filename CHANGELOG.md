@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.10.1 (2023-04-14)
+### Fix
+* Change defaults ([`7240d9e`](https://github.com/siemdejong/dpat/commit/7240d9e93fa030cd79eb0c1534931e1ac2520f70))
+
 ## v4.10.0 (2023-04-13)
 ### Feature
 * Allow for CCMIL hparam tuning ([`9e587f8`](https://github.com/siemdejong/dpat/commit/9e587f8765a36bc5e68525c567436ba922eeda31))
