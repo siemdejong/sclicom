@@ -314,6 +314,8 @@
 <p>When adding new data to the dataset, do the following:</p>
 <ol class="arabic simple">
 <li><p>Update <code class="docutils literal notranslate"><span class="pre">labels.csv</span></code> with the new data.</p></li>
+<li><p>(Optionally) convert the images to to another filetype (e.g. tif), see <a class="reference internal" href="convert_images.html#convert-images"><span class="std std-ref">Convert images</span></a>.</p></li>
+<li><p>(Optionally) create masks with the masking tool, see <a class="reference internal" href="create_masks.html#create-masks"><span class="std std-ref">Create masks</span></a>.</p></li>
 <li><p>Run e.g. <code class="docutils literal notranslate"><span class="pre">dpat</span> <span class="pre">splits</span> <span class="pre">create</span> <span class="pre">-i</span> <span class="pre">INPUT_DIR</span> <span class="pre">-l</span> <span class="pre">labels.csv</span> <span class="pre">-f</span> <span class="pre">medulloblatoma</span> <span class="pre">-f</span> <span class="pre">&quot;pilocytic</span> <span class="pre">astrocytoma&quot;</span> <span class="pre">-n</span> <span class="pre">pmchhg</span> <span class="pre">--overwrite</span></code> to create new splits for the new dataset.</p></li>
 <li><p>(Optionally) pretrain a feature extractor with <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">tools/extract_features/train.py</span></code>.</p></li>
 <li><p>Locate the pretrained model, image directory, mask directory, splits files, and optionally an already calculated HDF5 file, and adapt <code class="docutils literal notranslate"><span class="pre">tools/extract_features/compile_features.py</span></code> to reflect the locations.

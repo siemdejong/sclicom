@@ -1,3 +1,5 @@
+.. _create-masks:
+
 Create masks
 ==============
 To create masks of all images from directory `INPUT_DIR`, and output the masks as PNG in `OUTPUT_DIR`, run
