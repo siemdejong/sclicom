@@ -3,7 +3,6 @@
 from pathlib import Path
 from typing import Union
 
-import click
 import numpy as np
 from dlup import SlideImage
 from dlup.background import AvailableMaskFunctions, get_mask
@@ -11,27 +10,6 @@ from PIL import Image
 from tqdm import tqdm
 
 
-@click.command()
-@click.argument("path", type=Path)  # , help="File to convert to mask.")
-@click.argument("output_dir", type=Path)  # , help="Output directory.")
-@click.option(
-    "--mask-func",
-    default="entropy_masker",
-    show_default=True,
-    help="Mask function provided by dlup.",
-)
-@click.option(
-    "--ext",
-    show_default=None,
-    help="Extension to filter on. If None, all files are considered.",
-)
-@click.option(
-    "--skip-if-exists",
-    is_flag=True,
-    default=True,
-    show_default=True,
-    help="Skip existing masks.",
-)
 def create_masks(
     path: Path,
     output_dir: Path,
@@ -76,7 +54,3 @@ def create_masks(
 
         mask = get_mask(slide=image, mask_func=mask_func)
         Image.fromarray(mask.astype(dtype=np.bool_)).save(output_file_path)
-
-
-if __name__ == "__main__":
-    create_masks()

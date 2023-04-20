@@ -13,6 +13,7 @@ from dpat.cli.pretrain_cli import PreTrainCLI
 from dpat.configs import register_conf_resolvers
 from dpat.convert import AvailableImageFormats
 from dpat.convert.hhg import hhg_batch_convert
+from dpat.mask.create_masks import create_masks as hhg_create_masks
 from dpat.splits import create_splits
 
 __all__ = ["DpatTrainerCLI", "MILTrainCLI", "PreTrainCLI"]
@@ -172,3 +173,35 @@ def create(*args, **kwargs) -> None:
 def extract_features() -> None:
     """Click group to attach all extract features commands to."""
     pass
+
+
+@cli.group()
+def mask() -> None:
+    """Click group to attach masking commands to."""
+    pass
+
+
+@mask.command(name="create")
+@click.argument("path", type=pathlib.Path)
+@click.argument("output_dir", type=pathlib.Path)
+@click.option(
+    "--mask-func",
+    default="entropy_masker",
+    show_default=True,
+    help="Mask function provided by dlup.",
+)
+@click.option(
+    "--ext",
+    show_default=None,
+    help="Extension to filter on. If None, all files are considered.",
+)
+@click.option(
+    "--skip-if-exists",
+    is_flag=True,
+    default=False,
+    show_default=True,
+    help="Skip existing masks.",
+)
+def create_masks(*args, **kwargs) -> None:
+    """Click command for creating masks."""
+    hhg_create_masks(*args, **kwargs)
