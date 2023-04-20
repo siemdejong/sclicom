@@ -379,10 +379,12 @@ In a Python shell, execute</p>
 </div>
 <p>If <code class="docutils literal notranslate"><span class="pre">False</span></code> is returned, install Pytorch following its documentation.</p>
 </li>
-<li><p>If the denoising tool is used, install the appropriate <cite>cudatoolkit</cite> version with conda and run</p>
+<li><p>If the denoising tool is used, install the appropriate <code class="docutils literal notranslate"><span class="pre">cudatoolkit</span></code> version with conda and run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">denoise</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>This installs TensorFlow and the official noise2void implementation.
+If training on a GPU is desired, follow <a class="reference external" href="https://www.tensorflow.org/install/pip">the official TensorFlow docs</a>.</p>
 </li>
 </ol>
 </section>

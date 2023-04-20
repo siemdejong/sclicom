@@ -86,8 +86,11 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
 
     If ``False`` is returned, install Pytorch following its documentation.
 
-#.  If the denoising tool is used, install the appropriate `cudatoolkit` version with conda and run
+#.  If the denoising tool is used, install the appropriate ``cudatoolkit`` version with conda and run
 
     .. code-block::
 
         pip install -e .[denoise]
+
+    This installs TensorFlow and the official noise2void implementation.
+    If training on a GPU is desired, follow `the official TensorFlow docs <https://www.tensorflow.org/install/pip>`_.
