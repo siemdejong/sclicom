@@ -1,3 +1,5 @@
+.. _convert-images:
+
 Convert images
 ==============
 To convert all images from directory `INPUT_DIR`, and output the images as TIFF in `OUTPUT_DIR`, run
