@@ -56,6 +56,10 @@ nb = [
     "geojson", # For reading in GeoJSON files.
     "rasterio", # For rasterizing shapes.
 ]
+denoise = [
+    "n2v",
+    "tensorflow==2.12.*",
+]
 dev = [
     "pre-commit", # For ensuring commits are of equal style.
     "sphinx", # For creating docs.
