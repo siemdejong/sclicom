@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v4.11.0 (2023-04-20)
+### Feature
+* Add denoising tool ([`ee43414`](https://github.com/siemdejong/dpat/commit/ee434144fdff5becc756f4186fedfa851a49e746))
+
+### Fix
+* Add mask creation to CLI and update docs ([`0dbdbc4`](https://github.com/siemdejong/dpat/commit/0dbdbc49a89204cc33f114bfe87f338a1472ea95))
+
 ## v4.10.1 (2023-04-14)
 ### Fix
 * Change defaults ([`7240d9e`](https://github.com/siemdejong/dpat/commit/7240d9e93fa030cd79eb0c1534931e1ac2520f70))
