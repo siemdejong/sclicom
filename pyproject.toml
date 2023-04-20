@@ -52,6 +52,10 @@ masking-nb = [
     "geojson",
     "rasterio",
 ]
+denoise = [
+    "n2v",
+    "tensorflow==2.12.*",
+]
 dev = [
     "pre-commit",
     "sphinx",

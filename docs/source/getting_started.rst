@@ -85,3 +85,9 @@ Run the following commands from a conda enabled shell (such as Miniforge Prompt,
         torch.cuda.is_available()
 
     If ``False`` is returned, install Pytorch following its documentation.
+
+#.  If the denoising tool is used, install the appropriate `cudatoolkit` version with conda and run
+
+    .. code-block::
+
+        pip install -e .[denoise]
