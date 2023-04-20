@@ -12,6 +12,7 @@ For example, it is used to distinguish pediatric brain tumours such as medullobl
 
    getting_started
    convert_images
+   create_masks
    making_splits
    notebooks
    logging

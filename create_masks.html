@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Notebooks" href="notebooks.html" /><link rel="prev" title="Create masks" href="create_masks.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Making splits" href="making_splits.html" /><link rel="prev" title="Convert images" href="convert_images.html" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2023.03.27 -->
-        <title>Making splits - dpat 4.11.0 documentation</title>
+        <title>Create masks - dpat 4.11.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=fad236701ea90a88636c2a8c73b44ae642ed2a53" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -157,8 +157,8 @@
   <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="convert_images.html">Convert images</a></li>
-<li class="toctree-l1"><a class="reference internal" href="create_masks.html">Create masks</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Making splits</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Create masks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="making_splits.html">Making splits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="notebooks.html">Notebooks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">Logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="adding_new_data.html">Adding new data</a></li>
@@ -309,34 +309,16 @@
           </label>
         </div>
         <article role="main">
-          <section id="making-splits">
-<h1>Making splits<a class="headerlink" href="#making-splits" title="Permalink to this heading">#</a></h1>
-<p>dpat provides a CLI to create train/val/test splits.
-Labels must be present at case level in a file containing the following structure:</p>
-<div class="literal-block-wrapper docutils container" id="id1">
-<div class="code-block-caption"><span class="caption-text">labels.csv</span><a class="headerlink" href="#id1" title="Permalink to this code">#</a></div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">case_id</span><span class="p">,</span><span class="n">diagnosis</span><span class="p">,</span><span class="n">location</span><span class="p">,</span>
-<span class="n">PMC_HHG_3</span><span class="p">,</span><span class="n">medulloblastoma</span><span class="p">,</span><span class="n">fourth</span> <span class="n">ventricle</span><span class="p">,</span>
-<span class="n">PMC_HHG_9</span><span class="p">,</span><span class="n">pilocytic</span> <span class="n">astrocytoma</span><span class="p">,</span><span class="n">suprasellar</span><span class="p">,</span>
-<span class="n">etc</span><span class="o">.</span>
+          <section id="create-masks">
+<h1>Create masks<a class="headerlink" href="#create-masks" title="Permalink to this heading">#</a></h1>
+<p>To create masks of all images from directory <cite>INPUT_DIR</cite>, and output the masks as PNG in <cite>OUTPUT_DIR</cite>, run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dpat</span> <span class="n">mask</span> <span class="n">create</span> <span class="n">INPUT_DIR</span> <span class="n">OUTPUT_DIR</span>
 </pre></div>
 </div>
-</div>
-<p>The CLI can be used as</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dpat</span> <span class="n">splits</span> <span class="n">create</span> <span class="o">-</span><span class="n">i</span> <span class="n">IMAGE_DIR</span> <span class="o">-</span><span class="n">o</span> <span class="n">OUTPUT_DIR</span> <span class="o">-</span><span class="n">l</span> <span class="n">PATH_TO_LABELS_FILE</span> <span class="o">-</span><span class="n">n</span> <span class="n">NAME</span>
-</pre></div>
-</div>
-<p>Run <code class="docutils literal notranslate"><span class="pre">dpat</span> <span class="pre">splits</span> <span class="pre">create</span> <span class="pre">--help</span></code> to see all options.</p>
-<p>By default, 5 folds are created, stratified by <cite>case_id</cite>.
-Within every fold, random train/val (80%/20%) splits are created from the (super) train set.
-The output is 15 files.
-train/val/test sets for all 5 folds.
-The files can be used for further training.</p>
-<p>To filter diagnoses that exactly match diseases, use e.g. <code class="docutils literal notranslate"><span class="pre">-f</span> <span class="pre">medulloblastoma</span> <span class="pre">-f</span> <span class="pre">&quot;pilocytic</span> <span class="pre">astrocytoma&quot;</span></code>.
-To filter filenames that match certain values, use a glob pattern.
-E.g. <code class="docutils literal notranslate"><span class="pre">-y</span> <span class="pre">slow.tiff</span></code> to only include images ending with <code class="docutils literal notranslate"><span class="pre">slow.tiff</span></code>.
-To exclude filenames that match certaine values, use a glob pattern with <code class="docutils literal notranslate"><span class="pre">-x</span></code>.
-Exclusion is performed on the set specified by inclusion.</p>
+<p>A DLUP compatible mask function can be selected with <code class="docutils literal notranslate"><span class="pre">--mask_func</span> <span class="pre">DLUP_MASK_FUNC</span></code>.
+<code class="docutils literal notranslate"><span class="pre">DLUP_MASK_FUNC</span></code> defaults to <code class="docutils literal notranslate"><span class="pre">entropy_masker</span></code>, which is currently only available in the <a class="reference external" href="https://github.com/siemdejong/dlup/tree/entropy_masker">siemdejong/dlup&#64;entropy_masker</a> repo.
+The input images can be filtered by extension with <code class="docutils literal notranslate"><span class="pre">--ext</span> <span class="pre">EXT</span></code>.
+If images already have masks and recomputing is not needed, use <code class="docutils literal notranslate"><span class="pre">--skip-if-exists</span></code>.</p>
 </section>
 
         </article>
@@ -344,23 +326,23 @@ Exclusion is performed on the set specified by inclusion.</p>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="notebooks.html">
+          <a class="next-page" href="making_splits.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Notebooks</div>
+                <div class="title">Making splits</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="create_masks.html">
+          <a class="prev-page" href="convert_images.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Create masks</div>
+                <div class="title">Convert images</div>
                 
               </div>
             </a>
