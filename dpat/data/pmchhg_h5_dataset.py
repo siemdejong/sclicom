@@ -223,9 +223,10 @@ def feature_batch_extract(
         img_group_h5.create_dataset(
             "all_target", data=[tile["meta"]["target"] for tile in tile_metadata]
         )
-
         img_group_h5.create_dataset(
-            "all_location", data=[tile["meta"]["location"] for tile in tile_metadata]
+            "all_location",
+            data=[tile["meta"]["location"] for tile in tile_metadata],
+            dtype=h5py.string_dtype("utf-8"),
         )
 
 
