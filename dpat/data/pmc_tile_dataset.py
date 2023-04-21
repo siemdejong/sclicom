@@ -294,7 +294,7 @@ class PMCHHGImageDataset(Dataset):
 
 
 def online_mean_and_std(
-    dataset: SizedDataset, batch_size: int = 64
+    dataset: SizedDataset, batch_size: int = 64, device: str = "cuda"
 ) -> tuple[Tensor, Tensor]:
     """Calculate mean and std in an online fashion.
 
@@ -307,6 +307,8 @@ def online_mean_and_std(
         an rgb image as the first return value.
     batch_size : int, default=32
         Batch size of the dataloader.
+    device : cpu/cuda
+        Device to transfer the data to.
 
     References
     ----------
@@ -320,7 +322,7 @@ def online_mean_and_std(
     _var_temp: torch.Tensor = torch.zeros(3)
 
     for batch in tqdm(dataloader, desc="Calculating mean", unit="batch"):
-        data = batch[0]
+        data = batch[0].to(device)
         b, _, h, w = data.shape
         nb_pixels = b * h * w
         _sum = torch.sum(data, dim=[0, 2, 3])
@@ -331,7 +333,7 @@ def online_mean_and_std(
     mean = _mean_temp / len(dataset)
 
     for batch in tqdm(dataloader, desc="Calculating std", unit="batch"):
-        data = batch[0]
+        data = batch[0].to(device)
         b, c, h, w = data.shape
         nb_pixels = b * h * w
 
