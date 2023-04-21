@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v4.12.0 (2023-04-21)
+### Feature
+* Calculate mean and stddev ([`4ddf6d1`](https://github.com/siemdejong/dpat/commit/4ddf6d1315486526885dd22a755e759e79d011e0))
+
+### Fix
+* Raise error if no mask_root_dir is set ([`2fd7157`](https://github.com/siemdejong/dpat/commit/2fd71577137ea13949e724ecd32bbb570418eb68))
+* Allow null as datamodule model ([`77dff7e`](https://github.com/siemdejong/dpat/commit/77dff7e88daeb37f83df6128a7cd40c5b7063498))
+
 ## v4.11.1 (2023-04-21)
 ### Fix
 * Typo ([`a25a251`](https://github.com/siemdejong/dpat/commit/a25a2512d2dc742f67c220b6d13f2c2098c31e79))
