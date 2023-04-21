@@ -183,18 +183,20 @@ if __name__ == "__main__":
     subfold = 0
     diagnosis = "medulloblastoma+pilocytic-astrocytoma"
     dataset = "pmchhg"
-    h5 = f"imagenet-11-4-2023-fold-{fold}.hdf5"
+    h5 = "imagenet-21-4-2023.hdf5"
+
+    splits_dirname = "splits-final"
 
     datamodule = PMCHHGH5DataModule(
         file_path=tmpdir / Path(f"features/{h5}"),
         train_path=tmpdir
         / Path(
-            f"images-tif/splits/{diagnosis}_"
+            f"images-tif/{splits_dirname}/{diagnosis}_"
             f"{dataset}_train-subfold-{subfold}-fold-{fold}.csv"
         ),
         val_path=tmpdir
         / Path(
-            f"images-tif/splits/{diagnosis}_"
+            f"images-tif/{splits_dirname}/{diagnosis}_"
             f"{dataset}_val-subfold-{subfold}-fold-{fold}.csv"
         ),
         num_workers=num_dataloader_workers,
