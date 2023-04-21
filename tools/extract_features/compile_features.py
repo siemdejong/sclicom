@@ -53,6 +53,7 @@ def main():
         mask_factory="load_from_disk",
         mask_foreground_threshold=1,
         mask_root_dir="/gpfs/home2/sdejong/pmchhg/masks/",
+        clinical_context=True,
         transform=Compose(
             [
                 ToTensor(),
@@ -76,7 +77,7 @@ def main():
         mode="a",
         skip_if_exists=False,
         skip_feature_compilation=False,
-        batch_size=256,
+        clinical_context=True,
     )
 
     concatenated_file.close()
