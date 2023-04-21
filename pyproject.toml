@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dpat"
-version = "4.10.0"
+version = "4.11.0"
 authors = [
   {name="Siem de Jong", email="siem.dejong@hotmail.nl"},
 ]
@@ -55,6 +55,10 @@ nb = [
     "ipywidgets", # For using widgets in ipython notebooks.
     "geojson", # For reading in GeoJSON files.
     "rasterio", # For rasterizing shapes.
+]
+denoise = [
+    "n2v",
+    "tensorflow==2.12.*",
 ]
 dev = [
     "pre-commit", # For ensuring commits are of equal style.
