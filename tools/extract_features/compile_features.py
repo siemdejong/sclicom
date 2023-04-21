@@ -77,6 +77,7 @@ def main():
         mode="a",
         skip_if_exists=False,
         skip_feature_compilation=False,
+        num_workers=10,
         clinical_context=True,
     )
 
