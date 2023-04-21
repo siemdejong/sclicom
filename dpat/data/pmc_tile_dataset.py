@@ -92,6 +92,12 @@ class PMCHHGImageDataset(Dataset):
     # Precalculated. Assumed as "domain knowledge".
     NORMALIZE = {"mean": [0.0014, 0.0039, 0.0003], "std": [0.0423, 0.0423, 0.0423]}
 
+    # Calculated on medulloblastoma+pilocytic astrocytoma with images until case 140.
+    NORMALIZE_MASKED = {
+        "mean": [8.4234e-05, 2.0620e-04, 2.7531e-05],
+        "std": [0.0093, 0.0093, 0.0093],
+    }
+
     def __init__(
         self,
         root_dir: str,
@@ -463,8 +469,13 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
     @property
     def collate_fn(self):
         """Return the collate function related to the model."""
+        if self.mask_factory != "no_mask":
+            normalize = PMCHHGImageDataset.NORMALIZE_MASKED
+        else:
+            normalize = PMCHHGImageDataset.NORMALIZE
+
         collate_fn_kwargs = dict(
-            normalize=PMCHHGImageDataset.NORMALIZE,
+            normalize=normalize,
             rr_prob=1,
             rr_degrees=180,
             cj_prob=1 if self.color_jitter else 0,
