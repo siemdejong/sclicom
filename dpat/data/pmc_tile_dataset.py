@@ -347,7 +347,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
 
     def __init__(
         self,
-        model: Literal["swav", "simclr"],
+        model: Union[Literal["swav", "simclr"], None],
         root_dir: str,
         train_img_paths_and_targets: str,
         val_img_paths_and_targets: str,
@@ -420,7 +420,7 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         super().__init__()
         # self.prepare_data_per_node = True
 
-        self.model = model.lower()
+        self.model = model.lower() if model is not None else model
         self.num_workers = num_workers
         self.root_dir = pathlib.Path(root_dir)
         self.train_path = pathlib.Path(train_img_paths_and_targets)
