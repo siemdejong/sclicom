@@ -2,6 +2,12 @@
 
 <!--next-version-placeholder-->
 
+## v4.13.1 (2023-04-21)
+### Fix
+* Alter seed config space ([`e8a652e`](https://github.com/siemdejong/dpat/commit/e8a652e31f250686da0c345131cd863148f0c34c))
+* Use variable splits_dirname ([`f3824e4`](https://github.com/siemdejong/dpat/commit/f3824e41f8086a4c3e8aca29bbd8ef0f2fca57aa))
+* Automatically set_clinical context ([`764b77c`](https://github.com/siemdejong/dpat/commit/764b77cda317e4544b1475e77b57ff6f5f3101c6))
+
 ## v4.13.0 (2023-04-21)
 ### Feature
 * Add device to mean and std calc ([`4db5601`](https://github.com/siemdejong/dpat/commit/4db5601044ad3b8e652b6861602cd2d064c22716))
