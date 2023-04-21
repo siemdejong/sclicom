@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v4.11.1 (2023-04-21)
+### Fix
+* Typo ([`a25a251`](https://github.com/siemdejong/dpat/commit/a25a2512d2dc742f67c220b6d13f2c2098c31e79))
+
+### Documentation
+* Add steps to adding-new-data ([`49f10d5`](https://github.com/siemdejong/dpat/commit/49f10d5d1b303a4e12d1df39808195cae16edcfb))
+* Clarify tensorflow for gpu installation ([`2a8b90d`](https://github.com/siemdejong/dpat/commit/2a8b90d7aed04695171cce1607bacaaad66a5965))
+
 ## v4.11.0 (2023-04-20)
 ### Feature
 * Add denoising tool ([`ee43414`](https://github.com/siemdejong/dpat/commit/ee434144fdff5becc756f4186fedfa851a49e746))
