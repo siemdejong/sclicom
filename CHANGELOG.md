@@ -2,6 +2,18 @@
 
 <!--next-version-placeholder-->
 
+## v4.13.0 (2023-04-21)
+### Feature
+* Add device to mean and std calc ([`4db5601`](https://github.com/siemdejong/dpat/commit/4db5601044ad3b8e652b6861602cd2d064c22716))
+
+### Fix
+* Add batch size to compile features tool ([`7a13c09`](https://github.com/siemdejong/dpat/commit/7a13c094af585f0abd3b0acd9c88b7cb10663639))
+* Add num_workers to compile features tool ([`018861f`](https://github.com/siemdejong/dpat/commit/018861fc8740b57cd74260793d3113243799af04))
+* Add clinical context to compile features tool ([`8d89607`](https://github.com/siemdejong/dpat/commit/8d896075a73bc95cc08b1655f3e8830708c9d130))
+* Change location dtype to string in hdf5 ([`ef9e5cf`](https://github.com/siemdejong/dpat/commit/ef9e5cf1bd712721b5d9f99ced9a2d5054a1a3d0))
+* Use normalization based on masked tiles ([`6e5e639`](https://github.com/siemdejong/dpat/commit/6e5e639b4511561fa14131fddab465cb302bfb94))
+* Typo ([`cadd918`](https://github.com/siemdejong/dpat/commit/cadd918758f3c78558216e02396fc7ea4eca8279))
+
 ## v4.12.0 (2023-04-21)
 ### Feature
 * Calculate mean and stddev ([`4ddf6d1`](https://github.com/siemdejong/dpat/commit/4ddf6d1315486526885dd22a755e759e79d011e0))
