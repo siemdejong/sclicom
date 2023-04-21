@@ -148,6 +148,10 @@ class PMCHHGImageDataset(Dataset):
         """
         super().__init__()
 
+        if mask_factory != "load_from_disk":
+            assert mask_root_dir is not None, f"If {mask_factory=}, "
+            "mask_root_dir must be set."
+
         self.root_dir = pathlib.Path(root_dir)
 
         self.clinical_context = clinical_context
