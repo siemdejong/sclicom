@@ -539,8 +539,10 @@ class PMCHHGH5Dataset(Dataset):
             tile_y=metadata["all_tile_y"],
             case_id=case_id,
             img_id=img_id,
-            cc=metadata["all_location"].astype(str)[0],
         )
+
+        if self.clinical_context:
+            data_obj = data_obj | dict(cc=metadata["all_location"].astype(str)[0][0])
 
         return data_obj
 
