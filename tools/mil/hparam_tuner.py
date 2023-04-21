@@ -200,6 +200,7 @@ if __name__ == "__main__":
         num_workers=num_dataloader_workers,
         num_classes=num_classes,
         balance=True,
+        clinical_context=True if model_name == "CCMIL" else False,
     )
 
     # Interesting discussion on wide+shallow vs narrow+deep:
