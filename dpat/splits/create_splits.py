@@ -284,7 +284,8 @@ def create_splits(
         filter_diagnosis = df["diagnosis"].unique()
 
     logger.info(
-        f"This gives a total of {len(df)} cases with {len(paths)} images. "
+        f"This gives a total of {len(df)} cases with "
+        f"{len(paths[paths['case_id'].isin(df['case_id'])])} images. "
         "Note: not all the images are used due to fractional validation set size."
     )
 
