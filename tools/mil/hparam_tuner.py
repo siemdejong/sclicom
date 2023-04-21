@@ -225,9 +225,9 @@ if __name__ == "__main__":
     )
 
     seed_configs_space = [
-        {"dropout": 0.7, "layers": [8], "lr": 1e-4},
-        {"dropout": 0.75, "layers": [8, 4], "lr": 1e-4},
-        {"dropout": 0.8, "layers": [8, 4, 2], "lr": 1e-4},
+        {"dropout": 0.7, "layers": [2], "lr": 1e-4},
+        {"dropout": 0.75, "layers": [2, 2], "lr": 1e-4},
+        {"dropout": 0.8, "layers": [2, 2, 2], "lr": 1e-4},
     ]
 
     scheduler = ASHAScheduler(
