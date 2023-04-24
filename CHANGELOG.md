@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.14.0 (2023-04-24)
+### Feature
+* Do data augmentation in feature space ([`2d0fa05`](https://github.com/siemdejong/dpat/commit/2d0fa058f510ddc0eade62446d9f0a52803c717d))
+
 ## v4.13.2 (2023-04-21)
 ### Fix
 * Use clinical_context attr for export ([`446bb2b`](https://github.com/siemdejong/dpat/commit/446bb2b87cd12eea5f2dc3024229de13f9ced49d))
