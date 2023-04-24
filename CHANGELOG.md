@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.14.1 (2023-04-24)
+### Fix
+* Don't try to open augmented set if not exists ([`bf33e12`](https://github.com/siemdejong/dpat/commit/bf33e12ca961276f765c6f092f242c5bd919154c))
+
 ## v4.14.0 (2023-04-24)
 ### Feature
 * Do data augmentation in feature space ([`2d0fa05`](https://github.com/siemdejong/dpat/commit/2d0fa058f510ddc0eade62446d9f0a52803c717d))
