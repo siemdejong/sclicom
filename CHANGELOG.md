@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.13.2 (2023-04-21)
+### Fix
+* Use clinical_context attr for export ([`446bb2b`](https://github.com/siemdejong/dpat/commit/446bb2b87cd12eea5f2dc3024229de13f9ced49d))
+
 ## v4.13.1 (2023-04-21)
 ### Fix
 * Alter seed config space ([`e8a652e`](https://github.com/siemdejong/dpat/commit/e8a652e31f250686da0c345131cd863148f0c34c))
