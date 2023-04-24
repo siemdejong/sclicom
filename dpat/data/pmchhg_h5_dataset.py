@@ -539,13 +539,13 @@ class PMCHHGH5Dataset(Dataset):
         }
 
         # Use the augmented dataset if requested.
-        if torch.rand(1) > self.augment_p:
-            data = dataset["data"][()]
-            augmented = False
-        else:
+        if self.augment_file and torch.rand(1) < self.augment_p:
             dataset_augment = self.get_dataset_at_index(index, augment=True)
             data = dataset_augment["data"][()]
             augmented = True
+        else:
+            data = dataset["data"][()]
+            augmented = False
 
         if self.transform:
             data = self.transform(data)
