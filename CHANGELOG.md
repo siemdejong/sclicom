@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v4.14.2 (2023-04-25)
+### Fix
+* Remove contrastive collate_fn ([`1811bb5`](https://github.com/siemdejong/dpat/commit/1811bb50cc63742e63563f6aa2f94259abfc0a9b))
+
 ## v4.14.1 (2023-04-24)
 ### Fix
 * Don't try to open augmented set if not exists ([`bf33e12`](https://github.com/siemdejong/dpat/commit/bf33e12ca961276f765c6f092f242c5bd919154c))
