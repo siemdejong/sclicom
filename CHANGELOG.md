@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v4.15.0 (2023-04-25)
+### Feature
+* Compute mean and confidence interval ([`da2e834`](https://github.com/siemdejong/dpat/commit/da2e834abaf6bfbb745a356041277db9a34c9769))
+
+### Fix
+* Add confidence typehint ([`c057652`](https://github.com/siemdejong/dpat/commit/c057652a1023cdfd954720bd84ac42d4635bb2a3))
+* Add typehints ([`cb761f2`](https://github.com/siemdejong/dpat/commit/cb761f2d610ede18c6afeeb13db1c30309e1f642))
+* Revert hidden layers to one hidden layer ([`3139c46`](https://github.com/siemdejong/dpat/commit/3139c46e737138cdae6e375d4432758a68373d72))
+* Add typehint ([`f382d1f`](https://github.com/siemdejong/dpat/commit/f382d1f7506a403304ff8260109e9b405a3d11e3))
+* Ignore missing scipy imports ([`f562790`](https://github.com/siemdejong/dpat/commit/f5627908133aef9d4997988d48a8ef12186d5b88))
+
 ## v4.14.2 (2023-04-25)
 ### Fix
 * Remove contrastive collate_fn ([`1811bb5`](https://github.com/siemdejong/dpat/commit/1811bb50cc63742e63563f6aa2f94259abfc0a9b))
