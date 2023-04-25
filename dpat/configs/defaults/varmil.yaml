@@ -1,7 +1,7 @@
 class_path: dpat.mil.models.VarAttention
 init_args:
   in_features: 1024  # Depends on output of the (pretrained) ResNet
-  layers: [2, 2, 2]
+  hidden_features: 128
   num_classes: ${data.init_args.num_classes}
   dropout: 0.32533033076326434
   lr: 0.00014656553886225324
