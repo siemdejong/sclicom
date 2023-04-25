@@ -1,0 +1,6 @@
+dpat.utils.evaluation.compute\_mean\_and\_confidence\_interval
+==============================================================
+
+.. currentmodule:: dpat.utils.evaluation
+
+.. autofunction:: compute_mean_and_confidence_interval

@@ -1,0 +1,30 @@
+dpat.utils.evaluation
+=====================
+
+.. automodule:: dpat.utils.evaluation
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      compute_mean_and_confidence_interval
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
