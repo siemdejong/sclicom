@@ -12,7 +12,10 @@ import torchvision
 from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
-from lightly.data import LightlyDataset, SimCLRCollateFunction, SwaVCollateFunction
+from lightly.data import LightlyDataset
+from lightly.data.multi_view_collate import MultiViewCollate
+from lightly.transforms.simclr_transform import SimCLRTransform
+from lightly.transforms.swav_transform import SwaVTransform
 from lightning.pytorch.utilities.types import TRAIN_DATALOADERS
 from PIL import Image
 from torch import Tensor
@@ -455,36 +458,33 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         assert tile_size_x == tile_size_y
 
         if transform is not None:
-            # if "contrastive" in transform:
-            #     self.transform = ContrastiveTransform()
-            # else:
-            #     raise ValueError(
-            #         "Please set transform to a list with transforms from"
-            #         f" {AvailableTransforms._member_names_}"
-            #     )
-            pass
+            if self.mask_factory != "no_mask":
+                normalize = PMCHHGImageDataset.NORMALIZE_MASKED
+            else:
+                normalize = PMCHHGImageDataset.NORMALIZE
+
+            transform_kwargs = dict(
+                normalize=normalize,
+                rr_prob=1,
+                rr_degrees=180,
+                cj_prob=1 if self.color_jitter else 0,
+            )
+            if self.model == "swav":
+                self.transform = SwaVTransform(**transform_kwargs)
+            elif self.model == "simclr":
+                self.transform = SimCLRTransform(**transform_kwargs)
+            else:
+                raise NotImplementedError(
+                    f"Special transforms for model {self.model} are not implemented."
+                )
         else:
             self.transform = transform
 
     @property
     def collate_fn(self):
         """Return the collate function related to the model."""
-        if self.mask_factory != "no_mask":
-            normalize = PMCHHGImageDataset.NORMALIZE_MASKED
-        else:
-            normalize = PMCHHGImageDataset.NORMALIZE
-
-        collate_fn_kwargs = dict(
-            normalize=normalize,
-            rr_prob=1,
-            rr_degrees=180,
-            cj_prob=1 if self.color_jitter else 0,
-        )
-
-        if self.model == "swav":
-            collate_fn = SwaVCollateFunction(**collate_fn_kwargs)
-        elif self.model == "simclr":
-            collate_fn = SimCLRCollateFunction(**collate_fn_kwargs)
+        if self.model in ["swav", "simclr"]:
+            collate_fn = MultiViewCollate()
         else:
             collate_fn = None
 
