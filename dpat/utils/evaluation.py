@@ -6,7 +6,7 @@ from numpy.typing import NDArray
 
 
 def compute_mean_and_confidence_interval(
-    values: NDArray, confidence=0.95
+    values: NDArray, confidence: float = 0.95
 ) -> tuple[float, float]:
     """Compute the mean and confidence interval from a sequence of values."""
     n = len(values)
