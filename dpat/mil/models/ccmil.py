@@ -51,7 +51,7 @@ class CCMIL(VarAttention):
         return features
 
     @cache
-    def _calculate_llm_hidden_dim_size(self):
+    def _calculate_llm_hidden_dim_size(self) -> int:
         """Calculate the LLM hidden dimension size."""
         example = "test"
         inputs = self.tokenizer(example, padding=True, return_tensors="pt").to(
