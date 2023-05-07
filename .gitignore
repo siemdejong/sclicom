@@ -4,6 +4,10 @@ lightning_logs
 checkpoints
 docs/source/_autosummary
 notebooks/outputs
+*.out
+*.sbatch
+*.ckpt
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
