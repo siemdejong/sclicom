@@ -1,5 +1,5 @@
 # lightning.pytorch==1.9.3
-seed_everything: true
+seed_everything: 42
 trainer:
   logger: true
   enable_checkpointing: true
@@ -52,7 +52,7 @@ trainer:
   num_sanity_val_steps: 2
   profiler: null
   benchmark: null
-  deterministic: null
+  deterministic: false
   reload_dataloaders_every_n_epochs: 0
   detect_anomaly: false
   plugins: null
