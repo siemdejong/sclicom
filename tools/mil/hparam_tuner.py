@@ -183,23 +183,26 @@ if __name__ == "__main__":
     subfold = 0
     diagnosis = "medulloblastoma+pilocytic-astrocytoma"
     dataset = "pmchhg"
-    h5 = f"imagenet-11-4-2023-fold-{fold}.hdf5"
+    h5 = "imagenet-21-4-2023.hdf5"
+
+    splits_dirname = "splits-final"
 
     datamodule = PMCHHGH5DataModule(
         file_path=tmpdir / Path(f"features/{h5}"),
         train_path=tmpdir
         / Path(
-            f"images-tif/splits/{diagnosis}_"
+            f"images-tif/{splits_dirname}/{diagnosis}_"
             f"{dataset}_train-subfold-{subfold}-fold-{fold}.csv"
         ),
         val_path=tmpdir
         / Path(
-            f"images-tif/splits/{diagnosis}_"
+            f"images-tif/{splits_dirname}/{diagnosis}_"
             f"{dataset}_val-subfold-{subfold}-fold-{fold}.csv"
         ),
         num_workers=num_dataloader_workers,
         num_classes=num_classes,
         balance=True,
+        clinical_context=True if model_name == "CCMIL" else False,
     )
 
     # Interesting discussion on wide+shallow vs narrow+deep:
@@ -222,9 +225,9 @@ if __name__ == "__main__":
     )
 
     seed_configs_space = [
-        {"dropout": 0.7, "layers": [8], "lr": 1e-4},
-        {"dropout": 0.75, "layers": [8, 4], "lr": 1e-4},
-        {"dropout": 0.8, "layers": [8, 4, 2], "lr": 1e-4},
+        {"dropout": 0.7, "layers": [2], "lr": 1e-4},
+        {"dropout": 0.75, "layers": [2, 2], "lr": 1e-4},
+        {"dropout": 0.8, "layers": [2, 2, 2], "lr": 1e-4},
     ]
 
     scheduler = ASHAScheduler(

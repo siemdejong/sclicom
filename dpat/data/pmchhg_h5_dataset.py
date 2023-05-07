@@ -223,9 +223,10 @@ def feature_batch_extract(
         img_group_h5.create_dataset(
             "all_target", data=[tile["meta"]["target"] for tile in tile_metadata]
         )
-
         img_group_h5.create_dataset(
-            "all_location", data=[tile["meta"]["location"] for tile in tile_metadata]
+            "all_location",
+            data=[tile["meta"]["location"] for tile in tile_metadata],
+            dtype=h5py.string_dtype("utf-8"),
         )
 
 
@@ -305,6 +306,8 @@ class PMCHHGH5Dataset(Dataset):
         transform: Union[torchvision.transforms.Compose, None] = None,
         load_encoded: bool = False,
         clinical_context: bool = False,
+        augment_file: Union[pathlib.Path, None] = None,
+        augment_p: float = 0.5,
     ) -> None:
         """Initialize an H5 dataset.
 
@@ -321,6 +324,10 @@ class PMCHHGH5Dataset(Dataset):
             directly.
         clinical_context : bool, default=False
             Export clinical context when fetching items.
+        augment_file : pathlib.Path, default=None
+            Use the augmented dataset file.
+        augment_p : float, default=0.5
+            Probability of using the augmented dataset when fetching data.
         """
         self.file_path = path
         self.num_classes = num_classes
@@ -328,6 +335,8 @@ class PMCHHGH5Dataset(Dataset):
         self.transform = transform
         self.load_encoded = load_encoded
         self.paths_and_targets = paths_and_targets
+        self.augment_file = augment_file
+        self.augment_p = augment_p
 
         self.clinical_context = clinical_context
 
@@ -346,6 +355,7 @@ class PMCHHGH5Dataset(Dataset):
             self.paths_and_targets.seek(0)  # type: ignore
 
         self.hdf5: Union[h5py.File, None] = None
+        self.hdf5_augment: Union[h5py.File, None] = None
 
         self._h5ls = _H5ls(self.file_path, h5py.Group, 2)
         self.dataset_indices = [
@@ -362,12 +372,18 @@ class PMCHHGH5Dataset(Dataset):
         if load_encoded:
             raise NotImplementedError
 
-    def get_dataset_at_index(self, index) -> h5py.Dataset:
+    def get_dataset_at_index(self, index, augment: bool = False) -> h5py.Dataset:
         """Get dataset at index."""
         # Convert numerical index to string index.
         hdf5_index = self.dataset_indices[index]
-        if self.hdf5 is not None:
-            return self.hdf5[hdf5_index]
+
+        if augment:
+            hdf5 = self.hdf5_augment
+        else:
+            hdf5 = self.hdf5
+
+        if hdf5 is not None:
+            return hdf5[hdf5_index]
         else:
             return None
 
@@ -489,6 +505,8 @@ class PMCHHGH5Dataset(Dataset):
         data_obj : dict
             data : torch.Tensor
                 Feature vector of one tile.
+            augmented : bool
+                Denotes if the object originates from the augmented dataset.
             target : torch.Tensor (onehot)
                 Target prediction as a one hot vector to support multiclasses.
             tile_mpp : float
@@ -510,14 +528,24 @@ class PMCHHGH5Dataset(Dataset):
         [2] https://docs.h5py.org/en/stable/high/file.html
         """
         if self.hdf5 is None:
-            self.hdf5 = h5py.File(self.file_path, "r")
+            self.hdf5 = h5py.File(self.file_path)
+
+        if self.augment_file is not None and self.hdf5_augment is None:
+            self.hdf5_augment = h5py.File(self.augment_file)
 
         dataset = self.get_dataset_at_index(index)
         metadata = {
             key: dataset[key][()] for key in self.metadata_keys if key in dataset
         }
 
-        data = dataset["data"][()]
+        # Use the augmented dataset if requested.
+        if self.augment_file and torch.rand(1) < self.augment_p:
+            dataset_augment = self.get_dataset_at_index(index, augment=True)
+            data = dataset_augment["data"][()]
+            augmented = True
+        else:
+            data = dataset["data"][()]
+            augmented = False
 
         if self.transform:
             data = self.transform(data)
@@ -531,6 +559,7 @@ class PMCHHGH5Dataset(Dataset):
 
         data_obj = dict(
             data=data,
+            augment=augmented,
             target=target,  # All targets are equal, so just choose one.
             tile_region_index=metadata["all_tile_region_index"],
             tile_mpp=metadata["all_tile_mpp"],
@@ -538,8 +567,10 @@ class PMCHHGH5Dataset(Dataset):
             tile_y=metadata["all_tile_y"],
             case_id=case_id,
             img_id=img_id,
-            cc=metadata["all_location"].astype(str)[0],
         )
+
+        if self.clinical_context:
+            data_obj = data_obj | dict(cc=metadata["all_location"].astype(str)[0][0])
 
         return data_obj
 
@@ -560,6 +591,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         clinical_context: bool = False,
         num_workers: int = 0,
         num_classes: int = 2,
+        augment_file: Union[pathlib.Path, None] = None,
+        augment_p: float = 0.5,
         balance: bool = True,
     ):
         """Create PMCHHGH5Dataset DataModule.
@@ -587,6 +620,10 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
             Number of classes for prediction.
         balance : bool, default=True
             Balance the training set using minority oversampling.
+        augment_file : pathlib.Path, default=None
+            Use the augmented dataset file.
+        augment_p : float, default=0.5
+            Probability of using the augmented dataset when fetching data.
         """
         super().__init__()
         self.file_path = file_path
@@ -596,6 +633,8 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         self.clinical_context = clinical_context
         self.num_workers = num_workers
         self.num_classes = num_classes
+        self.augment_file = augment_file
+        self.augment_p = augment_p
 
         self.balance = balance
 
@@ -626,7 +665,11 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
         )
         if stage == "fit":
             self.train_dataset = PMCHHGH5Dataset(
-                paths_and_targets=self.train_paths_and_targets, **dataset_kwargs
+                paths_and_targets=self.train_paths_and_targets,
+                # Augment the training set, if specified.
+                augment_file=self.augment_file,
+                augment_p=self.augment_p,
+                **dataset_kwargs,
             )
             self.val_dataset = PMCHHGH5Dataset(
                 paths_and_targets=self.val_paths_and_targets, **dataset_kwargs

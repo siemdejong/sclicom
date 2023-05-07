@@ -48,10 +48,10 @@ class Attention(pl.LightningModule):
     def __init__(
         self,
         in_features: int,
-        layers: Union[int, list[int]],
+        hidden_features: int,
         num_classes: int,
         T_max: int,
-        dropout: Union[float, None] = None,
+        dropout: float = 0.5,
         lr: float = 0.0003,
         momentum: float = 0.01,
         wd: float = 0.01,
@@ -62,15 +62,12 @@ class Attention(pl.LightningModule):
         ----------
         in_features : int
             Length of the ingoing feature vectors.
-        layers : int, list[int]
-            Length of the hidden feature vectors.
-            If list of integers, make multiple hidden feature vectors and
-            add dropout=0.5 in between by default.
-        num_clases : int
+        hidden_features : int
+            Number of hidden features in attention block.
+        num_classes : int
             Number of classes the output should be.
-        dropout_p : float, optional, default=0.5
-            Probability of applying dropout to a parameter. Only applicable if
-            `layers` is a list with length > 1.
+        dropout : float, default=0.5
+            Probability of applying dropout.
         lr : float, default=0.0003
             Learning rate for optimizer.
         momentum : float, default=0.01
@@ -98,36 +95,19 @@ class Attention(pl.LightningModule):
         self.num_classes = num_classes
         self.L = in_features
 
-        self.D: Union[int, list[int]]
-        if isinstance(layers, list):
-            if len(layers) > 1:
-                self.D = layers
-            else:
-                self.D = layers[0]
-        else:
-            self.D = layers
+        self.L = in_features
+        self.D = hidden_features
         self.K = 1
-        if isinstance(self.D, list):
-            if dropout is None:
-                dropout = 0.5
-            attention_layers: list[nn.Module] = [
-                nn.Linear(self.L, self.D[0]),
-                nn.Tanh(),
-            ]
-            for i, curr_D in enumerate(self.D[1:]):
-                prev_shape = self.D[i]
-                attention_layers.extend(
-                    [nn.Linear(prev_shape, curr_D), nn.Tanh(), nn.Dropout(dropout)]
-                )
-            attention_layers.append(
-                nn.Linear(self.D[-1] if isinstance(self.D, list) else self.D, self.K)
-            )
-            self.attention = nn.Sequential(*attention_layers)
-        else:
-            self.attention = nn.Sequential(
-                nn.Linear(self.L, self.D), nn.Tanh(), nn.Linear(self.D, self.K)
-            )
-        self.classifier = nn.Sequential(nn.Linear(self.L * self.K, self.num_classes))
+        self.attention = nn.Sequential(
+            nn.Dropout(dropout),
+            nn.Linear(self.L, self.D),
+            nn.Tanh(),
+            nn.Dropout(dropout),
+            nn.Linear(self.D, self.K),
+        )
+        self.classifier = nn.Sequential(
+            nn.Dropout(dropout), nn.Linear(self.L * self.K, self.num_classes)
+        )
 
         self.loss_fn = nn.CrossEntropyLoss()
         self.softmax = nn.Softmax(dim=1)
@@ -347,7 +327,7 @@ class VarAttention(Attention):
     [2] https://github.com/NKI-AI/dlup-lightning-mil
     """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         """Overwrite classifier attribute of `Attention`.
 
         `Attention` only does mean pooling, while `VarAttention` also does
@@ -357,16 +337,17 @@ class VarAttention(Attention):
         ----------
         See `Attention`.
         """
-        super(VarAttention, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.classifier = nn.Sequential(
+            nn.Dropout(kwargs["dropout"]),
             nn.Linear(
                 2 * self.L * self.K, self.num_classes
-            )  # 2x since we also have variance
+            ),  # 2x since we also have variance
         )
 
     def compute_weighted_var(
         self, A: torch.Tensor, H: torch.Tensor, M: Union[torch.Tensor, None] = None
-    ):
+    ) -> torch.Tensor:
         """Compute the weighted variance following [1].
 
         Parameters

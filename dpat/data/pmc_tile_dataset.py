@@ -12,7 +12,10 @@ import torchvision
 from dlup import UnsupportedSlideError
 from dlup.data.dataset import ConcatDataset, SlideImage, TiledROIsSlideImageDataset
 from dlup.tiling import TilingMode
-from lightly.data import LightlyDataset, SimCLRCollateFunction, SwaVCollateFunction
+from lightly.data import LightlyDataset
+from lightly.data.multi_view_collate import MultiViewCollate
+from lightly.transforms.simclr_transform import SimCLRTransform
+from lightly.transforms.swav_transform import SwaVTransform
 from lightning.pytorch.utilities.types import TRAIN_DATALOADERS
 from PIL import Image
 from torch import Tensor
@@ -92,6 +95,12 @@ class PMCHHGImageDataset(Dataset):
     # Precalculated. Assumed as "domain knowledge".
     NORMALIZE = {"mean": [0.0014, 0.0039, 0.0003], "std": [0.0423, 0.0423, 0.0423]}
 
+    # Calculated on medulloblastoma+pilocytic astrocytoma with images until case 140.
+    NORMALIZE_MASKED = {
+        "mean": [8.4234e-05, 2.0620e-04, 2.7531e-05],
+        "std": [0.0093, 0.0093, 0.0093],
+    }
+
     def __init__(
         self,
         root_dir: str,
@@ -148,7 +157,7 @@ class PMCHHGImageDataset(Dataset):
         """
         super().__init__()
 
-        if mask_factory != "load_from_disk":
+        if mask_factory == "load_from_disk":
             assert mask_root_dir is not None, f"If {mask_factory=}, "
             "mask_root_dir must be set."
 
@@ -294,7 +303,7 @@ class PMCHHGImageDataset(Dataset):
 
 
 def online_mean_and_std(
-    dataset: SizedDataset, batch_size: int = 64
+    dataset: SizedDataset, batch_size: int = 64, device: str = "cuda"
 ) -> tuple[Tensor, Tensor]:
     """Calculate mean and std in an online fashion.
 
@@ -307,6 +316,8 @@ def online_mean_and_std(
         an rgb image as the first return value.
     batch_size : int, default=32
         Batch size of the dataloader.
+    device : cpu/cuda
+        Device to transfer the data to.
 
     References
     ----------
@@ -320,7 +331,7 @@ def online_mean_and_std(
     _var_temp: torch.Tensor = torch.zeros(3)
 
     for batch in tqdm(dataloader, desc="Calculating mean", unit="batch"):
-        data = batch[0]
+        data = batch[0].to(device)
         b, _, h, w = data.shape
         nb_pixels = b * h * w
         _sum = torch.sum(data, dim=[0, 2, 3])
@@ -331,7 +342,7 @@ def online_mean_and_std(
     mean = _mean_temp / len(dataset)
 
     for batch in tqdm(dataloader, desc="Calculating std", unit="batch"):
-        data = batch[0]
+        data = batch[0].to(device)
         b, c, h, w = data.shape
         nb_pixels = b * h * w
 
@@ -447,31 +458,33 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
         assert tile_size_x == tile_size_y
 
         if transform is not None:
-            # if "contrastive" in transform:
-            #     self.transform = ContrastiveTransform()
-            # else:
-            #     raise ValueError(
-            #         "Please set transform to a list with transforms from"
-            #         f" {AvailableTransforms._member_names_}"
-            #     )
-            pass
+            if self.mask_factory != "no_mask":
+                normalize = PMCHHGImageDataset.NORMALIZE_MASKED
+            else:
+                normalize = PMCHHGImageDataset.NORMALIZE
+
+            transform_kwargs = dict(
+                normalize=normalize,
+                rr_prob=1,
+                rr_degrees=180,
+                cj_prob=1 if self.color_jitter else 0,
+            )
+            if self.model == "swav":
+                self.transform = SwaVTransform(**transform_kwargs)
+            elif self.model == "simclr":
+                self.transform = SimCLRTransform(**transform_kwargs)
+            else:
+                raise NotImplementedError(
+                    f"Special transforms for model {self.model} are not implemented."
+                )
         else:
             self.transform = transform
 
     @property
     def collate_fn(self):
         """Return the collate function related to the model."""
-        collate_fn_kwargs = dict(
-            normalize=PMCHHGImageDataset.NORMALIZE,
-            rr_prob=1,
-            rr_degrees=180,
-            cj_prob=1 if self.color_jitter else 0,
-        )
-
-        if self.model == "swav":
-            collate_fn = SwaVCollateFunction(**collate_fn_kwargs)
-        elif self.model == "simclr":
-            collate_fn = SimCLRCollateFunction(**collate_fn_kwargs)
+        if self.model in ["swav", "simclr"]:
+            collate_fn = MultiViewCollate()
         else:
             collate_fn = None
 

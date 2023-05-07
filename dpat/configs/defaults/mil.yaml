@@ -67,5 +67,7 @@ data:
     num_workers: 4
     num_classes: 2
     balance: true
+    augment_file: /home/sdejong/pmchhg/features/imagenet-1-4-2023-fold-0-augment.hdf5
+    augment_p: 0.5
 enable_cudnn_auto_tuner: true
 set_float32_matmul_precision: medium

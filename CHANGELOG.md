@@ -2,6 +2,59 @@
 
 <!--next-version-placeholder-->
 
+## v4.15.0 (2023-04-25)
+### Feature
+* Compute mean and confidence interval ([`da2e834`](https://github.com/siemdejong/dpat/commit/da2e834abaf6bfbb745a356041277db9a34c9769))
+
+### Fix
+* Add confidence typehint ([`c057652`](https://github.com/siemdejong/dpat/commit/c057652a1023cdfd954720bd84ac42d4635bb2a3))
+* Add typehints ([`cb761f2`](https://github.com/siemdejong/dpat/commit/cb761f2d610ede18c6afeeb13db1c30309e1f642))
+* Revert hidden layers to one hidden layer ([`3139c46`](https://github.com/siemdejong/dpat/commit/3139c46e737138cdae6e375d4432758a68373d72))
+* Add typehint ([`f382d1f`](https://github.com/siemdejong/dpat/commit/f382d1f7506a403304ff8260109e9b405a3d11e3))
+* Ignore missing scipy imports ([`f562790`](https://github.com/siemdejong/dpat/commit/f5627908133aef9d4997988d48a8ef12186d5b88))
+
+## v4.14.2 (2023-04-25)
+### Fix
+* Remove contrastive collate_fn ([`1811bb5`](https://github.com/siemdejong/dpat/commit/1811bb50cc63742e63563f6aa2f94259abfc0a9b))
+
+## v4.14.1 (2023-04-24)
+### Fix
+* Don't try to open augmented set if not exists ([`bf33e12`](https://github.com/siemdejong/dpat/commit/bf33e12ca961276f765c6f092f242c5bd919154c))
+
+## v4.14.0 (2023-04-24)
+### Feature
+* Do data augmentation in feature space ([`2d0fa05`](https://github.com/siemdejong/dpat/commit/2d0fa058f510ddc0eade62446d9f0a52803c717d))
+
+## v4.13.2 (2023-04-21)
+### Fix
+* Use clinical_context attr for export ([`446bb2b`](https://github.com/siemdejong/dpat/commit/446bb2b87cd12eea5f2dc3024229de13f9ced49d))
+
+## v4.13.1 (2023-04-21)
+### Fix
+* Alter seed config space ([`e8a652e`](https://github.com/siemdejong/dpat/commit/e8a652e31f250686da0c345131cd863148f0c34c))
+* Use variable splits_dirname ([`f3824e4`](https://github.com/siemdejong/dpat/commit/f3824e41f8086a4c3e8aca29bbd8ef0f2fca57aa))
+* Automatically set_clinical context ([`764b77c`](https://github.com/siemdejong/dpat/commit/764b77cda317e4544b1475e77b57ff6f5f3101c6))
+
+## v4.13.0 (2023-04-21)
+### Feature
+* Add device to mean and std calc ([`4db5601`](https://github.com/siemdejong/dpat/commit/4db5601044ad3b8e652b6861602cd2d064c22716))
+
+### Fix
+* Add batch size to compile features tool ([`7a13c09`](https://github.com/siemdejong/dpat/commit/7a13c094af585f0abd3b0acd9c88b7cb10663639))
+* Add num_workers to compile features tool ([`018861f`](https://github.com/siemdejong/dpat/commit/018861fc8740b57cd74260793d3113243799af04))
+* Add clinical context to compile features tool ([`8d89607`](https://github.com/siemdejong/dpat/commit/8d896075a73bc95cc08b1655f3e8830708c9d130))
+* Change location dtype to string in hdf5 ([`ef9e5cf`](https://github.com/siemdejong/dpat/commit/ef9e5cf1bd712721b5d9f99ced9a2d5054a1a3d0))
+* Use normalization based on masked tiles ([`6e5e639`](https://github.com/siemdejong/dpat/commit/6e5e639b4511561fa14131fddab465cb302bfb94))
+* Typo ([`cadd918`](https://github.com/siemdejong/dpat/commit/cadd918758f3c78558216e02396fc7ea4eca8279))
+
+## v4.12.0 (2023-04-21)
+### Feature
+* Calculate mean and stddev ([`4ddf6d1`](https://github.com/siemdejong/dpat/commit/4ddf6d1315486526885dd22a755e759e79d011e0))
+
+### Fix
+* Raise error if no mask_root_dir is set ([`2fd7157`](https://github.com/siemdejong/dpat/commit/2fd71577137ea13949e724ecd32bbb570418eb68))
+* Allow null as datamodule model ([`77dff7e`](https://github.com/siemdejong/dpat/commit/77dff7e88daeb37f83df6128a7cd40c5b7063498))
+
 ## v4.11.1 (2023-04-21)
 ### Fix
 * Typo ([`a25a251`](https://github.com/siemdejong/dpat/commit/a25a2512d2dc742f67c220b6d13f2c2098c31e79))
