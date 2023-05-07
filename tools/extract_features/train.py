@@ -34,7 +34,7 @@ def main():
     )
 
     cli.datamodule.prepare_data()
-    cli.datamodule.setup("fit")
+    cli.datamodule.setup("train")
     cli.trainer.fit(
         model=cli.model, train_dataloaders=cli.datamodule.train_dataloader()
     )
