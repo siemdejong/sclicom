@@ -1,11 +1,9 @@
 """Provide SimCLR model."""
-from typing import Union
-
 import lightning.pytorch as pl
 import torch
 from lightly.loss import NTXentLoss
 from lightly.models.modules import SimCLRProjectionHead
-from lightning.pytorch.cli import LRSchedulerCallable, OptimizerCallable
+from lightning.pytorch.cli import OptimizerCallable
 from pytorchcv.model_provider import get_model as ptcv_get_model
 from torch import nn
 
@@ -25,7 +23,6 @@ class SimCLR(pl.LightningModule):
         backbone: str = "shufflenetv2_w1",
         pretrained: bool = False,
         optimizer: OptimizerCallable = torch.optim.Adam,
-        scheduler: LRSchedulerCallable = torch.optim.lr_scheduler.CosineAnnealingLR,  # type: ignore # noqa: E501
     ):
         """Build SimCLR model.
 
@@ -46,7 +43,6 @@ class SimCLR(pl.LightningModule):
         self.example_input_array = torch.Tensor(32, 3, 224, 224)
 
         self.optimizer = optimizer
-        self.scheduler = scheduler
 
         # Get any vision model from pytorchcv as backbone.
         vision_backbone: VisionBackbone = ptcv_get_model(
@@ -77,21 +73,10 @@ class SimCLR(pl.LightningModule):
         self.log("loss/train", loss)
         return loss
 
-    def configure_optimizers(
-        self,
-    ) -> tuple[
-        list[torch.optim.Optimizer],
-        list[
-            Union[
-                torch.optim.lr_scheduler._LRScheduler,
-                torch.optim.lr_scheduler.ReduceLROnPlateau,
-            ]
-        ],
-    ]:
+    def configure_optimizers(self) -> list[torch.optim.Optimizer]:
         """Configure optimizers."""
         optimizer = self.optimizer(self.parameters())
-        scheduler = self.scheduler(optimizer)
-        return [optimizer], [scheduler]
+        return [optimizer]
 
     def optimizer_zero_grad(
         self, epoch: int, batch_idx: int, optimizer: torch.optim.Optimizer
