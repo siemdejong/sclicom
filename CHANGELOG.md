@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.0 (2023-05-07)
+### Fix
+* Do not track out, sbatch, ckpt ([`68d4c55`](https://github.com/siemdejong/dpat/commit/68d4c557ba35da13bcdca11c9a46447292623a6f))
+* Use train stage for setup ([`d0b63b1`](https://github.com/siemdejong/dpat/commit/d0b63b1a7a2e72ffe5d1e8ab337924d049d6ec7c))
+* Update dataloader ([`b166512`](https://github.com/siemdejong/dpat/commit/b1665124193bf2c6832df7f9dcbb9c386f4e8c61))
+* Update defaults ([`5964cc7`](https://github.com/siemdejong/dpat/commit/5964cc758cd0a02cffcf13986bd67549c1a19622))
+* Remove scheduler arg ([`03f60dc`](https://github.com/siemdejong/dpat/commit/03f60dc22a90d7b60ecb3cb20ae8cb2624b4c4fb))
+
+### Breaking
+* scheduler is unset ([`03f60dc`](https://github.com/siemdejong/dpat/commit/03f60dc22a90d7b60ecb3cb20ae8cb2624b4c4fb))
+
 ## v4.15.0 (2023-04-25)
 ### Feature
 * Compute mean and confidence interval ([`da2e834`](https://github.com/siemdejong/dpat/commit/da2e834abaf6bfbb745a356041277db9a34c9769))
