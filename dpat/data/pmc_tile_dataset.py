@@ -505,16 +505,11 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             transform=self.transform,
         )
 
-        if stage == "fit":
-            self.train_dataset, self.val_dataset = [
-                LightlyDataset.from_torch_dataset(
-                    PMCHHGImageDataset(image_paths_and_targets=paths, **dataset_kwargs)
+        if stage == "train":
+            self.train_dataset = LightlyDataset.from_torch_dataset(
+                PMCHHGImageDataset(
+                    image_paths_and_targets=self.train_path, **dataset_kwargs
                 )
-                for paths in [self.train_path, self.val_path]
-            ]
-        elif stage == "test":
-            self.test_dataset = PMCHHGImageDataset(
-                images_paths_and_targets=self.train_path, **dataset_kwargs
             )
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
@@ -526,4 +521,5 @@ class PMCHHGImageDataModule(pl.LightningDataModule):
             shuffle=True,
             collate_fn=self.collate_fn,
             pin_memory=True,
+            drop_last=True,
         )
