@@ -1,10 +1,11 @@
 class_path: dpat.mil.models.CCMIL
 init_args:
   in_features: 1024  # Depends on output of the (pretrained) ResNet
-  layers: [2, 2, 2]
-  num_classes: ${data.init_args.num_classes}
-  dropout: 0.32533033076326434
-  lr: 0.00014656553886225324
-  momentum: 0.2713490317738959
-  wd: 0.20651425578959234
-  T_max: ${trainer.max_epochs}
+  hidden_features: 256
+  num_classes: 2
+  dropout: 0.3046137691733707
+  lr: 1.9634341572933304e-05
+  momentum: 0.6842330265121569
+  wd: 0.005762487216478602
+  T_max: 2000
+  threshold: 0.5550564527511597  # This should be determined from the validation set and reset for testing purposes.

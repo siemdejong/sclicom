@@ -674,6 +674,14 @@ class PMCHHGH5DataModule(pl.LightningDataModule):
             self.val_dataset = PMCHHGH5Dataset(
                 paths_and_targets=self.val_paths_and_targets, **dataset_kwargs
             )
+        elif stage == "validate":
+            if self.test_paths_and_targets is None:
+                raise ValueError(
+                    "Please provide a path to the validation paths and" "targets."
+                )
+            self.val_dataset = PMCHHGH5Dataset(
+                paths_and_targets=self.val_paths_and_targets, **dataset_kwargs
+            )
         elif stage == "test":
             if self.test_paths_and_targets is None:
                 raise ValueError("Please provide a path to the test paths and targets.")

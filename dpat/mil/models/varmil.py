@@ -14,8 +14,18 @@ import h5py
 import lightning.pytorch as pl
 import torch
 import torch.nn.functional as F
+from prg import prg
 from torch import nn
-from torchmetrics import AUROC, AveragePrecision, F1Score, Metric, PrecisionRecallCurve
+from torchmetrics import (
+    AUROC,
+    ROC,
+    Accuracy,
+    AveragePrecision,
+    F1Score,
+    Metric,
+    PrecisionRecallCurve,
+    StatScores,
+)
 
 from dpat.types import ExampleInputArray
 
@@ -55,6 +65,7 @@ class Attention(pl.LightningModule):
         lr: float = 0.0003,
         momentum: float = 0.01,
         wd: float = 0.01,
+        threshold: float = 0.5,
     ):
         """Initialize the Attention module following [1].
 
@@ -91,6 +102,8 @@ class Attention(pl.LightningModule):
         self.wd = wd
         self.T_max = T_max
 
+        self.save_log_to_file = False
+
         # DeepMIL specific initialization
         self.num_classes = num_classes
         self.L = in_features
@@ -117,15 +130,20 @@ class Attention(pl.LightningModule):
         self.test_output = self._reset_output()
 
         # Initialize metrics
-        task: Literal["binary", "multiclass", "multilabel"] = (
+        self.task: Literal["binary", "multiclass", "multilabel"] = (
             "binary" if num_classes == 2 else "multiclass"
         )
-        self.auroc: Metric = AUROC(task=task, num_classes=num_classes)  # type: ignore
-        self.f1: Metric = F1Score(task=task, num_classes=num_classes)  # type: ignore
-        self.pr_curve: Metric = PrecisionRecallCurve(  # type: ignore
-            task=task, num_classes=num_classes
+        self.auroc: Metric = AUROC(task=self.task, num_classes=num_classes)  # type: ignore  # noqa
+        self.roc_curve: Metric = ROC(task=self.task, num_classes=num_classes)  # type: ignore  # noqa
+        self.f1: Metric = F1Score(task=self.task, num_classes=num_classes, threshold=threshold)  # type: ignore  # noqa
+        self.accuracy = Accuracy(
+            task=self.task, num_classes=num_classes, threshold=threshold
         )
-        self.pr_auc = AveragePrecision(task=task, num_classes=num_classes)  # type: ignore # noqa: 501
+        self.pr_curve: Metric = PrecisionRecallCurve(  # type: ignore
+            task=self.task, num_classes=num_classes
+        )
+        self.pr_auc = AveragePrecision(task=self.task, num_classes=num_classes)  # type: ignore # noqa: 501
+        self.stat_scores = StatScores(task=self.task, threshold=threshold, num_classes=num_classes)  # type: ignore # noqa
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
         """Calculate prediction and attention vector."""
@@ -194,32 +212,58 @@ class Attention(pl.LightningModule):
         prediction = torch.Tensor(output["prediction"])
 
         auroc_score = self.auroc(preds=prediction, target=target)
-        f1_score = self.f1(preds=prediction, target=target)
         pr_auc = self.pr_auc(preds=prediction, target=target)  # type: ignore # although it should work according to docs. # noqa: 501
 
         # TODO Save these or do this afterwards from the patient-level outputs?
         precision, recall, thresholds = self.pr_curve(preds=prediction, target=target)
+        accuracy = self.accuracy(preds=prediction, target=target)
+
+        prg_curve = prg.create_prg_curve(target.numpy(), prediction.numpy())
+        precision_gain = prg_curve["precision_gain"]
+        recall_gain = prg_curve["recall_gain"]
+        auprg = prg.calc_auprg(prg_curve)
+
+        fpr, tpr, roc_thresholds = self.roc_curve(preds=prediction, target=target)
 
         # TODO Save the scores and cut-offs,
         # otherwise we can't do proper statistical testing.
         self.log(f"{prefix}_auc", auroc_score, logger=True, batch_size=1)
-        self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1)
+        # self.log(f"{prefix}_f1", f1_score, logger=True, batch_size=1)
+        # self.log(f"{prefix}_fg1", fg1_score, logger=True, batch_size=1)
         self.log(f"{prefix}_pr_auc", pr_auc, logger=True, batch_size=1)
+        self.log(f"{prefix}_prg_auc", auprg, logger=True, batch_size=1)
+        self.log(f"{prefix}_accuracy", accuracy, logger=True, batch_size=1)
 
-        if prefix == "test":
+        if prefix == "test" or (prefix == "val" and self.save_log_to_file):
             if not (Path(self.trainer.log_dir) / f"output/{prefix}").is_dir():
                 Path.mkdir(
                     Path(self.trainer.log_dir) / f"output/{prefix}", parents=True
                 )
 
             metrics_to_save = {
+                "target": target.tolist(),
+                "prediction": prediction.tolist(),
                 "auc": float(auroc_score),
-                "f1": float(f1_score),
+                "prauc": float(pr_auc),
+                "prgauc": float(auprg),
+                # "f1": float(f1_score),
+                # "fg1": float(fg1_score),
                 "prcurve": {
                     "precision": precision.tolist(),
                     "recall": recall.tolist(),
                     "thresholds": thresholds.tolist(),
                 },
+                "prgcurve": {
+                    "precision_gain": precision_gain.tolist(),
+                    "recall_gain": recall_gain.tolist(),
+                    # "thresholds": prg_thresholds.tolist(),
+                },
+                "roccurve": {
+                    "tpr": tpr.tolist(),
+                    "fpr": fpr.tolist(),
+                    "thresholds": roc_thresholds.tolist(),
+                },
+                "accuracy": accuracy.tolist(),
             }
 
             with open(
@@ -276,7 +320,6 @@ class Attention(pl.LightningModule):
                 batch["img_id"][i],
             )
 
-            # This data is shared among BC and CRC dataset
             hf = h5py.File(
                 f"{self.trainer.log_dir}/output/{fold}/{case_id}_{img_id}_output.hdf5",
                 "a",

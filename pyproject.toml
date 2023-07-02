@@ -48,6 +48,7 @@ dependencies = [
     "optuna", # For hyperparameter search.
     "ray[tune]", # For (distributed) hyperparameter search/training.
     "transformers",  # For creating text embeddings.
+    "pyprg@git+https://github.com/siemdejong/prg#egg=pyprg&subdirectory=Python_package",  # To calculate the Precision-Recall-Gain curve.
 ]
 
 [project.optional-dependencies]
@@ -55,6 +56,9 @@ nb = [
     "ipywidgets", # For using widgets in ipython notebooks.
     "geojson", # For reading in GeoJSON files.
     "rasterio", # For rasterizing shapes.
+    "LovelyPlots",  # For lovely plots.
+    "pyimq@git+https://github.com/siemdejong/pyimagequalityranking#egg=pyimq",  # To calculate the entropy of images.
+    "adjustText",  # To adjust the location of text in the t-SNE CC embeddings.
 ]
 denoise = [
     "n2v",

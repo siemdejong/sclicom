@@ -91,29 +91,25 @@ def train_tune(
     """
     seed_all(seed)
 
-    layers = []
-    for layer in range(config["_n_layers"]):
-        _pow = config[f"_pow_nodes_layer_{layer}"]
-        _pow_of_2 = 2**_pow
-        layers.append(_pow_of_2)
+    hidden_features = int(2 ** config["_pow_hidden_features"])
 
     model = getattr(dpat.mil.models, model_name)(
         # Fixed by combination of tile size and feature extractor.
         in_features=in_features,
-        layers=layers,
+        hidden_features=hidden_features,
         num_classes=num_classes,
         dropout=config["dropout"],
         lr=config["lr"],
         momentum=config["momentum"],
         wd=config["wd"],
-        T_max=num_epochs,
+        T_max=2000,
     )
 
     if model_kwargs is not None:
         model = partial(model, **model_kwargs)
 
     callback: pl.Callback = _TuneReportCallback(
-        metrics=["loss/train", "loss/val", "val_f1", "val_pr_auc", "val_auc"]
+        metrics=["loss/train", "loss/val", "val_pr_auc", "val_prg_auc", "val_auc"]
     )
 
     trainer = pl.Trainer(
@@ -137,7 +133,6 @@ def train_tune(
 
 def define_by_run_func(
     trial: optuna.Trial,
-    bounds_n_layers: tuple[int, int],
     bounds_pow: tuple[int, int],
     bounds_dropout: tuple[int, int],
     bounds_lr: tuple[int, int],
@@ -145,26 +140,25 @@ def define_by_run_func(
     bounds_wd: tuple[int, int],
 ) -> None:
     """Define-by-run function to create the search space."""
-    _n_layers = trial.suggest_int("_n_layers", *bounds_n_layers)
-    for _layer in range(_n_layers):
-        trial.suggest_int(f"_pow_nodes_layer_{_layer}", *bounds_pow)
-
+    trial.suggest_int("_pow_hidden_features", *bounds_pow)
     trial.suggest_float("dropout", *bounds_dropout)
-
     trial.suggest_float("lr", *bounds_lr, log=True)
     trial.suggest_float("momentum", *bounds_momentum)
     trial.suggest_float("wd", *bounds_wd, log=True)
 
 
 if __name__ == "__main__":
-    restore_path = None  # "/home/sdejong/ray_results/tune_3-4-2023_1"
+    # restore_path = "/home/sdejong/ray_results/tune_simclr_8-5-2023_1"
+    restore_path = None
 
-    name = "tune_13-4-2023_2"
-    num_trials = 10
+    import sys
+
+    name = f"tune_simclr+ccmil_11-5-2023-fold-{sys.argv[1]}"
+    num_trials = 100
     min_epochs = 30
-    num_epochs = 600
+    num_epochs = 500
     num_gpus = 1
-    num_gpus_per_trial = 0.1
+    num_gpus_per_trial = 0.125
     num_cpus_per_trial = 5
     num_dataloader_workers = num_cpus_per_trial
     precision = "bf16-mixed"
@@ -179,11 +173,12 @@ if __name__ == "__main__":
     model_name = "CCMIL"
 
     tmpdir = Path(os.environ["TMPDIR"])
-    fold = 0
+    fold = sys.argv[1]
     subfold = 0
     diagnosis = "medulloblastoma+pilocytic-astrocytoma"
     dataset = "pmchhg"
-    h5 = "imagenet-21-4-2023.hdf5"
+    # h5 = "imagenet-21-4-2023.hdf5"
+    h5 = f"simclr/simclr-27-4-2023-fold-{fold}.hdf5"
 
     splits_dirname = "splits-final"
 
@@ -208,15 +203,13 @@ if __name__ == "__main__":
     # Interesting discussion on wide+shallow vs narrow+deep:
     # https://stats.stackexchange.com/a/223637/384534
     # Deep and narrow can aid in generalizing.
-    bounds_n_layers = (1, 4)
-    bounds_pow = (1, 5)
+    bounds_pow = (8, 8)  # (0, math.log2(in_features))
     bounds_dropout = (0, 1)
     bounds_lr = (1e-5, 1e-2)
     bounds_momentum = (0, 1)
     bounds_wd = (1e-4, 1)
     define_by_run_space = partial(
         define_by_run_func,
-        bounds_n_layers=bounds_n_layers,
         bounds_pow=bounds_pow,
         bounds_dropout=bounds_dropout,
         bounds_lr=bounds_lr,
@@ -224,11 +217,7 @@ if __name__ == "__main__":
         bounds_wd=bounds_wd,
     )
 
-    seed_configs_space = [
-        {"dropout": 0.7, "layers": [2], "lr": 1e-4},
-        {"dropout": 0.75, "layers": [2, 2], "lr": 1e-4},
-        {"dropout": 0.8, "layers": [2, 2, 2], "lr": 1e-4},
-    ]
+    seed_configs_space = []
 
     scheduler = ASHAScheduler(
         time_attr="training_iteration", grace_period=min_epochs, max_t=num_epochs
@@ -311,4 +300,7 @@ if __name__ == "__main__":
     )
     logger.info(
         f"Best trial final PR-AUC: {results.get_best_result().metrics['val_pr_auc']}"
+    )
+    logger.info(
+        f"Best trial final PRG-AUC: {results.get_best_result().metrics['val_prg_auc']}"
     )

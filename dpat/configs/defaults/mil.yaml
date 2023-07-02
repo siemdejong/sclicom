@@ -52,7 +52,7 @@ trainer:
   num_sanity_val_steps: 2
   profiler: null
   benchmark: null
-  deterministic: true
+  deterministic: false
   reload_dataloaders_every_n_epochs: 0
   detect_anomaly: false
   plugins: null
@@ -60,14 +60,16 @@ trainer:
 data:
   class_path: dpat.data.PMCHHGH5DataModule
   init_args:
-    file_path: /home/sdejong/pmchhg/features/imagenet-1-4-2023-fold-0.hdf5
-    train_path: /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_train-subfold-0-fold-0.csv
-    val_path:  /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_val-subfold-0-fold-0.csv
-    test_path: /home/sdejong/pmchhg/images-tif/splits/medulloblastoma+pilocytic-astrocytoma_pmchhg_test-subfold-0-fold-0.csv
+    # file_path: /home/sdejong/pmchhg/features/simclr/simclr-27-4-2023-fold-4.hdf5
+    file_path: /home/sdejong/pmchhg/features/imagenet-21-4-2023.hdf5
+    train_path: /home/sdejong/pmchhg/images-tif/splits-final/medulloblastoma+pilocytic-astrocytoma_pmchhg_train-subfold-0-fold-0.csv
+    val_path:  /home/sdejong/pmchhg/images-tif/splits-final/medulloblastoma+pilocytic-astrocytoma_pmchhg_val-subfold-0-fold-0.csv
+    test_path: /home/sdejong/pmchhg/images-tif/splits-final/medulloblastoma+pilocytic-astrocytoma_pmchhg_test-subfold-0-fold-0.csv
+    clinical_context: true
     num_workers: 4
     num_classes: 2
     balance: true
-    augment_file: /home/sdejong/pmchhg/features/imagenet-1-4-2023-fold-0-augment.hdf5
+    augment_file: null
     augment_p: 0.5
 enable_cudnn_auto_tuner: true
 set_float32_matmul_precision: medium

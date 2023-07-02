@@ -4,7 +4,6 @@ import tempfile
 from torchvision.transforms import Compose, ToTensor
 
 from dpat.data import PMCHHGImageDataset
-from dpat.data.pmc_tile_dataset import online_mean_and_std
 
 # Make a temporary file make the dataset read from.
 concatenated_file = tempfile.TemporaryFile()
@@ -30,5 +29,3 @@ dataset = PMCHHGImageDataset(
     mask_root_dir="/home/sdejong/pmchhg/masks",
     transform=Compose([ToTensor()]),
 )
-
-online_mean_and_std(dataset=dataset, batch_size=64)

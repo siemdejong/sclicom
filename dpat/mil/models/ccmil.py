@@ -131,7 +131,7 @@ class CCMIL(VarAttention):
         """
         # [0] to convert list to string,
         # because all tiles in a bag have the same clinical context.
-        x, y, cc = batch["data"], batch["target"], batch["cc"]
+        x, y, cc = batch["data"], batch["target"], batch["cc"][0]
         y_hat, A = self(x, cc)
         loss = self.loss_fn(y_hat, y)
         return loss, y_hat, y, A

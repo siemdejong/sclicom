@@ -21,10 +21,7 @@ def main():
         run=False,
         parser_kwargs={
             "parser_mode": "omegaconf",
-            "default_config_files": [
-                get_default_config_by_name("mil"),
-                get_default_config_by_name("ccmil"),
-            ],
+            "default_config_files": [get_default_config_by_name("mil")],
         },
     )
 

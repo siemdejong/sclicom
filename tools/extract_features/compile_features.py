@@ -25,11 +25,7 @@ def main():
     # Make a temporary file make the dataset read from.
     concatenated_file = tempfile.TemporaryFile()
 
-    base_file = (
-        "/scistor/guest/sjg203/projects/pmc-hhg/"
-        "medulloblastoma+pilocytic-astrocytoma_"
-        "pmchhg_{fold}-subfold-0-fold-0.csv"
-    )
+    base_file = "/gpfs/home2/sdejong/pmchhg/images-tif/splits-final/medulloblastoma+pilocytic-astrocytoma_pmchhg_{fold}-subfold-0-fold-0.csv"  # noqa
 
     read_files = [base_file.format(fold=fold) for fold in ["train", "val", "test"]]
 
@@ -41,7 +37,7 @@ def main():
     concatenated_file.seek(0)
 
     dataset = PMCHHGImageDataset(
-        root_dir="/scistor/guest/sjg203/projects/pmc-hhg/images-tif",
+        root_dir="/gpfs/home2/sdejong/pmchhg/images-tif",
         image_paths_and_targets=concatenated_file,
         mpp=0.2,
         tile_size_x=224,
@@ -66,7 +62,7 @@ def main():
     )
 
     _ = PMCHHGH5Dataset.from_pmchhg_data_and_model(
-        filename="simclr-20-3-2023.hdf5",
+        filename="imagenet-11-5-2023.hdf5",
         dir_name=pathlib.Path("/gpfs/home2/sdejong/pmchhg/features/"),
         dataset=dataset,
         model=model,

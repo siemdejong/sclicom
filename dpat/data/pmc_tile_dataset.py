@@ -93,12 +93,12 @@ class PMCHHGImageDataset(Dataset):
     """
 
     # Precalculated. Assumed as "domain knowledge".
-    NORMALIZE = {"mean": [0.0014, 0.0039, 0.0003], "std": [0.0423, 0.0423, 0.0423]}
+    NORMALIZE = {"mean": [0.0692, 0.1651, 0.0257], "std": [0.1059, 0.1531, 0.0329]}
 
     # Calculated on medulloblastoma+pilocytic astrocytoma with images until case 140.
     NORMALIZE_MASKED = {
-        "mean": [8.4234e-05, 2.0620e-04, 2.7531e-05],
-        "std": [0.0093, 0.0093, 0.0093],
+        "mean": [0.0842, 0.2062, 0.0275],
+        "std": [0.1152, 0.1471, 0.0344],
     }
 
     def __init__(
@@ -327,31 +327,20 @@ def online_mean_and_std(
         dataset=dataset, batch_size=batch_size, shuffle=False
     )
 
-    _mean_temp: torch.Tensor = torch.zeros(3)
-    _var_temp: torch.Tensor = torch.zeros(3)
+    _sum: torch.Tensor = torch.zeros(3, device=device)
+    _sum_sq: torch.Tensor = torch.zeros(3, device=device)
+    total_pixels: int = 0
 
-    for batch in tqdm(dataloader, desc="Calculating mean", unit="batch"):
+    for batch in tqdm(dataloader, desc="Calculating sum/sumsq", unit="batch"):
         data = batch[0].to(device)
         b, _, h, w = data.shape
         nb_pixels = b * h * w
-        _sum = torch.sum(data, dim=[0, 2, 3])
-        batch_mean = _sum / nb_pixels
+        _sum += torch.sum(data, dim=[0, 2, 3])
+        _sum_sq += torch.sum(data**2, dim=[0, 2, 3])
+        total_pixels += nb_pixels
 
-        _mean_temp += batch_mean
-
-    mean = _mean_temp / len(dataset)
-
-    for batch in tqdm(dataloader, desc="Calculating std", unit="batch"):
-        data = batch[0].to(device)
-        b, c, h, w = data.shape
-        nb_pixels = b * h * w
-
-        _sum = torch.sum((data - mean.view((1, c, 1, 1))) ** 2)
-        batch_var = _sum / nb_pixels
-
-        _var_temp += batch_var
-
-    var = _var_temp / len(dataset)
+    mean = _sum / total_pixels
+    var = (_sum_sq / total_pixels) - (mean**2)
     std = torch.sqrt(var)
 
     return mean, std
