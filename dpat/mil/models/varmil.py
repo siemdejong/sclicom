@@ -216,7 +216,7 @@ class Attention(pl.LightningModule):
 
         # TODO Save these or do this afterwards from the patient-level outputs?
         precision, recall, thresholds = self.pr_curve(preds=prediction, target=target)
-        accuracy = self.accuracy(preds=prediction, target=target)
+        accuracy = self.accuracy(preds=prediction, target=target)  # type: ignore
 
         prg_curve = prg.create_prg_curve(target.numpy(), prediction.numpy())
         precision_gain = prg_curve["precision_gain"]
