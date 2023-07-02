@@ -234,7 +234,9 @@ class Attention(pl.LightningModule):
         self.log(f"{prefix}_prg_auc", auprg, logger=True, batch_size=1)
         self.log(f"{prefix}_accuracy", accuracy, logger=True, batch_size=1)
 
-        if prefix == "test" or (prefix == "val" and self.save_log_to_file):
+        if (
+            prefix == "test" or (prefix == "val" and self.save_log_to_file)
+        ) and self.trainer.log_dir:
             if not (Path(self.trainer.log_dir) / f"output/{prefix}").is_dir():
                 Path.mkdir(
                     Path(self.trainer.log_dir) / f"output/{prefix}", parents=True
