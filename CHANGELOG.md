@@ -2,6 +2,13 @@
 
 <!--next-version-placeholder-->
 
+## v5.0.1 (2023-07-02)
+
+### Fix
+
+* Typing ([`e1e60f8`](https://github.com/siemdejong/sclicom/commit/e1e60f849fa8334bb91cdd382c286b5e83c9e74d))
+* Typing ([`beaaf4d`](https://github.com/siemdejong/sclicom/commit/beaaf4d7c59126ade0ae79145cee8356e783d4ca))
+
 ## v5.0.0 (2023-05-07)
 ### Fix
 * Do not track out, sbatch, ckpt ([`68d4c55`](https://github.com/siemdejong/dpat/commit/68d4c557ba35da13bcdca11c9a46447292623a6f))
