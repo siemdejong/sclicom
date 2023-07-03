@@ -41,7 +41,7 @@
   </a> -->
 
 
-<h2 align="center">Deep Learning for Higher Harmonic Generation Microscopy</h2>
+<h2 align="center">Self-supervised pretraining with CLInical COntext Multi-instance learning</h2>
 <h3 align="center">Deep learning utilities for higher harmonic generation microscopy images.</h3>
 
   <p align="center">
