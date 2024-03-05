@@ -47,14 +47,14 @@
   <p align="center">
     This project is a deep learning application to classify various pediatric brain tumours from higher harmonic generation microscopy images.
     <br />
-    <a href="https://siemdejong.github.io/dpat"><strong>Explore the docs »</strong></a>
+    <a href="https://siemdejong.github.io/sclicom"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <!-- <a href="https://github.com/siemdejong/dpat">View Demo</a>
+    <!-- <a href="https://github.com/siemdejong/sclicom">View Demo</a>
     · -->
-    <a href="https://github.com/siemdejong/dpat/issues">Report Bug</a>
+    <a href="https://github.com/siemdejong/sclicom/issues">Report Bug</a>
     ·
-    <a href="https://github.com/siemdejong/dpat/issues">Request Feature</a>
+    <a href="https://github.com/siemdejong/sclicom/issues">Request Feature</a>
   </p>
 </div>
 
@@ -132,7 +132,7 @@ Distributed under the GNU General Public License v3.0. See `LICENSE` for more in
 
 Siem de Jong - [linkedin.com/in/siemdejong](https://www.linkedin.com/in/siemdejong/) - siem.dejong@hotmail.nl
 
-Project Link: [https://github.com/siemdejong/dpat](https://github.com/siemdejong/dpat)
+Project Link: [https://github.com/siemdejong/sclicom](https://github.com/siemdejong/sclicom)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
