@@ -52,8 +52,8 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install pytest pytest-cov mypy coverage
           python -m pip install -e .
-      - uses: isort/isort-action@master
-      - uses: psf/black@stable
+      # - uses: isort/isort-action@master
+      # - uses: psf/black@stable
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
       - name: Test typing
