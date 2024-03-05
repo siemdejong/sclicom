@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dpat"
-version = "5.0.1"
+version = "5.1.0"
 authors = [
   {name="Siem de Jong", email="siem.dejong@hotmail.nl"},
 ]
