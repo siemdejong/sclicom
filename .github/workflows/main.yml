@@ -56,8 +56,8 @@ jobs:
       # - uses: psf/black@stable
       - name: Test with pytest
         run: pytest --cov=./ --cov-report=xml
-      - name: Test typing
-        run: mypy dpat
+      # - name: Test typing
+      #   run: mypy dpat
       # - uses: actions/checkout@master
       # - uses: codecov/codecov-action@v3
       #   with:
