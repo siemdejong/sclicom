@@ -1,0 +1,50 @@
+dpat.data.pmchhg\_h5\_dataset.PMCHHGH5DataModule
+================================================
+
+.. currentmodule:: dpat.data.pmchhg_h5_dataset
+
+.. autoclass:: PMCHHGH5DataModule
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~PMCHHGH5DataModule.__init__
+      ~PMCHHGH5DataModule.from_datasets
+      ~PMCHHGH5DataModule.load_from_checkpoint
+      ~PMCHHGH5DataModule.load_state_dict
+      ~PMCHHGH5DataModule.on_after_batch_transfer
+      ~PMCHHGH5DataModule.on_before_batch_transfer
+      ~PMCHHGH5DataModule.predict_dataloader
+      ~PMCHHGH5DataModule.prepare_data
+      ~PMCHHGH5DataModule.save_hyperparameters
+      ~PMCHHGH5DataModule.setup
+      ~PMCHHGH5DataModule.state_dict
+      ~PMCHHGH5DataModule.teardown
+      ~PMCHHGH5DataModule.test_dataloader
+      ~PMCHHGH5DataModule.train_dataloader
+      ~PMCHHGH5DataModule.transfer_batch_to_device
+      ~PMCHHGH5DataModule.val_dataloader
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PMCHHGH5DataModule.CHECKPOINT_HYPER_PARAMS_KEY
+      ~PMCHHGH5DataModule.CHECKPOINT_HYPER_PARAMS_NAME
+      ~PMCHHGH5DataModule.CHECKPOINT_HYPER_PARAMS_TYPE
+      ~PMCHHGH5DataModule.hparams
+      ~PMCHHGH5DataModule.hparams_initial
+      ~PMCHHGH5DataModule.name
+   
+   

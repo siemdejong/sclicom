@@ -21,6 +21,7 @@ dpat.types.VisionBackbone
       ~VisionBackbone.bfloat16
       ~VisionBackbone.buffers
       ~VisionBackbone.children
+      ~VisionBackbone.compile
       ~VisionBackbone.cpu
       ~VisionBackbone.cuda
       ~VisionBackbone.double

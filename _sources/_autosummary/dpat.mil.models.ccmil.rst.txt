@@ -1,0 +1,38 @@
+dpat.mil.models.ccmil
+=====================
+
+.. automodule:: dpat.mil.models.ccmil
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      preprocess_text
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      CCMIL
+   
+   
+
+   
+   
+   
+
+
+

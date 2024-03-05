@@ -1,0 +1,33 @@
+dpat.mil.models
+===============
+
+.. automodule:: dpat.mil.models
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: custom-module-template.rst
+   :recursive:
+
+   dpat.mil.models.ccmil
+   dpat.mil.models.varmil
+

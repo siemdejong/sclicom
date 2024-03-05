@@ -1,0 +1,6 @@
+dpat.data.pmchhg\_h5\_dataset.feature\_batch\_extract
+=====================================================
+
+.. currentmodule:: dpat.data.pmchhg_h5_dataset
+
+.. autofunction:: feature_batch_extract

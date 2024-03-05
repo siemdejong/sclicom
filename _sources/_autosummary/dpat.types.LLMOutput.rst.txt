@@ -21,6 +21,7 @@ dpat.types.LLMOutput
       ~LLMOutput.bfloat16
       ~LLMOutput.buffers
       ~LLMOutput.children
+      ~LLMOutput.compile
       ~LLMOutput.cpu
       ~LLMOutput.cuda
       ~LLMOutput.double

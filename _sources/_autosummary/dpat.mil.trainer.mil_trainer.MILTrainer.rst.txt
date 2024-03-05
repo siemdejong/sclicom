@@ -17,7 +17,9 @@ dpat.mil.trainer.mil\_trainer.MILTrainer
    
       ~MILTrainer.__init__
       ~MILTrainer.fit
+      ~MILTrainer.init_module
       ~MILTrainer.predict
+      ~MILTrainer.print
       ~MILTrainer.save_checkpoint
       ~MILTrainer.test
       ~MILTrainer.validate

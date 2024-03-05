@@ -1,0 +1,178 @@
+dpat.mil.models.ccmil.CCMIL
+===========================
+
+.. currentmodule:: dpat.mil.models.ccmil
+
+.. autoclass:: CCMIL
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~CCMIL.__init__
+      ~CCMIL.add_module
+      ~CCMIL.all_gather
+      ~CCMIL.apply
+      ~CCMIL.backward
+      ~CCMIL.bfloat16
+      ~CCMIL.buffers
+      ~CCMIL.children
+      ~CCMIL.clip_gradients
+      ~CCMIL.compile
+      ~CCMIL.compute_weighted_var
+      ~CCMIL.configure_callbacks
+      ~CCMIL.configure_gradient_clipping
+      ~CCMIL.configure_model
+      ~CCMIL.configure_optimizers
+      ~CCMIL.configure_sharded_model
+      ~CCMIL.cpu
+      ~CCMIL.cuda
+      ~CCMIL.double
+      ~CCMIL.eval
+      ~CCMIL.extra_repr
+      ~CCMIL.float
+      ~CCMIL.forward
+      ~CCMIL.freeze
+      ~CCMIL.get_buffer
+      ~CCMIL.get_extra_state
+      ~CCMIL.get_parameter
+      ~CCMIL.get_submodule
+      ~CCMIL.half
+      ~CCMIL.ipu
+      ~CCMIL.load_from_checkpoint
+      ~CCMIL.load_state_dict
+      ~CCMIL.log
+      ~CCMIL.log_dict
+      ~CCMIL.log_metrics
+      ~CCMIL.lr_scheduler_step
+      ~CCMIL.lr_schedulers
+      ~CCMIL.manual_backward
+      ~CCMIL.modules
+      ~CCMIL.named_buffers
+      ~CCMIL.named_children
+      ~CCMIL.named_modules
+      ~CCMIL.named_parameters
+      ~CCMIL.on_after_backward
+      ~CCMIL.on_after_batch_transfer
+      ~CCMIL.on_before_backward
+      ~CCMIL.on_before_batch_transfer
+      ~CCMIL.on_before_optimizer_step
+      ~CCMIL.on_before_zero_grad
+      ~CCMIL.on_fit_end
+      ~CCMIL.on_fit_start
+      ~CCMIL.on_load_checkpoint
+      ~CCMIL.on_predict_batch_end
+      ~CCMIL.on_predict_batch_start
+      ~CCMIL.on_predict_end
+      ~CCMIL.on_predict_epoch_end
+      ~CCMIL.on_predict_epoch_start
+      ~CCMIL.on_predict_model_eval
+      ~CCMIL.on_predict_start
+      ~CCMIL.on_save_checkpoint
+      ~CCMIL.on_test_batch_end
+      ~CCMIL.on_test_batch_start
+      ~CCMIL.on_test_end
+      ~CCMIL.on_test_epoch_end
+      ~CCMIL.on_test_epoch_start
+      ~CCMIL.on_test_model_eval
+      ~CCMIL.on_test_model_train
+      ~CCMIL.on_test_start
+      ~CCMIL.on_train_batch_end
+      ~CCMIL.on_train_batch_start
+      ~CCMIL.on_train_end
+      ~CCMIL.on_train_epoch_end
+      ~CCMIL.on_train_epoch_start
+      ~CCMIL.on_train_start
+      ~CCMIL.on_validation_batch_end
+      ~CCMIL.on_validation_batch_start
+      ~CCMIL.on_validation_end
+      ~CCMIL.on_validation_epoch_end
+      ~CCMIL.on_validation_epoch_start
+      ~CCMIL.on_validation_model_eval
+      ~CCMIL.on_validation_model_train
+      ~CCMIL.on_validation_model_zero_grad
+      ~CCMIL.on_validation_start
+      ~CCMIL.optimizer_step
+      ~CCMIL.optimizer_zero_grad
+      ~CCMIL.optimizers
+      ~CCMIL.parameters
+      ~CCMIL.predict_dataloader
+      ~CCMIL.predict_step
+      ~CCMIL.prepare_data
+      ~CCMIL.print
+      ~CCMIL.register_backward_hook
+      ~CCMIL.register_buffer
+      ~CCMIL.register_forward_hook
+      ~CCMIL.register_forward_pre_hook
+      ~CCMIL.register_full_backward_hook
+      ~CCMIL.register_full_backward_pre_hook
+      ~CCMIL.register_load_state_dict_post_hook
+      ~CCMIL.register_module
+      ~CCMIL.register_parameter
+      ~CCMIL.register_state_dict_pre_hook
+      ~CCMIL.requires_grad_
+      ~CCMIL.save_hyperparameters
+      ~CCMIL.save_output
+      ~CCMIL.set_extra_state
+      ~CCMIL.setup
+      ~CCMIL.share_memory
+      ~CCMIL.state_dict
+      ~CCMIL.teardown
+      ~CCMIL.test_dataloader
+      ~CCMIL.test_step
+      ~CCMIL.to
+      ~CCMIL.to_empty
+      ~CCMIL.to_onnx
+      ~CCMIL.to_torchscript
+      ~CCMIL.toggle_optimizer
+      ~CCMIL.train
+      ~CCMIL.train_dataloader
+      ~CCMIL.training_step
+      ~CCMIL.transfer_batch_to_device
+      ~CCMIL.type
+      ~CCMIL.unfreeze
+      ~CCMIL.untoggle_optimizer
+      ~CCMIL.val_dataloader
+      ~CCMIL.validation_step
+      ~CCMIL.xpu
+      ~CCMIL.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CCMIL.CHECKPOINT_HYPER_PARAMS_KEY
+      ~CCMIL.CHECKPOINT_HYPER_PARAMS_NAME
+      ~CCMIL.CHECKPOINT_HYPER_PARAMS_TYPE
+      ~CCMIL.T_destination
+      ~CCMIL.automatic_optimization
+      ~CCMIL.call_super_init
+      ~CCMIL.current_epoch
+      ~CCMIL.device
+      ~CCMIL.dtype
+      ~CCMIL.dump_patches
+      ~CCMIL.example_input_array
+      ~CCMIL.fabric
+      ~CCMIL.global_rank
+      ~CCMIL.global_step
+      ~CCMIL.hparams
+      ~CCMIL.hparams_initial
+      ~CCMIL.local_rank
+      ~CCMIL.logger
+      ~CCMIL.loggers
+      ~CCMIL.on_gpu
+      ~CCMIL.strict_loading
+      ~CCMIL.trainer
+      ~CCMIL.training
+   
+   

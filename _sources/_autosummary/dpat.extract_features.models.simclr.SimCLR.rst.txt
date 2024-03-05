@@ -24,8 +24,10 @@ dpat.extract\_features.models.simclr.SimCLR
       ~SimCLR.buffers
       ~SimCLR.children
       ~SimCLR.clip_gradients
+      ~SimCLR.compile
       ~SimCLR.configure_callbacks
       ~SimCLR.configure_gradient_clipping
+      ~SimCLR.configure_model
       ~SimCLR.configure_optimizers
       ~SimCLR.configure_sharded_model
       ~SimCLR.cpu
@@ -92,6 +94,7 @@ dpat.extract\_features.models.simclr.SimCLR
       ~SimCLR.on_validation_epoch_start
       ~SimCLR.on_validation_model_eval
       ~SimCLR.on_validation_model_train
+      ~SimCLR.on_validation_model_zero_grad
       ~SimCLR.on_validation_start
       ~SimCLR.optimizer_step
       ~SimCLR.optimizer_zero_grad
@@ -165,6 +168,7 @@ dpat.extract\_features.models.simclr.SimCLR
       ~SimCLR.logger
       ~SimCLR.loggers
       ~SimCLR.on_gpu
+      ~SimCLR.strict_loading
       ~SimCLR.trainer
       ~SimCLR.training
    

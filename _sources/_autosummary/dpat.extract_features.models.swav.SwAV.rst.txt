@@ -24,8 +24,10 @@ dpat.extract\_features.models.swav.SwAV
       ~SwAV.buffers
       ~SwAV.children
       ~SwAV.clip_gradients
+      ~SwAV.compile
       ~SwAV.configure_callbacks
       ~SwAV.configure_gradient_clipping
+      ~SwAV.configure_model
       ~SwAV.configure_optimizers
       ~SwAV.configure_sharded_model
       ~SwAV.cpu
@@ -92,6 +94,7 @@ dpat.extract\_features.models.swav.SwAV
       ~SwAV.on_validation_epoch_start
       ~SwAV.on_validation_model_eval
       ~SwAV.on_validation_model_train
+      ~SwAV.on_validation_model_zero_grad
       ~SwAV.on_validation_start
       ~SwAV.optimizer_step
       ~SwAV.optimizer_zero_grad
@@ -165,6 +168,7 @@ dpat.extract\_features.models.swav.SwAV
       ~SwAV.logger
       ~SwAV.loggers
       ~SwAV.on_gpu
+      ~SwAV.strict_loading
       ~SwAV.trainer
       ~SwAV.training
    

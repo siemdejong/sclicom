@@ -1,0 +1,6 @@
+dpat.mil.models.ccmil.preprocess\_text
+======================================
+
+.. currentmodule:: dpat.mil.models.ccmil
+
+.. autofunction:: preprocess_text

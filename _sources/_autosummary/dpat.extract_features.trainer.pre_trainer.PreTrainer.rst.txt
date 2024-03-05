@@ -18,7 +18,9 @@ dpat.extract\_features.trainer.pre\_trainer.PreTrainer
       ~PreTrainer.__init__
       ~PreTrainer.add_arguments_to_parser
       ~PreTrainer.fit
+      ~PreTrainer.init_module
       ~PreTrainer.predict
+      ~PreTrainer.print
       ~PreTrainer.save_checkpoint
       ~PreTrainer.test
       ~PreTrainer.validate

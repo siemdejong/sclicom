@@ -1,0 +1,178 @@
+dpat.mil.models.varmil.VarAttention
+===================================
+
+.. currentmodule:: dpat.mil.models.varmil
+
+.. autoclass:: VarAttention
+   :members:
+   :show-inheritance:
+
+   
+   .. automethod:: __init__
+
+   
+   .. rubric:: Methods
+
+   .. autosummary::
+   
+      ~VarAttention.__init__
+      ~VarAttention.add_module
+      ~VarAttention.all_gather
+      ~VarAttention.apply
+      ~VarAttention.backward
+      ~VarAttention.bfloat16
+      ~VarAttention.buffers
+      ~VarAttention.children
+      ~VarAttention.clip_gradients
+      ~VarAttention.compile
+      ~VarAttention.compute_weighted_var
+      ~VarAttention.configure_callbacks
+      ~VarAttention.configure_gradient_clipping
+      ~VarAttention.configure_model
+      ~VarAttention.configure_optimizers
+      ~VarAttention.configure_sharded_model
+      ~VarAttention.cpu
+      ~VarAttention.cuda
+      ~VarAttention.double
+      ~VarAttention.eval
+      ~VarAttention.extra_repr
+      ~VarAttention.float
+      ~VarAttention.forward
+      ~VarAttention.freeze
+      ~VarAttention.get_buffer
+      ~VarAttention.get_extra_state
+      ~VarAttention.get_parameter
+      ~VarAttention.get_submodule
+      ~VarAttention.half
+      ~VarAttention.ipu
+      ~VarAttention.load_from_checkpoint
+      ~VarAttention.load_state_dict
+      ~VarAttention.log
+      ~VarAttention.log_dict
+      ~VarAttention.log_metrics
+      ~VarAttention.lr_scheduler_step
+      ~VarAttention.lr_schedulers
+      ~VarAttention.manual_backward
+      ~VarAttention.modules
+      ~VarAttention.named_buffers
+      ~VarAttention.named_children
+      ~VarAttention.named_modules
+      ~VarAttention.named_parameters
+      ~VarAttention.on_after_backward
+      ~VarAttention.on_after_batch_transfer
+      ~VarAttention.on_before_backward
+      ~VarAttention.on_before_batch_transfer
+      ~VarAttention.on_before_optimizer_step
+      ~VarAttention.on_before_zero_grad
+      ~VarAttention.on_fit_end
+      ~VarAttention.on_fit_start
+      ~VarAttention.on_load_checkpoint
+      ~VarAttention.on_predict_batch_end
+      ~VarAttention.on_predict_batch_start
+      ~VarAttention.on_predict_end
+      ~VarAttention.on_predict_epoch_end
+      ~VarAttention.on_predict_epoch_start
+      ~VarAttention.on_predict_model_eval
+      ~VarAttention.on_predict_start
+      ~VarAttention.on_save_checkpoint
+      ~VarAttention.on_test_batch_end
+      ~VarAttention.on_test_batch_start
+      ~VarAttention.on_test_end
+      ~VarAttention.on_test_epoch_end
+      ~VarAttention.on_test_epoch_start
+      ~VarAttention.on_test_model_eval
+      ~VarAttention.on_test_model_train
+      ~VarAttention.on_test_start
+      ~VarAttention.on_train_batch_end
+      ~VarAttention.on_train_batch_start
+      ~VarAttention.on_train_end
+      ~VarAttention.on_train_epoch_end
+      ~VarAttention.on_train_epoch_start
+      ~VarAttention.on_train_start
+      ~VarAttention.on_validation_batch_end
+      ~VarAttention.on_validation_batch_start
+      ~VarAttention.on_validation_end
+      ~VarAttention.on_validation_epoch_end
+      ~VarAttention.on_validation_epoch_start
+      ~VarAttention.on_validation_model_eval
+      ~VarAttention.on_validation_model_train
+      ~VarAttention.on_validation_model_zero_grad
+      ~VarAttention.on_validation_start
+      ~VarAttention.optimizer_step
+      ~VarAttention.optimizer_zero_grad
+      ~VarAttention.optimizers
+      ~VarAttention.parameters
+      ~VarAttention.predict_dataloader
+      ~VarAttention.predict_step
+      ~VarAttention.prepare_data
+      ~VarAttention.print
+      ~VarAttention.register_backward_hook
+      ~VarAttention.register_buffer
+      ~VarAttention.register_forward_hook
+      ~VarAttention.register_forward_pre_hook
+      ~VarAttention.register_full_backward_hook
+      ~VarAttention.register_full_backward_pre_hook
+      ~VarAttention.register_load_state_dict_post_hook
+      ~VarAttention.register_module
+      ~VarAttention.register_parameter
+      ~VarAttention.register_state_dict_pre_hook
+      ~VarAttention.requires_grad_
+      ~VarAttention.save_hyperparameters
+      ~VarAttention.save_output
+      ~VarAttention.set_extra_state
+      ~VarAttention.setup
+      ~VarAttention.share_memory
+      ~VarAttention.state_dict
+      ~VarAttention.teardown
+      ~VarAttention.test_dataloader
+      ~VarAttention.test_step
+      ~VarAttention.to
+      ~VarAttention.to_empty
+      ~VarAttention.to_onnx
+      ~VarAttention.to_torchscript
+      ~VarAttention.toggle_optimizer
+      ~VarAttention.train
+      ~VarAttention.train_dataloader
+      ~VarAttention.training_step
+      ~VarAttention.transfer_batch_to_device
+      ~VarAttention.type
+      ~VarAttention.unfreeze
+      ~VarAttention.untoggle_optimizer
+      ~VarAttention.val_dataloader
+      ~VarAttention.validation_step
+      ~VarAttention.xpu
+      ~VarAttention.zero_grad
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~VarAttention.CHECKPOINT_HYPER_PARAMS_KEY
+      ~VarAttention.CHECKPOINT_HYPER_PARAMS_NAME
+      ~VarAttention.CHECKPOINT_HYPER_PARAMS_TYPE
+      ~VarAttention.T_destination
+      ~VarAttention.automatic_optimization
+      ~VarAttention.call_super_init
+      ~VarAttention.current_epoch
+      ~VarAttention.device
+      ~VarAttention.dtype
+      ~VarAttention.dump_patches
+      ~VarAttention.example_input_array
+      ~VarAttention.fabric
+      ~VarAttention.global_rank
+      ~VarAttention.global_step
+      ~VarAttention.hparams
+      ~VarAttention.hparams_initial
+      ~VarAttention.local_rank
+      ~VarAttention.logger
+      ~VarAttention.loggers
+      ~VarAttention.on_gpu
+      ~VarAttention.strict_loading
+      ~VarAttention.trainer
+      ~VarAttention.training
+   
+   
