@@ -5,6 +5,7 @@ on:
     workflows: ["Release"]
     types:
       - completed
+  workflow_dispatch:
 
 env:
   HDF5_DISABLE_VERSION_CHECK: 1
