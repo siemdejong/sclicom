@@ -1,6 +1,0 @@
-dpat.data.pmchhg\_h5\_dataset.compile\_features
-===============================================
-
-.. currentmodule:: dpat.data.pmchhg_h5_dataset
-
-.. autofunction:: compile_features
