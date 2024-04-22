@@ -49,6 +49,7 @@ dependencies = [
     "ray[tune]", # For (distributed) hyperparameter search/training.
     "transformers",  # For creating text embeddings.
     "pyprg@git+https://github.com/siemdejong/prg#egg=pyprg&subdirectory=Python_package",  # To calculate the Precision-Recall-Gain curve.
+    "pyvips",
 ]
 
 [project.optional-dependencies]
@@ -100,4 +101,4 @@ profile = "black"
 
 [tool.black]
 skip-magic-trailing-comma = true
-language_version = "python3.9"
+target-version = ["py310"]
